@@ -22,6 +22,8 @@ import {
   ViroARSceneNavigator
 } from 'react-viro';
 
+import App2d from './src/App2d.js';
+
 /*
  TODO: Insert your API key below
  */
@@ -36,6 +38,7 @@ var InitialVRScene = require('./js/HelloWorldScene');
 var UNSET = "UNSET";
 var VR_NAVIGATOR_TYPE = "VR";
 var AR_NAVIGATOR_TYPE = "AR";
+var UI_NAVIGATOR_TYPE = "UI";
 
 // This determines which type of experience to launch in, or UNSET, if the user should
 // be presented with a choice of AR or VR. By default, we offer the user a choice.
@@ -52,6 +55,7 @@ export default class ViroSample extends Component {
     this._getExperienceSelector = this._getExperienceSelector.bind(this);
     this._getARNavigator = this._getARNavigator.bind(this);
     this._getVRNavigator = this._getVRNavigator.bind(this);
+    this._getUINavigator = this._getUINavigator.bind(this);
     this._getExperienceButtonOnPress = this._getExperienceButtonOnPress.bind(this);
     this._exitViro = this._exitViro.bind(this);
   }
@@ -65,6 +69,8 @@ export default class ViroSample extends Component {
       return this._getVRNavigator();
     } else if (this.state.navigatorType == AR_NAVIGATOR_TYPE) {
       return this._getARNavigator();
+    } else if (this.state.navigatorType == UI_NAVIGATOR_TYPE) {
+      return this._getUINavigator();
     }
   }
 
@@ -77,6 +83,13 @@ export default class ViroSample extends Component {
           <Text style={localStyles.titleText}>
             Choose your desired experience:
           </Text>
+
+          <TouchableHighlight style={localStyles.buttons}
+            onPress={this._getExperienceButtonOnPress(UI_NAVIGATOR_TYPE)}
+            underlayColor={'#68a0ff'} >
+
+            <Text style={localStyles.buttonText}>2D UI</Text>
+          </TouchableHighlight>
 
           <TouchableHighlight style={localStyles.buttons}
             onPress={this._getExperienceButtonOnPress(AR_NAVIGATOR_TYPE)}
@@ -94,6 +107,11 @@ export default class ViroSample extends Component {
         </View>
       </View>
     );
+  }
+
+  // Returns the standard React Native app UI stuff
+  _getUINavigator() {
+    return <App2d />;
   }
 
   // Returns the ViroARSceneNavigator which will start the AR experience
