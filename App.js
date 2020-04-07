@@ -22,6 +22,8 @@ import {
   ViroARSceneNavigator
 } from 'react-viro';
 
+import { Provider } from './js/context/GlobalContext';
+
 /*
  TODO: Insert your API key below
  */
