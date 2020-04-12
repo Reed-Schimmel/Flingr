@@ -1,23 +1,13 @@
 import React, { Component } from 'react';
-import {
-  AppRegistry,
-  Text,
-  StatusBar,
-  Alert,
-  ScrollView,
-  View,
-  StyleSheet,
-  SafeAreaView,
-  TouchableOpacity,
-  PixelRatio,
-  TouchableHighlight,
-} from 'react-native';
-import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
-import {
-  ViroVRSceneNavigator,
-  ViroARSceneNavigator
-} from 'react-viro';
+import { Dimensions, Text, StatusBar, ScrollView, View, StyleSheet, SafeAreaView, TouchableHighlight,} from 'react-native';
+import {ViroARSceneNavigator} from 'react-viro';
+import MapView, {Marker, AnimatedRegion} from 'react-native-maps';
 
+const screen = Dimensions.get('window');
+
+const ASPECT_RATIO = screen.width / screen.height;
+const LATITUDE_DELTA = 0.0922;
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 /*
  TODO: Insert your API key below
  */
@@ -30,12 +20,9 @@ var InitialARScene = require('./js/HelloWorldSceneAR');
 var InitialVRScene = require('./js/HelloWorldScene');
 
 var UNSET = "UNSET";
-var VR_NAVIGATOR_TYPE = "VR";
+var HOME_NAVIGATOR_TYPE = "Home";
 var AR_NAVIGATOR_TYPE = "AR";
-
-var ar = ["AR page"];
-var map = ["Map page"];
-
+var LOG_NAVIGATOR_TYPE = "Log";
 
 // This determines which type of experience to launch in, or UNSET, if the user should
 // be presented with a choice of AR or VR. By default, we offer the user a choice.
@@ -49,45 +36,54 @@ export default class Flingr extends Component {
       navigatorType : defaultNavigatorType,
       sharedProps : sharedProps
     }
-    this._getExperienceSelector = this._getExperienceSelector.bind(this);
+    this.getHomeScreen = this.getHomeScreen.bind(this);
     this._getARNavigator = this._getARNavigator.bind(this);
-    this._getVRNavigator = this._getVRNavigator.bind(this);
-    this._getExperienceButtonOnPress = this._getExperienceButtonOnPress.bind(this);
+    this._getExperienceButtonOnPress = this.getExperienceButtonOnPress.bind(this);
     this._exitViro = this._exitViro.bind(this);
   }
 
   // Replace this function with the contents of _getVRNavigator() or _getARNavigator()
   // if you are building a specific type of experience.
   render() {
-    if (this.state.navigatorType == UNSET) {
-      return this._getExperienceSelector();
-    } else if (this.state.navigatorType == VR_NAVIGATOR_TYPE) {
-      return this._getVRNavigator();
-    } else if (this.state.navigatorType == AR_NAVIGATOR_TYPE) {
+    if(this.state.navigatorType == UNSET) 
+      return this.getHomeScreen();
+    else if (this.state.navigatorType == HOME_NAVIGATOR_TYPE) 
+      return this.getHomeScreen();
+    else if (this.state.navigatorType == AR_NAVIGATOR_TYPE) 
       return this._getARNavigator();
-    }
+    else if (this.state.navigatorType == LOG_NAVIGATOR_TYPE) 
+      return this._getLogScreen();
+    
   }
 
-  // Presents the user with a choice of an AR or VR experience
-  _getExperienceSelector() {
+  // Home screen layout
+  getHomeScreen() {
     return (
-      <SafeAreaView style={localStyles.container}>
-        <ScrollView style = {{backgroundColor: "white"}}>
-          <Text style ={localStyles.titleText}>This is the home page.</Text>
-        </ScrollView>
-      
-        <View style={localStyles.inner} >
-          <TouchableHighlight style={localStyles.buttons} onPress={this._getExperienceButtonOnPress(AR_NAVIGATOR_TYPE)}
+      <View style={styles.container}>
+        <MapView style={styles.map} ref={ref => {this.map = ref;}} showsUserLocation={true}
+          region={{
+            latitude: 39,
+            longitude: -98,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA,
+          }}>
+        </MapView>
+       
+        <SafeAreaView><View style={styles.buttonContainer}>
+      <TouchableHighlight style={styles.backButton} onPress={this.getExperienceButtonOnPress(LOG_NAVIGATOR_TYPE)}
                               underlayColor={'#68a0ff'} >
-            <Text style={localStyles.buttonText}>AR</Text>
-          </TouchableHighlight>
-
-          <TouchableHighlight style={localStyles.buttons} onPress={this._getExperienceButtonOnPress(VR_NAVIGATOR_TYPE)}
+            <Text style={styles.buttonText}>Log Out</Text>
+          </TouchableHighlight></View>
+          <View style={styles.outer}>
+          <TouchableHighlight style={styles.ARButton} 
+                              onPress={this.getExperienceButtonOnPress(AR_NAVIGATOR_TYPE)}
                               underlayColor={'#68a0ff'} >
-            <Text style={localStyles.buttonText}>MAP</Text>
+            <Text style={styles.buttonText}>AR Screen</Text>
           </TouchableHighlight>
+          </View>
+          
+          </SafeAreaView>
         </View>
-      </SafeAreaView>
     );
   }
 
@@ -100,25 +96,10 @@ export default class Flingr extends Component {
   }
   
   // Returns the ViroSceneNavigator which will start the VR experience
-  _getVRNavigator() {
-    return (
-      <SafeAreaView style={localStyles.container}>
-        <ScrollView style = {{backgroundColor: "white"}}>
-          <Text style ={localStyles.titleText}>This is the Map Page.</Text>
-        </ScrollView>
-        <View style={localStyles.outer} >
-          <TouchableHighlight style={localStyles.backButton} onPress={this._getExperienceButtonOnPress(UNSET)}
-                              underlayColor={'#68a0ff'} >
-            <Text style={localStyles.buttonText}>back</Text>
-          </TouchableHighlight>
-          </View>
-     </SafeAreaView>
-    );
-  }
 
   // This function returns an anonymous/lambda function to be used
   // by the experience selector buttons
-  _getExperienceButtonOnPress(navigatorType) {
+  getExperienceButtonOnPress(navigatorType) {
     return () => {
       this.setState({
         navigatorType : navigatorType
@@ -127,7 +108,31 @@ export default class Flingr extends Component {
   }
   
 
+  _getLogScreen(){
+    return(
+      <SafeAreaView style={styles.viroContainer}>
+        <ScrollView style = {{backgroundColor: "white"}}>
+          <Text style ={styles.titleText}>This is the log in screen.</Text>
+        </ScrollView>
+       
+        <TouchableHighlight style={styles.buttons}
+            onPress={this._getExperienceButtonOnPress(HOME_NAVIGATOR_TYPE)}
+            underlayColor={'#68a0ff'} >
 
+            <Text style={styles.buttonText}>Log in</Text>
+          </TouchableHighlight>
+
+          <TouchableHighlight style={styles.buttons}
+            onPress={this._getExperienceButtonOnPress(HOME_NAVIGATOR_TYPE)}
+            underlayColor={'#68a0ff'} >
+
+            <Text style={styles.buttonText}>Sign up</Text>
+          </TouchableHighlight>
+
+     </SafeAreaView>
+
+    )
+  }
 
 
   // This function "exits" Viro by setting the navigatorType to UNSET.
@@ -138,30 +143,41 @@ export default class Flingr extends Component {
   }
 }
 
-var localStyles = StyleSheet.create({
+var styles = StyleSheet.create({
   viroContainer :{
-    flex : 1,
-    backgroundColor: "black",
+    alignItems: "center",
   },
-  container: {
-        flex: 1,
-        paddingTop: StatusBar.currentHeight, // for Android. If this looks weird in iOS tell Reed.
 
+  container: {
+        ...StyleSheet.absoluteFillObject,
+        
+        //alignItems: 'center',
+        flex: 1
       },
-  outer : {
-    alignSelf: "flex-start",
-    marginTop: 25,
-    marginLeft: 5,
-    position: "absolute"
-   
+
+      map: {
+        ...StyleSheet.absoluteFillObject,
+      },
+
+      buttonContainer: {
+        alignItems: "flex-start",
+        marginLeft: 5,
+        flex: 1
+},
+  outer : { 
+    alignItems: "flex-end",
+    marginRight: 5,
+    flex: 1
   },
+
   inner: {
-    flex : .225,
+
     justifyContent: "space-evenly",
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: "center",
     backgroundColor: "black",
   },
+
   titleText: {
     paddingTop: 30,
     paddingBottom: 20,
@@ -169,14 +185,9 @@ var localStyles = StyleSheet.create({
     textAlign:'center',
     fontSize : 25
   },
-  buttonText: {
-    color:'#fff',
-    textAlign:'center',
-    fontSize : 20
-  },
-  buttons : {
-    
-    height: 80,
+ 
+  buttons : { 
+    height: 70,
     width: 150,
     paddingTop:20,
     paddingBottom:20,
@@ -186,22 +197,141 @@ var localStyles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#fff',
-   
-
   },
+
   backButton : {
-    height: 50,
-    width: 75,
+    height: 45,
+    width: 80,
     paddingTop:10,
     paddingBottom:10,
     marginTop: 10,
     marginBottom: 10,
-    backgroundColor:'#68a0cf',
+    backgroundColor:'transparent',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#fff',
-  }
+    borderColor: 'black',
+  },
+
+  ARButton : {
+    height: 70,
+    width: 150,
+    paddingTop:20,
+    paddingBottom:20,
+    marginTop: 10,
+    marginBottom: 10,
+    backgroundColor:'transparent',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'black',
+  },
+
+  buttonText: {
+        color:'black',
+        textAlign:'center',
+        fontSize : 20
+      },
 });
 module.exports = Flingr
 
+// import React, {Component} from 'react';
+// import {
+//   StyleSheet,
+//   View,
+//   Text,
+//   Dimensions,
+//   TouchableHighlight,
+//   TouchableOpacity,
+//   AlertIOS,
+//   SafeAreaView,
+// } from 'react-native';
+// import MapView, {Marker, AnimatedRegion} from 'react-native-maps';
 
+// const screen = Dimensions.get('window');
+
+// const ASPECT_RATIO = screen.width / screen.height;
+// const LATITUDE_DELTA = 0.0922;
+// const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+
+// export default class App extends Component {
+
+//   render() {
+//     return (
+//       <View style={styles.container}>
+//         <MapView style={styles.map} ref={ref => {this.map = ref;}} showsUserLocation={true}
+//           region={{
+//             latitude: 39,
+//             longitude: -98,
+//             latitudeDelta: LATITUDE_DELTA,
+//             longitudeDelta: LONGITUDE_DELTA,
+//           }}>
+//         </MapView>
+       
+//         <SafeAreaView><View style={styles.buttonContainer}>
+//       <TouchableHighlight style={styles.backButton} onPress={this.fitToMarkersToMap()}
+//                               underlayColor={'#68a0ff'} >
+//             <Text style={styles.buttonText}>Log Out</Text>
+//           </TouchableHighlight>
+          
+//           </View>
+//           </SafeAreaView>
+//         </View>
+//     );
+//   }
+//   fitToMarkersToMap() {
+    
+//   }
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     ...StyleSheet.absoluteFillObject,
+//     //justifyContent: 'flex-end',
+//     //alignItems: 'center',
+//   },
+//   map: {
+//     ...StyleSheet.absoluteFillObject,
+//   },
+//   bubble: {
+//     flex: 1,
+//     backgroundColor: 'rgba(255,255,255,0.7)',
+//     paddingHorizontal: 18,
+//     paddingVertical: 12,
+//     borderRadius: 20,
+//     marginRight: 20,
+//   },
+//   button: {
+//     width: 80,
+//     paddingHorizontal: 12,
+//     alignItems: 'center',
+//     marginHorizontal: 10,
+//   },
+//   buttonContainer: {
+//     marginTop: 25,
+//     marginLeft: 5,
+//     position: "absolute"
+//   },
+//   members: {
+//     flexDirection: 'column',
+//     justifyContent: 'flex-start',
+//     alignItems: 'flex-start',
+//     width: '100%',
+//     paddingHorizontal: 10,
+//   },
+//   backButton : {
+//         height: 45,
+//         width: 80,
+//         paddingTop:10,
+//         paddingBottom:10,
+//         marginTop: 10,
+//         marginBottom: 10,
+//         backgroundColor:'transparent',
+//         borderRadius: 10,
+//         borderWidth: 1,
+//         borderColor: 'black',
+//       },
+//       buttonText: {
+//             color:'black',
+//             textAlign:'center',
+//             fontSize : 20
+//           },
+// });
