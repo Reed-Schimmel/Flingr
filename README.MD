@@ -26,6 +26,9 @@
 - Github repo: https://github.com/viromedia/viro
 - [2D UI controls](https://docs.viromedia.com/docs/flexbox-ui-layouts)
 
+
+
+
 ---
 # vvvv WORK IN PROGRESS vvvvv
 ## Build stand alone
@@ -33,4 +36,8 @@
 `react-native run-android --variant=gvrDebug`
 ### iOS
 
+## Project Structure (I want this to describe what folders are used for what)
+src/
+
+Repo - https://github.com/Reed-Schimmel/Flingr
 
