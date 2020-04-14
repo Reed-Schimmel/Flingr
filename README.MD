@@ -27,7 +27,8 @@
 - [2D UI controls](https://docs.viromedia.com/docs/flexbox-ui-layouts)
 
 
-
+## Compatible Devices
+Devices with GPS, and ARKit support
 
 ---
 # vvvv WORK IN PROGRESS vvvvv

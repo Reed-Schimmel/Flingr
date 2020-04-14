@@ -6,7 +6,10 @@ import {
   StatusBar
 } from 'react-native';
 
+import AREntery from './src/ar/AREntery';
+
 const Flingr = (props) => {
+  return <AREntery />; 
       return (
       <SafeAreaView style={styles.container}>
         <Text>Hello World</Text>
