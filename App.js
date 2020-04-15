@@ -1,17 +1,24 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import {
   Text,
   StyleSheet,
   SafeAreaView,
-  StatusBar
+  StatusBar,
+  Dimensions,
+  //Animate
 } from 'react-native';
+import HomeScreen from './src/screens/HomeScreen';
+//import { Provider } from './src/context/GlobalContext';
 
 const Flingr = (props) => {
-      return (
+
+  return (
+    //<Provider>
       <SafeAreaView style={styles.container}>
-        <Text>Hello World</Text>
+        <HomeScreen/>
       </SafeAreaView>
-    )
+    //</Provider>
+  )
 }
 
 const styles = StyleSheet.create({
