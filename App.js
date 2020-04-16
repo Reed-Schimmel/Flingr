@@ -7,17 +7,21 @@ import {
   Dimensions,
   //Animate
 } from 'react-native';
-import HomeScreen from './src/screens/HomeScreen';
-//import { Provider } from './src/context/GlobalContext';
+// import HomeScreen from './src/screens/HomeScreen';
+import LoginScreen from './src/screens/LoginScreen';
+import { Provider } from './src/context/GlobalContext';
+import RegisterScreen from './src/screens/RegisterScreen';
 
 const Flingr = (props) => {
 
   return (
-    //<Provider>
+    <Provider>
       <SafeAreaView style={styles.container}>
-        <HomeScreen/>
+        {/* <HomeScreen/> */}
+        {/* <LoginScreen /> */}
+        <RegisterScreen />
       </SafeAreaView>
-    //</Provider>
+    </Provider>
   )
 }
 
