@@ -58,7 +58,7 @@ const emailPasswordCreateAccount = (dispatch) => (email, password, username) => 
 }
 
 // export the newly created context
-export default createDataContext(
+export const { Context, Provider } = createDataContext(
   reducer,
   {
     emailPasswordLogin,
