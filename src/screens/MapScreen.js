@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-    Text,
-    StyleSheet,
-    View,
-    StatusBar,
-    Dimensions,
-    TouchableOpacity,
-    //Animate
-} from 'react-native';
+import { StyleSheet, StatusBar, Dimensions } from 'react-native'; //Animate
 import MapView, { Marker } from 'react-native-maps';
 //import { Context } from '../context/GlobalContext';
 
@@ -15,12 +7,14 @@ const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+
 const getCurrentLocation = () => {
     return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(position => resolve(position), e => reject(e));
     });
 };
-export default (region, props) => {
+
+const MapScreen = (region, props) => {
     useEffect(() => {
         getCurrentLocation().then(position => {
             if (position) {
@@ -35,7 +29,6 @@ export default (region, props) => {
             }
         })
     }, []);
-    
 
     const [state, setState] = useState({
         region: {
@@ -44,21 +37,23 @@ export default (region, props) => {
             latitudeDelta: LATITUDE_DELTA,
             longitudeDelta: LONGITUDE_DELTA,
         },
-        initialRegion: {
+    })
+
+    const [base, setBase] = useState({
+        region: {
             latitude: 0,
             longitude: 0,
             latitudeDelta: LATITUDE_DELTA,
             longitudeDelta: LONGITUDE_DELTA,
         },
     })
-
      
     //const { userAuth, loginError } = useContext(Context)
     return (
-        <MapView style={[styles.map, props.style]} region={state.region} showsUserLocation={true}>
-        <Marker coordinate={state.initialRegion}/> 
-    </MapView>
-    )
+            <MapView style={[styles.map, props.style]} region={state.region} showsUserLocation={true}>
+                <Marker coordinate={props.message == true ? state.region : base.region} />
+            </MapView>
+       )
 }
 
 const styles = StyleSheet.create({
@@ -72,3 +67,5 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
     },
 });
+
+export default MapScreen;
