@@ -31,25 +31,29 @@ const HomeScreen = (props) => {
     //const { userAuth, loginError } = useContext(Context)
     return (
         //login popup, ar button, map screen, mini map style
-        <><FloatingButton title="Log Out" onPress={getMod} style = {styles.FloatingButton}/>
-        <MapScreen message = {base.isPin == false ? false : true}/> 
-        <FloatingButton title={[base.isPin == true ? "Fire" : "Set Base"]} 
-                        onPress={setBase}/>
-           <Modal 
-           animationType="fade"
-           transparent={false}
-           visible={state.isModalVisible}>
-           <View style={{alignItems: "center"}}>
-             <SafeAreaView>
-               <Text>The log in/sign up component goes here
-               </Text>
-               <TouchableHighlight underlayColor = 'gray' style = {{alignItems: "center"}}
-                 onPress={getMod}>
-                 <Text>Hide Modal</Text>
-               </TouchableHighlight>
-             </SafeAreaView>
-           </View>
-         </Modal>
+        <>
+            <FloatingButton title="Log Out" onPress={getMod} style = {styles.FloatingButton}/>
+            
+            <MapScreen message = {base.isPin == false ? false : true}/> 
+        
+            <FloatingButton title={[base.isPin == true ? "Fire" : "Set Base"]} 
+                            onPress={setBase}/>
+            <Modal 
+                animationType="fade"
+                transparent={false}
+                visible={state.isModalVisible}>
+
+                <View style={{alignItems: "center"}}>
+                    <SafeAreaView>
+                        <Text>The log in/sign up component goes here
+                        </Text>
+                        <TouchableHighlight underlayColor = 'gray' style = {{alignItems: "center"}}
+                            onPress={getMod}>
+                            <Text>Hide Modal</Text>
+                        </TouchableHighlight>
+                    </SafeAreaView>
+                </View>
+            </Modal>
          </>
     )
 }
