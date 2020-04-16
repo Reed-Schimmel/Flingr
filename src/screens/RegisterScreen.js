@@ -1,54 +1,63 @@
-import React, { Component } from 'react';
-import { StyleSheet, TextInput, View, Touchable Opacity } from 'react-native';
-import { StackNavigator } from "react-navigation";
+import React, { useContext, useState } from 'react';
+import { StyleSheet, TextInput, View, Text, TouchableOpacity } from 'react-native';
+import { Context as GlobalContext } from '../context/GlobalContext';
 
-export default class RegisterScreen extends React.Component
+const RegisterScreen = (props) =>
 {
-  constructor (){
-    super ();
 
-    state ={ email: "", username: "", password: "" }
-}
-  render() {
-    return (
-     <View style ={styles.container}>
+  const [textFields, setTextFields] = useState({
+    email: '',
+    username: '',
+    password: '',
+  });
 
-     <View style ={styles.inputView}>
-     <TextInput style ={styles.textinput}
-     underlineColorAndroid = 'transparent'
-     placeholder ="Email"
-     placeholderTextColor= "#ffffff"
-     onchangeText ={(email) => this.setState ({email})}/>
-     </View>
+  const { emailPasswordCreateAccount } = useContext(GlobalContext);
 
-     <View style ={styles.inputView}>
-     <TextInput style ={styles.textinput}
-     underlineColorAndroid = 'transparent'
-     placeholder ="Username"
-     placeholderTextColor= "#ffffff"
-     onchangeText ={(username) => this.setState ({username})}/>
-     </View>
+  return (
+    <View style ={styles.container}>
+
+      <View style ={styles.inputView}>
+        <TextInput 
+          style ={styles.textinput}
+          underlineColorAndroid = 'transparent'
+          placeholder ="Email"
+          placeholderTextColor= "#ffffff"
+          onchangeText ={(email) => setTextFields ({ ...textFields, email })}
+        />
+      </View>
+
+      <View style ={styles.inputView}>
+        <TextInput 
+          style ={styles.textinput}
+          underlineColorAndroid = 'transparent'
+          placeholder ="Username"
+          placeholderTextColor= "#ffffff"
+          onchangeText ={(username) => setTextFields ({ ...textFields, username })}
+        />
+      </View>
 
 
-     <View style ={styles.inputView}>
-     <TextInput secureTextEntry style  ={styles.textinput}
-     underlineColorAndroid = 'transparent'
-     placeholder ="Password"
-     placeholderTextColor= "#ffffff"
-     onchangeText ={(password) => this.setState ({password})}/>
-     </View>
+      <View style ={styles.inputView}>
+        <TextInput
+          secureTextEntry
+          style={styles.textinput}
+          underlineColorAndroid = 'transparent'
+          placeholder ="Password"
+          placeholderTextColor= "#ffffff"
+          onchangeText ={(password) => setTextFields ({ ...textFields, password })}
+        />
+      </View>
 
       <TouchableOpacity style = {styles.button}>
         <Text style ={styles.buttontext}>Register</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigate("LoginScreen")} style = {styles.button}>
+      <TouchableOpacity onPress={() => console.log("navigate to LoginScreen")} style = {styles.button}>
         <Text style ={styles.buttontext}>Already have an account? Login here!</Text>
       </TouchableOpacity>
 
- </View>
+    </View>
   );
-}
 }
 
 const styles = StyleSheet.create ({
@@ -76,7 +85,7 @@ const styles = StyleSheet.create ({
 
 textInput: {
   width: 300,
-  backgroundColor: 'rgba (255, 255, 0.3)',
+  backgroundColor: 'rgba(255,255,255,0.3)',
   borderRadius: 25,
   paddingHorizontal: 16,
   fontSize: 16,
@@ -101,3 +110,5 @@ buttontext: {
 }
 
 });
+
+export default RegisterScreen;
