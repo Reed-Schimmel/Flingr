@@ -8,19 +8,21 @@ import {
   //Animate
 } from 'react-native';
 import HomeScreen from './src/screens/HomeScreen';
-//import { Provider } from './src/context/GlobalContext';
+import { Provider as GlobalProvider } from './src/context/GlobalContext';
 
 import AREntery from './src/ar/AREntery';
 
 const Flingr = (props) => {
   return <AREntery />; 
 
+  console.log('hello');
+
   return (
-    //<Provider>
+   <GlobalProvider>
       <SafeAreaView style={styles.container}>
         <HomeScreen/>
       </SafeAreaView>
-    //</Provider>
+    </GlobalProvider>
   )
 }
 
@@ -32,4 +34,4 @@ const styles = StyleSheet.create({
   },
 });
 
-module.exports = Flingr;
+export default Flingr;

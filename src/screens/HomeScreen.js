@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
     Text,
     StyleSheet,
@@ -8,11 +8,12 @@ import {
     //Animate
 } from 'react-native';
 import MapScreen from './MapScreen';
-//import { Context } from '../context/GlobalContext';
+import { Context } from '../context/GlobalContext';
 
 export default (props) => {
   
-    //const { userAuth, loginError } = useContext(Context)
+    const { state } = useContext(Context);
+    console.log(state);
     return (
 //login popup, ar button, map screen, mini map style
         <MapScreen/>
