@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, StatusBar, Modal, Text, View, SafeAreaView, TouchableHighlight, Alert } from 'react-native'; //Animate
+import { StyleSheet, StatusBar, Modal, Text, View, SafeAreaView, TouchableOpacity, Alert } from 'react-native'; //Animate
 import MapScreen from './MapScreen';
+import LoginScreen from './LoginScreen'
 import FloatingButton from '../components/FloatingButton';
 //import AREntery from '../ar/AREntery'
 //import { Context } from '../context/GlobalContext';
 const HomeScreen = (props) => {
-    const [state, setState] = useState({isModalVisible: true})
+    const [state, setState] = useState({isModalVisible: false})
     const [base, setBases] = useState({isPin: false})
 
     const getMod = () => {
@@ -34,25 +35,15 @@ const HomeScreen = (props) => {
         <>
             <FloatingButton title="Log Out" onPress={getMod} style = {styles.FloatingButton}/>
             
-            <MapScreen message = {base.isPin == false ? false : true}/> 
+            <MapScreen/> 
         
             <FloatingButton title={[base.isPin == true ? "Fire" : "Set Base"]} 
                             onPress={setBase}/>
             <Modal 
                 animationType="fade"
-                transparent={false}
+                transparent={true}
                 visible={state.isModalVisible}>
-
-                <View style={{alignItems: "center"}}>
-                    <SafeAreaView>
-                        <Text>The log in/sign up component goes here
-                        </Text>
-                        <TouchableHighlight underlayColor = 'gray' style = {{alignItems: "center"}}
-                            onPress={getMod}>
-                            <Text>Hide Modal</Text>
-                        </TouchableHighlight>
-                    </SafeAreaView>
-                </View>
+                <LoginScreen/>
             </Modal>
          </>
     )
@@ -67,6 +58,11 @@ const styles = StyleSheet.create({
 
     map: {
         ...StyleSheet.absoluteFillObject,
+    },
+    minimap: {
+        height: 100,
+        width: 100,
+        flex: 1
     },
 
     modal: {

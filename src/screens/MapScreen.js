@@ -40,18 +40,13 @@ const MapScreen = (region, props) => {
     })
 
     const [base, setBase] = useState({
-        region: {
-            latitude: 0,
-            longitude: 0,
-            latitudeDelta: LATITUDE_DELTA,
-            longitudeDelta: LONGITUDE_DELTA,
-        },
+        message: true
     })
      
     //const { userAuth, loginError } = useContext(Context)
     return (
             <MapView style={[styles.map, props.style]} region={state.region} showsUserLocation={true}>
-                <Marker coordinate={props.message == true ? state.region : base.region} />
+                <Marker coordinate={state.region}/>
             </MapView>
        )
 }
