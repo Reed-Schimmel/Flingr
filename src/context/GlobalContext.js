@@ -103,6 +103,15 @@ const queryNewBaseLocations = (dispatch) => (region) => {
     .catch((e) => console.log(e));
 };
 
+const setBaseLocation = (dispatch) => async (latitude, longitude, uid) => {
+  firebase.firestore().collection('users').doc(uid).update({
+    baseLatitude: latitude,
+    baseLongitude: longitude,
+  })
+    .then(() => dispatch({ type: SET_USER_BASE, payload: { latitude, longitude } }))
+    .catch((e) => console.log(e));
+}
+
 // export the newly created context
 export const { Context, Provider } = createDataContext(
   reducer,
@@ -110,6 +119,7 @@ export const { Context, Provider } = createDataContext(
     emailPasswordLogin,
     emailPasswordCreateAccount,
     queryNewBaseLocations,
+    setBaseLocation,
   }, // actions (functions to be used to update global state)
   {
     userAuth: undefined,
