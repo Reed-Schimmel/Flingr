@@ -6,6 +6,8 @@ const LOGIN_SUCCESS         = 'login_success';
 const LOGIN_FAILURE         = 'login_failure';
 const UPDATE_BASE_LOCATIONS = 'update_base_locations';
 const SET_USER_BASE         = 'set_user_base';
+const SET_BASE_ERROR        = 'set_base_error';
+const QUERY_BASES_ERROR     = 'query_bases_error';
 
 // default user document fields when a new user is generated
 const DEFAULT_USER_DOC = {
@@ -45,6 +47,18 @@ const reducer = (state, action) => {
           baseLatitude: action.payload.latitude,
           baseLongitude: action.payload.longitude,
         },
+      };
+
+    case SET_BASE_ERROR:
+      return {
+        ...state,
+        setBaseError: action.payload,
+      };
+
+    case QUERY_BASES_ERROR:
+      return {
+        ...state,
+        queryBasesError: action.payload,
       };
 
     default:
@@ -100,7 +114,7 @@ const queryNewBaseLocations = (dispatch) => (region) => {
       });
       dispatch({ type: UPDATE_BASE_LOCATIONS, payload: regionBases });
     })
-    .catch((e) => console.log(e));
+    .catch((e) => dispatch({ type: QUERY_BASES_ERROR, payload: e }));
 };
 
 const setBaseLocation = (dispatch) => async (latitude, longitude, uid) => {
@@ -109,7 +123,7 @@ const setBaseLocation = (dispatch) => async (latitude, longitude, uid) => {
     baseLongitude: longitude,
   })
     .then(() => dispatch({ type: SET_USER_BASE, payload: { latitude, longitude } }))
-    .catch((e) => console.log(e));
+    .catch((e) => dispatch({ type: SET_BASE_ERROR, payload: e }));
 }
 
 // export the newly created context
