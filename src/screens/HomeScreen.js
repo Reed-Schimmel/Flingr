@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, StatusBar, Modal, Text, View, SafeAreaView, TouchableOpacity, Alert } from 'react-native'; //Animate
 import MapScreen from './MapScreen';
 import LoginScreen from './LoginScreen'
 import FloatingButton from '../components/FloatingButton';
 //import AREntery from '../ar/AREntery'
-//import { Context } from '../context/GlobalContext';
+import { Context } from '../context/GlobalContext';
 const HomeScreen = (props) => {
     const [state, setState] = useState({isModalVisible: false})
     const [base, setBases] = useState({isPin: false})
+
+    const { setBaseLocation } = useContext(Context)
 
     const getMod = () => {
         if (state.isModalVisible == false)

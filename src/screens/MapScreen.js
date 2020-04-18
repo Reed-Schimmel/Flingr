@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, StatusBar, Dimensions } from 'react-native'; //Animate
 import MapView, { Marker } from 'react-native-maps';
 import { Context } from '../context/GlobalContext';
