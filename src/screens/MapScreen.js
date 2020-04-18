@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, StatusBar, Dimensions } from 'react-native'; //Animate
 import MapView, { Marker } from 'react-native-maps';
-//import { Context } from '../context/GlobalContext';
+import { Context } from '../context/GlobalContext';
 
 const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
@@ -15,6 +15,9 @@ const getCurrentLocation = () => {
 };
 
 const MapScreen = (region, props) => {
+    const { queryNewBaseLocations, state } = useContext(Context);
+    const { renderedBases } = state;
+
     useEffect(() => {
         getCurrentLocation().then(position => {
             if (position) {
