@@ -9,7 +9,8 @@ const HomeScreen = (props) => {
     const [state, setState] = useState({isModalVisible: false})
     const [base, setBases] = useState({isPin: false})
 
-    const { setBaseLocation } = useContext(Context)
+    const { setBaseLocation, state } = useContext(Context);
+    const { setBaseError } = state;
 
     const getMod = () => {
         if (state.isModalVisible == false)

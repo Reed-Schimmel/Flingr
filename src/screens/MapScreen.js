@@ -16,7 +16,7 @@ const getCurrentLocation = () => {
 
 const MapScreen = (region, props) => {
     const { queryNewBaseLocations, state } = useContext(Context);
-    const { renderedBases } = state;
+    const { renderedBases, queryBasesError } = state;
 
     useEffect(() => {
         getCurrentLocation().then(position => {
