@@ -2,8 +2,10 @@ import * as firebase from 'firebase';
 import createDataContext from './createDataContext';
 
 // these are just to ensure string consistency
-const LOGIN_SUCCESS = 'login_success';
-const LOGIN_FAILURE = 'login_failure';
+const LOGIN_SUCCESS         = 'login_success';
+const LOGIN_FAILURE         = 'login_failure';
+const UPDATE_BASE_LOCATIONS = 'update_base_locations';
+const SET_USER_BASE         = 'set_user_base';
 
 // default user document fields when a new user is generated
 const DEFAULT_USER_DOC = {
@@ -21,12 +23,30 @@ const reducer = (state, action) => {
       return {
         ...state,
         userAuth: action.payload,
-      }
+      };
+
     case LOGIN_FAILURE:
       return {
         ...state,
         loginError: action.payload,
-      }
+      };
+
+    case UPDATE_BASE_LOCATIONS:
+      return {
+        ...state,
+        renderedBases: action.payload,
+      };
+
+    case SET_USER_BASE:
+      return {
+        ...state,
+        userData: {
+          ...state.userData, 
+          baseLatitude: action.payload.latitude,
+          baseLongitude: action.payload.longitude,
+        },
+      };
+
     default:
       return state;
   }
@@ -42,7 +62,7 @@ const emailPasswordLogin = (dispatch) => (email, password) => {
   firebase.auth().signInWithEmailAndPassword(email, password)
     .then((userCredentials) => dispatch({ type: LOGIN_SUCCESS, payload: userCredentials }))
     .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e }));
-}
+};
 
 const emailPasswordCreateAccount = (dispatch) => (email, password, username) => {
   firebase.auth().createUserWithEmailAndPassword(email, password)
@@ -55,7 +75,33 @@ const emailPasswordCreateAccount = (dispatch) => (email, password, username) => 
       })
     })
     .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e }))
-}
+};
+
+const queryNewBaseLocations = (dispatch) => (region) => {
+  const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
+  const left   = longitude - longitudeDelta;
+  const right  = longitude + longitudeDelta;
+  const bottom = latitude - latitudeDelta;
+  const top    = latitude + latitudeDelta;
+
+  const regionBases = [];
+
+  // query database for users w/ bases within the correct longitude range
+  const slice = firebase.firestore().collection('users').where('baseLongitude', '>=', left).where('baseLongitude', '<=', right);
+  slice.get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        const docData = doc.data();
+        // checks for bases within the correct latitude range
+        if (docData.baseLatitude <= top && docData.baseLatitude >= bottom) {
+          // if both lat & long within region, push it to regionBases to be rendered
+          regionBases.push(docData);
+        }
+      });
+      dispatch({ type: UPDATE_BASE_LOCATIONS, payload: regionBases });
+    })
+    .catch((e) => console.log(e));
+};
 
 // export the newly created context
 export const { Context, Provider } = createDataContext(
@@ -63,10 +109,13 @@ export const { Context, Provider } = createDataContext(
   {
     emailPasswordLogin,
     emailPasswordCreateAccount,
+    queryNewBaseLocations,
   }, // actions (functions to be used to update global state)
   {
     userAuth: undefined,
+    userData: {},
     loginError: '',
+    renderedBases: [],
   }, // initial state
 );
 
