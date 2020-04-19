@@ -57,6 +57,11 @@ const emailPasswordCreateAccount = (dispatch) => (email, password, username) => 
     .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e }))
 }
 
+const setBase = (dispatch) => (selectedPlane) => {
+  // 1. get gps, heading
+  // 2. firebase set base
+};
+
 // export the newly created context
 export const { Context, Provider } = createDataContext(
   reducer,
@@ -67,6 +72,8 @@ export const { Context, Provider } = createDataContext(
   {
     userAuth: undefined,
     loginError: '',
+    buttonTitle: "",
+    buttonAction: undefined,
   }, // initial state
 );
 

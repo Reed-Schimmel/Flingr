@@ -13,15 +13,16 @@ import { Provider as GlobalProvider } from './src/context/GlobalContext';
 import AREntery from './src/ar/AREntery';
 
 const Flingr = (props) => {
-  return <AREntery />; 
+  // return <AREntery />; 
 
   console.log('hello');
 
   return (
    <GlobalProvider>
-      <SafeAreaView style={styles.container}>
+     <AREntery />
+      {/* <SafeAreaView style={styles.container}>
         <HomeScreen/>
-      </SafeAreaView>
+      </SafeAreaView> */}
     </GlobalProvider>
   )
 }

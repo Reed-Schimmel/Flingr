@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
-
 import { ViroARSceneNavigator } from 'react-viro';
+import { Context } from '../context/GlobalContext';
+import FloatingButton from '../components/FloatingButton';
 
 /*
  TODO: Insert your API key below
@@ -29,16 +30,27 @@ var sharedProps = {
 
 // Sets the default scene you want for AR and VR
 var InitialARScene = require('./HelloWorldSceneAR');
-var BaseARScene = require('./BaseARScene');
+var SetBaseScene = require('./SetBaseScene');
+var BasicARPhysicsSample = require('./BasicPhysicsSample');
 
-export default class AREntry extends Component {
-  render() {
-    return (
+export default () => {
+  const { state, actions } = useContext(Context);
+  const { buttonTitle, buttonAction } = state;
+
+  return (
+    <>
+      {buttonTitle !== "" && <FloatingButton
+        title={buttonTitle}
+        onPress={buttonAction}
+      // style={styles.floatingButton}
+      />}
       <ViroARSceneNavigator {...sharedProps}
-        initialScene={{ scene: BaseARScene }}
+        initialScene={{ scene: SetBaseScene }}
+        shadowsEnabled
+        extra="asdf"
       />
-    );
-  }
+    </>
+  );
 }
 
 var localStyles = StyleSheet.create({
@@ -95,5 +107,3 @@ var localStyles = StyleSheet.create({
     borderColor: '#fff',
   }
 });
-
-module.exports = AREntry
