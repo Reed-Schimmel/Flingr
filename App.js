@@ -8,7 +8,9 @@ import {
   //Animate
 } from 'react-native';
 import HomeScreen from './src/screens/HomeScreen';
+import LoginScreen from './src/screens/LoginScreen';
 import { Provider as GlobalProvider } from './src/context/GlobalContext';
+import RegisterScreen from './src/screens/RegisterScreen';
 
 const Flingr = (props) => {
 
@@ -18,6 +20,8 @@ const Flingr = (props) => {
    <GlobalProvider>
       <SafeAreaView style={styles.container}>
         <HomeScreen/>
+        {/* <LoginScreen /> */}
+        {/* <RegisterScreen /> */}
       </SafeAreaView>
     </GlobalProvider>
   )
