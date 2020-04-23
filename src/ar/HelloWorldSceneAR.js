@@ -17,7 +17,7 @@ export default class HelloWorldSceneAR extends Component {
 
     // Set initial state here
     this.state = {
-      text : "Initializing AR..."
+      text : 'Initializing AR...'
     };
 
     // bind 'this' to functions
@@ -32,10 +32,10 @@ export default class HelloWorldSceneAR extends Component {
     );
   }
 
-  _onInitialized(state, reason) {
+  _onInitialized(state) {
     if (state == ViroConstants.TRACKING_NORMAL) {
       this.setState({
-        text : "Hello World!"
+        text : 'Hello World!'
       });
     } else if (state == ViroConstants.TRACKING_NONE) {
       // Handle loss of tracking
