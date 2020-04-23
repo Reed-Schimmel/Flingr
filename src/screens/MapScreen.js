@@ -9,61 +9,60 @@ const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 const getCurrentLocation = () => {
-    return new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(position => resolve(position), e => reject(e));
-    });
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(position => resolve(position), e => reject(e));
+  });
 };
 
-const MapScreen = (region, props) => {
-    const { queryNewBaseLocations, state } = useContext(Context);
-    const { renderedBases, queryBasesError } = state;
+const MapScreen = (props) => {
+  // const { queryNewBaseLocations, state } = useContext(Context);
+  // const { renderedBases, queryBasesError } = state;
 
-    useEffect(() => {
-        getCurrentLocation().then(position => {
-            if (position) {
-                setState({
-                    region: {
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude,
-                        latitudeDelta: LATITUDE_DELTA,
-                        longitudeDelta: LONGITUDE_DELTA
-                    },
-                });
-            }
-        })
-    }, []);
+  const [region, setRegion] = useState({
+    latitude: 39,
+    longitude: -98,
+    latitudeDelta: LATITUDE_DELTA,
+    longitudeDelta: LONGITUDE_DELTA,
+  });
 
-    const [state, setState] = useState({
-        region: {
-            latitude: 39,
-            longitude: -98,
-            latitudeDelta: LATITUDE_DELTA,
-            longitudeDelta: LONGITUDE_DELTA,
-        },
+  const [base, setBase] = useState({
+    message: true
+  });
+
+
+  useEffect(() => {
+    getCurrentLocation().then(position => {
+      if (position) {
+        setRegion({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta: LONGITUDE_DELTA
+        });
+      }
     })
+  }, []);
 
-    const [base, setBase] = useState({
-        message: true
-    })
-     
-    //const { userAuth, loginError } = useContext(Context)
-    return (
-            <MapView style={[styles.map, props.style]} region={state.region} showsUserLocation={true}>
-                <Marker coordinate={state.region}/>
-            </MapView>
-       )
-}
+
+
+  //const { userAuth, loginError } = useContext(Context)
+  return (
+    <MapView style={[styles.map, props.style]} region={region} showsUserLocation={true}>
+      <Marker coordinate={region} />
+    </MapView>
+  );
+};
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingTop: StatusBar.currentHeight, // for Android. If this looks weird in iOS tell Reed.
-        backgroundColor: '#FFF'
-    },
+  container: {
+    flex: 1,
+    paddingTop: StatusBar.currentHeight, // for Android. If this looks weird in iOS tell Reed.
+    backgroundColor: '#FFF'
+  },
 
-    map: {
-        ...StyleSheet.absoluteFillObject,
-    },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+  },
 });
 
 export default MapScreen;
