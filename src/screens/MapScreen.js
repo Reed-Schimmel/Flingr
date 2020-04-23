@@ -1,14 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import {
-    Text,
-    StyleSheet,
-    SafeAreaView,
-    StatusBar,
-    Dimensions,
-    //Animate
-} from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { StyleSheet, StatusBar, Dimensions } from 'react-native'; //Animate
 import MapView, { Marker } from 'react-native-maps';
-//import { Context } from '../context/GlobalContext';
+import { Context } from '../context/GlobalContext';
 
 const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
@@ -21,7 +14,10 @@ const getCurrentLocation = () => {
     });
 };
 
-export default (props) => {
+const MapScreen = (region, props) => {
+    const { queryNewBaseLocations, state } = useContext(Context);
+    const { renderedBases, queryBasesError } = state;
+
     useEffect(() => {
         getCurrentLocation().then(position => {
             if (position) {
@@ -43,15 +39,19 @@ export default (props) => {
             longitude: -98,
             latitudeDelta: LATITUDE_DELTA,
             longitudeDelta: LONGITUDE_DELTA,
-        }
+        },
     })
+
+    const [base, setBase] = useState({
+        message: true
+    })
+     
     //const { userAuth, loginError } = useContext(Context)
     return (
-
-        <MapView style={[styles.map, props.style]} region={state.region} showsUserLocation={true}>
-            <Marker coordinate={state.region} />
-        </MapView>
-    )
+            <MapView style={[styles.map, props.style]} region={state.region} showsUserLocation={true}>
+                <Marker coordinate={state.region}/>
+            </MapView>
+       )
 }
 
 const styles = StyleSheet.create({
@@ -65,3 +65,5 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
     },
 });
+
+export default MapScreen;
