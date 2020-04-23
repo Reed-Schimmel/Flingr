@@ -16,7 +16,7 @@ const DEFAULT_USER_DOC = {
 // REDUCER
 // a reducer processes actions and updates the state
 const reducer = (state, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case LOGIN_SUCCESS:
       return {
         ...state,
@@ -56,11 +56,6 @@ const emailPasswordCreateAccount = (dispatch) => (email, password, username) => 
     })
     .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e }))
 }
-
-const setBase = (dispatch) => (selectedPlane) => {
-  // 1. get gps, heading
-  // 2. firebase set base
-};
 
 // export the newly created context
 export const { Context, Provider } = createDataContext(
