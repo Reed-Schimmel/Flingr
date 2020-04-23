@@ -11,10 +11,17 @@ const RegisterScreen = (props) =>
     password: '',
   });
 
-  const { emailPasswordCreateAccount } = useContext(GlobalContext);
+  const { emailPasswordCreateAccount, state: { loginError } } = useContext(GlobalContext);
+
+  const onRegisterPress = () => {
+    // check for validity
+    emailPasswordCreateAccount(textFields.email, textFields.password, textFields.username);
+  }
 
   return (
     <View style ={styles.container}>
+      <Text style={styles.mainheader}>Flingr</Text>
+      <Text>{loginError}</Text>
 
       <View style ={styles.inputView}>
         <TextInput 
@@ -22,7 +29,8 @@ const RegisterScreen = (props) =>
           underlineColorAndroid = 'transparent'
           placeholder ="Email"
           placeholderTextColor= "#ffffff"
-          onchangeText ={(email) => setTextFields ({ ...textFields, email })}
+          value={textFields.email}
+          onChangeText ={(email) => setTextFields ({ ...textFields, email })}
         />
       </View>
 
@@ -32,7 +40,8 @@ const RegisterScreen = (props) =>
           underlineColorAndroid = 'transparent'
           placeholder ="Username"
           placeholderTextColor= "#ffffff"
-          onchangeText ={(username) => setTextFields ({ ...textFields, username })}
+          value={textFields.username}
+          onChangeText ={(username) => setTextFields ({ ...textFields, username })}
         />
       </View>
 
@@ -44,15 +53,16 @@ const RegisterScreen = (props) =>
           underlineColorAndroid = 'transparent'
           placeholder ="Password"
           placeholderTextColor= "#ffffff"
-          onchangeText ={(password) => setTextFields ({ ...textFields, password })}
+          value={textFields.password}
+          onChangeText ={(password) => setTextFields ({ ...textFields, password })}
         />
       </View>
 
-      <TouchableOpacity style = {styles.button}>
+      <TouchableOpacity style = {styles.button} onPress={onRegisterPress}>
         <Text style ={styles.buttontext}>Register</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => console.log("navigate to LoginScreen")} style = {styles.button}>
+      <TouchableOpacity onPress={() => props.navigateLogin()} style = {styles.button}>
         <Text style ={styles.buttontext}>Already have an account? Login here!</Text>
       </TouchableOpacity>
 
@@ -63,9 +73,11 @@ const RegisterScreen = (props) =>
 const styles = StyleSheet.create ({
   container: {
     flex: 1,
-    backgroundColor: '#2f4f4f',
+    backgroundColor: 'rgba(47,79,79,0.4)',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    margin: 20,
+    borderRadius: 10,
   },
 
 
@@ -81,6 +93,14 @@ const styles = StyleSheet.create ({
     marginBottom:20,
     justifyContent:"center",
     padding:20
+  },
+
+  mainheader:{
+    fontFamily: 'System',
+    fontWeight: "bold",
+    color: "#f5f5f5",
+    fontSize: 50,
+    marginBottom: 40
   },
 
 textInput: {

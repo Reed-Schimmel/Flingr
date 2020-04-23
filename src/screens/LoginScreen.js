@@ -9,11 +9,17 @@ const LoginScreen = (props) =>
     password: '',
   });
 
-  const { emailPasswordLogin } = useContext(GlobalContext);
+  const { emailPasswordLogin, state: { loginError } } = useContext(GlobalContext);
+
+  const onLoginPress = () => {
+    // check for validity
+    emailPasswordLogin(textFields.username, textFields.password);
+  }
 
   return (
     <View style ={styles.container}>
       <Text style={styles.mainheader}>Flingr</Text>
+      <Text>{loginError}</Text>
 
       <View style ={styles.inputView}>
         <TextInput 
@@ -21,7 +27,7 @@ const LoginScreen = (props) =>
           underlineColorAndroid = 'transparent'
           placeholder ="Username"
           placeholderTextColor= "#ffffff"
-          onchangeText ={(username) => setTextFields({ ...textFields, username })}
+          onChangeText ={(username) => setTextFields({ ...textFields, username })}
         />
       </View>
 
@@ -33,16 +39,16 @@ const LoginScreen = (props) =>
           underlineColorAndroid = 'transparent'
           placeholder ="Password"
           placeholderTextColor= "#ffffff"
-          onchangeText ={(password) => setTextFields({ ...textFields, password })}
+          onChangeText ={(password) => setTextFields({ ...textFields, password })}
         />
       </View>
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={onLoginPress}>
         <Text style={styles.buttontext}>Login</Text>
       </TouchableOpacity>
 
 
-      <TouchableOpacity onPress={() => console.log('navigate to create account screen')} style={styles.button}>
+      <TouchableOpacity onPress={() => props.navigateRegister()} style={styles.button}>
         <Text style={styles.buttontext}>Don't have an account? Signup here!</Text>
       </TouchableOpacity>
     </View>
@@ -52,9 +58,11 @@ const LoginScreen = (props) =>
 const styles = StyleSheet.create ({
   container: {
     flex: 1,
-    backgroundColor: '#2f4f4f',
+    backgroundColor: 'rgba(47,79,79,0.4)',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    margin: 20,
+    borderRadius: 10,
   },
 
   mainheader:{
