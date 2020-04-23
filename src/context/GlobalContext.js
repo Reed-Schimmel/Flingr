@@ -1,6 +1,14 @@
 import * as firebase from 'firebase';
 import createDataContext from './createDataContext';
 
+// default initial state
+const INITIAL_STATE = {
+  userAuth: undefined,
+  userData: {},
+  loginError: '',
+  renderedBases: [],
+};
+
 // these are just to ensure string consistency
 const LOGIN_SUCCESS         = 'login_success';
 const LOGIN_FAILURE         = 'login_failure';
@@ -8,6 +16,7 @@ const UPDATE_BASE_LOCATIONS = 'update_base_locations';
 const SET_USER_BASE         = 'set_user_base';
 const SET_BASE_ERROR        = 'set_base_error';
 const QUERY_BASES_ERROR     = 'query_bases_error';
+const WIPE_CONTEXT          = 'wipe_context';
 
 // default user document fields when a new user is generated
 const DEFAULT_USER_DOC = {
@@ -61,6 +70,9 @@ const reducer = (state, action) => {
         queryBasesError: action.payload,
       };
 
+    case WIPE_CONTEXT:
+      return INITIAL_STATE;
+
     default:
       return state;
   }
@@ -75,7 +87,7 @@ const reducer = (state, action) => {
 const emailPasswordLogin = (dispatch) => (email, password) => {
   firebase.auth().signInWithEmailAndPassword(email, password)
     .then((userCredentials) => dispatch({ type: LOGIN_SUCCESS, payload: userCredentials }))
-    .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e }));
+    .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e.message }));
 };
 
 const emailPasswordCreateAccount = (dispatch) => (email, password, username) => {
@@ -87,8 +99,10 @@ const emailPasswordCreateAccount = (dispatch) => (email, password, username) => 
         email: userCredentials.email,
         username,
       })
+      .then((userRef) => console.log(userRef))
+      .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e.message }))
     })
-    .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e }))
+    .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e.message }))
 };
 
 const queryNewBaseLocations = (dispatch) => (region) => {
@@ -126,6 +140,10 @@ const setBaseLocation = (dispatch) => async (latitude, longitude, uid) => {
     .catch((e) => dispatch({ type: SET_BASE_ERROR, payload: e }));
 }
 
+const wipeContext = (dispatch) => () => {
+  dispatch({ type: WIPE_CONTEXT });
+}
+
 // export the newly created context
 export const { Context, Provider } = createDataContext(
   reducer,
@@ -134,13 +152,9 @@ export const { Context, Provider } = createDataContext(
     emailPasswordCreateAccount,
     queryNewBaseLocations,
     setBaseLocation,
+    wipeContext,
   }, // actions (functions to be used to update global state)
-  {
-    userAuth: undefined,
-    userData: {},
-    loginError: '',
-    renderedBases: [],
-  }, // initial state
+  INITIAL_STATE, // initial state
 );
 
 // if you need to update the global state somehow, and there doesn't
