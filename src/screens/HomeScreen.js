@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { StyleSheet, StatusBar, Modal, Text, View, SafeAreaView, TouchableOpacity, Alert } from 'react-native'; //Animate
+import React, { useState, /*useContext*/ } from 'react';
+import { StyleSheet, StatusBar, Modal, Text, View, Alert } from 'react-native'; //Animate
 import MapScreen from './MapScreen';
-import LoginScreen from './LoginScreen'
+import LoginScreen from './LoginScreen';
 import FloatingButton from '../components/FloatingButton';
 //import AREntery from '../ar/AREntery'
-import { Context } from '../context/GlobalContext';
+// import { Context } from '../context/GlobalContext';
 
-const HomeScreen = (props) => {
-  const [isModalVisible, setModalVisibility] = useState(false)
-  const [base, setBases] = useState({ isPin: false })
+const HomeScreen = () => {
+  const [isModalVisible, setModalVisibility] = useState(false);
+  const [base, setBases] = useState({ isPin: false });
 
-  const { setBaseLocation, state } = useContext(Context);
+  // const { setBaseLocation, state } = useContext(Context);
   // const { setBaseError } = state;
 
   const getMod = () => {
@@ -18,39 +18,41 @@ const HomeScreen = (props) => {
       setModalVisibility(true);
     else
       setModalVisibility(false);
-  }
+  };
+
   const setBase = () => {
     if (base.isPin === false) {
-      Alert.alert("Important", "Are you sure you would like to set your base at your current location?",
+      Alert.alert('Important', 'Are you sure you would like to set your base at your current location?',
         [
-          { text: "Yes", onPress: () => { setBases({ isPin: true }) }, style: 'OK' },
-          { text: "No", onPress: () => { setBases({ isPin: false }) }, style: "cancel" }
+          { text: 'Yes', onPress: () => setBases({ isPin: true }), style: 'OK' },
+          { text: 'No', onPress: () => setBases({ isPin: false }), style: 'cancel' }
         ]);
     }
     else {
       //<AREntery/>
-      return (<View><Text>ar screen</Text></View>)
+      return (<View><Text>ar screen</Text></View>);
     }
-  }
+  };
+
   //const { userAuth, loginError } = useContext(Context)
   return (
     //login popup, ar button, map screen, mini map style
     <>
-      <FloatingButton title="Log Out" onPress={getMod} style={styles.FloatingButton} />
+      <FloatingButton title='Log Out' onPress={getMod} style={styles.FloatingButton} />
 
       <MapScreen />
 
-      <FloatingButton title={[base.isPin == true ? "Fire" : "Set Base"]}
+      <FloatingButton title={[base.isPin == true ? 'Fire' : 'Set Base']}
         onPress={setBase} />
       <Modal
-        animationType="fade"
+        animationType='fade'
         transparent={true}
         visible={isModalVisible}>
         <LoginScreen />
       </Modal>
     </>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -66,26 +68,18 @@ const styles = StyleSheet.create({
     flex: 1
   },
   modal: {
-    backgroundColor: "red"
+    backgroundColor: 'red'
   },
   FloatingButton: {
     borderRadius: 25,
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     borderWidth: 1,
     position: 'relative',
     bottom: 0,
     left: 10,
     height: 50,
     width: 75,
-  }
+  },
 });
 
 export default HomeScreen;
-
-
-
-
-
-
-
-

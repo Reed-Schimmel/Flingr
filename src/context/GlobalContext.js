@@ -2,12 +2,12 @@ import * as firebase from 'firebase';
 import createDataContext from './createDataContext';
 
 // these are just to ensure string consistency
-const LOGIN_SUCCESS         = 'login_success';
-const LOGIN_FAILURE         = 'login_failure';
+const LOGIN_SUCCESS = 'login_success';
+const LOGIN_FAILURE = 'login_failure';
 const UPDATE_BASE_LOCATIONS = 'update_base_locations';
-const SET_USER_BASE         = 'set_user_base';
-const SET_BASE_ERROR        = 'set_base_error';
-const QUERY_BASES_ERROR     = 'query_bases_error';
+const SET_USER_BASE = 'set_user_base';
+const SET_BASE_ERROR = 'set_base_error';
+const QUERY_BASES_ERROR = 'query_bases_error';
 
 // default user document fields when a new user is generated
 const DEFAULT_USER_DOC = {
@@ -15,56 +15,56 @@ const DEFAULT_USER_DOC = {
   incomingFlings: [],
   homeLatitude: undefined,
   homeLongitude: undefined,
-}
+};
 
 // REDUCER
 // a reducer processes actions and updates the state
 const reducer = (state, action) => {
-  switch(action.type) {
-    case LOGIN_SUCCESS:
-      return {
-        ...state,
-        userAuth: action.payload,
-      };
+  switch (action.type) {
+  case LOGIN_SUCCESS:
+    return {
+      ...state,
+      userAuth: action.payload,
+    };
 
-    case LOGIN_FAILURE:
-      return {
-        ...state,
-        loginError: action.payload,
-      };
+  case LOGIN_FAILURE:
+    return {
+      ...state,
+      loginError: action.payload,
+    };
 
-    case UPDATE_BASE_LOCATIONS:
-      return {
-        ...state,
-        renderedBases: action.payload,
-      };
+  case UPDATE_BASE_LOCATIONS:
+    return {
+      ...state,
+      renderedBases: action.payload,
+    };
 
-    case SET_USER_BASE:
-      return {
-        ...state,
-        userData: {
-          ...state.userData, 
-          baseLatitude: action.payload.latitude,
-          baseLongitude: action.payload.longitude,
-        },
-      };
+  case SET_USER_BASE:
+    return {
+      ...state,
+      userData: {
+        ...state.userData,
+        baseLatitude: action.payload.latitude,
+        baseLongitude: action.payload.longitude,
+      },
+    };
 
-    case SET_BASE_ERROR:
-      return {
-        ...state,
-        setBaseError: action.payload,
-      };
+  case SET_BASE_ERROR:
+    return {
+      ...state,
+      setBaseError: action.payload,
+    };
 
-    case QUERY_BASES_ERROR:
-      return {
-        ...state,
-        queryBasesError: action.payload,
-      };
+  case QUERY_BASES_ERROR:
+    return {
+      ...state,
+      queryBasesError: action.payload,
+    };
 
-    default:
-      return state;
+  default:
+    return state;
   }
-}
+};
 
 // ACTIONS
 // actions take the form of an object with 2 key/value pairs:
@@ -86,17 +86,17 @@ const emailPasswordCreateAccount = (dispatch) => (email, password, username) => 
         ...DEFAULT_USER_DOC,
         email: userCredentials.email,
         username,
-      })
+      });
     })
-    .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e }))
+    .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e }));
 };
 
 const queryNewBaseLocations = (dispatch) => (region) => {
   const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
-  const left   = longitude - longitudeDelta;
-  const right  = longitude + longitudeDelta;
+  const left = longitude - longitudeDelta;
+  const right = longitude + longitudeDelta;
   const bottom = latitude - latitudeDelta;
-  const top    = latitude + latitudeDelta;
+  const top = latitude + latitudeDelta;
 
   const regionBases = [];
 
@@ -124,7 +124,7 @@ const setBaseLocation = (dispatch) => async (latitude, longitude, uid) => {
   })
     .then(() => dispatch({ type: SET_USER_BASE, payload: { latitude, longitude } }))
     .catch((e) => dispatch({ type: SET_BASE_ERROR, payload: e }));
-}
+};
 
 // export the newly created context
 export const { Context, Provider } = createDataContext(
