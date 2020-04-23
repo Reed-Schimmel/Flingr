@@ -1,31 +1,29 @@
-import React, { useState, useContext } from 'react';
+import React from 'react';
 import {
-  Text,
   StyleSheet,
   SafeAreaView,
   StatusBar,
-  Dimensions,
   //Animate
 } from 'react-native';
 import HomeScreen from './src/screens/HomeScreen';
-import LoginScreen from './src/screens/LoginScreen';
+// import LoginScreen from './src/screens/LoginScreen';
 import { Provider as GlobalProvider } from './src/context/GlobalContext';
-import RegisterScreen from './src/screens/RegisterScreen';
+// import RegisterScreen from './src/screens/RegisterScreen';
 
-import AREntery from './src/ar/AREntery';
+// import AREntery from './src/ar/AREntery';
 
-const Flingr = (props) => {
+const Flingr = () => {
   return (
     <GlobalProvider>
       <SafeAreaView style={styles.container}>
-        <AREntery />
+        {/* <AREntery /> */}
         <HomeScreen />
         {/* <LoginScreen /> */}
         {/* <RegisterScreen /> */}
       </SafeAreaView>
     </GlobalProvider>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

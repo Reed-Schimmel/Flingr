@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, /*useContext*/ } from 'react';
 import { StyleSheet, StatusBar, Dimensions } from 'react-native'; //Animate
 import MapView, { Marker } from 'react-native-maps';
-import { Context } from '../context/GlobalContext';
+// import { Context } from '../context/GlobalContext';
 
 const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
@@ -10,6 +10,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 const getCurrentLocation = () => {
   return new Promise((resolve, reject) => {
+    // eslint-disable-next-line no-undef
     navigator.geolocation.getCurrentPosition(position => resolve(position), e => reject(e));
   });
 };
@@ -25,10 +26,9 @@ const MapScreen = (props) => {
     longitudeDelta: LONGITUDE_DELTA,
   });
 
-  const [base, setBase] = useState({
-    message: true
-  });
-
+  // const [base, setBase] = useState({
+  //   message: true
+  // });
 
   useEffect(() => {
     getCurrentLocation().then(position => {
@@ -40,7 +40,7 @@ const MapScreen = (props) => {
           longitudeDelta: LONGITUDE_DELTA
         });
       }
-    })
+    });
   }, []);
 
 
