@@ -1,8 +1,7 @@
-import React, { useContext } from 'react';
-import { StyleSheet } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { ViroARSceneNavigator } from 'react-viro';
-import { Context } from '../context/GlobalContext';
-import FloatingButton from '../components/FloatingButton';
+// import { Context } from '../context/GlobalContext';
 
 /*
  TODO: Insert your API key below
@@ -31,25 +30,43 @@ var sharedProps = {
 // Sets the default scene you want for AR and VR
 var InitialARScene = require('./HelloWorldSceneAR');
 var SetBaseScene = require('./SetBaseScene');
+var ViewBaseScene = require('./ViewBaseScene');
 var BasicARPhysicsSample = require('./BasicPhysicsSample');
 
+const SET_BASE = 'set_base';
+const VIEW_BASE = 'view_base';
+
 export default () => {
-  const { state, actions } = useContext(Context);
-  const { buttonTitle, buttonAction } = state;
+  // const { state, actions } = useContext(Context);
+  // const { buttonTitle, buttonAction } = state;
+
+  const [scene, setScene] = useState(VIEW_BASE);
 
   return (
-    <>
-      {buttonTitle !== "" && <FloatingButton
-        title={buttonTitle}
-        onPress={buttonAction}
-      // style={styles.floatingButton}
-      />}
-      <ViroARSceneNavigator {...sharedProps}
-        initialScene={{ scene: SetBaseScene }}
-        shadowsEnabled
-        extra="asdf"
-      />
-    </>
+    <View style={{ flex: 1 }}>
+      {
+        (scene === SET_BASE) && <ViroARSceneNavigator {...sharedProps}
+          initialScene={{ scene: SetBaseScene }}
+        />}{
+        (scene === VIEW_BASE) && <ViroARSceneNavigator {...sharedProps}
+          initialScene={{ scene: ViewBaseScene }}
+        />
+      }
+      <View style={{ height: 60, flexDirection: 'row', justifyContent: 'space-around' }}>
+        <TouchableOpacity
+          style={{ borderWidth: 1, margin: 5, textAlign: 'center', justifyContent: 'center' }}
+          onPress={() => setScene(SET_BASE)}
+        >
+          <Text>Set Base</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{ borderWidth: 1, margin: 5, textAlign: 'center', justifyContent: 'center' }}
+          onPress={() => setScene(VIEW_BASE)}
+        >
+          <Text>View Base</Text>
+        </TouchableOpacity>
+      </View>
+    </View >
   );
 }
 

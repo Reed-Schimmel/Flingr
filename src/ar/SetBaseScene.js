@@ -1,6 +1,6 @@
 'use strict';
 import React, { Component } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Alert, AsyncStorage } from 'react-native';
 import {
   ViroARScene,
   ViroText,
@@ -13,6 +13,7 @@ import {
   ViroAmbientLight,
   ViroProps
 } from 'react-viro';
+import CompassHeading from 'react-native-compass-heading';
 
 export default class SetBaseScene extends Component {
 
@@ -28,29 +29,41 @@ export default class SetBaseScene extends Component {
       planePosition: [0, 0, 0],
       planeRotation: [0, 0, 0],
       totalCubes: 0,
+      heading: 0.0,
     };
 
     // bind 'this' to functions
     this._onInitialized = this._onInitialized.bind(this);
   }
 
+  componentDidMount() {
+    CompassHeading.start(0, degree => {
+      this.setState({ heading: degree });
+      CompassHeading.stop();
+    });
+  }
+
+  componentWillUnmount() {
+    CompassHeading.stop()
+  }
+
   render() {
-    console.log(this.props)
     return (
       <ViroARScene
         onTrackingUpdated={this._onInitialized}
         // anchorDetectionTypes="PlanesHorizontal"
-        physicsWorld={{ gravity: [0, -9.81, 0], drawBounds: this.state.showCollisionBox }} ref={(component) => { this.sceneRef = component }}
-
+        physicsWorld={{ gravity: [0, -9.81, 0] }} ref={(component) => { this.sceneRef = component }}
+        // rotation={this.state.heading} https://github.com/viromedia/viro/issues/118#issuecomment-352500764
       >
         <ViroAmbientLight color={"#FFFFFF"} intensity={10} castsShadow={true} />
 
         <ViroARPlaneSelector ref={(component) => { this.plane = component }}
           maxPlanes={1}
-          onPlaneSelected={(e) => {
-            console.log("got em", e);
+          onPlaneSelected={(plane) => {
+            AsyncStorage.setItem('base', JSON.stringify(plane)).then(() => console.log('set'));
+            // AsyncStorage.setItem('base', JSON.stringify(this.plane.props)).then(() => console.log('set'));
             // show button to set base
-            this.setState({ foundPlane: true });
+            // this.setState({ foundPlane: true });
           }}
           // onAnchorFound={anc => console.log(anc)}
           dragType="FixedToWorld"
@@ -77,7 +90,7 @@ export default class SetBaseScene extends Component {
         text: "Hello World!"
       });
     } else if (state == ViroConstants.TRACKING_NONE) {
-      // Handle loss of tracking
+      Alert.alert("Lost tracking!");
     }
   }
 }
