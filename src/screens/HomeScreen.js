@@ -1,23 +1,29 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, StatusBar, Modal, Text, View, SafeAreaView, TouchableOpacity, Alert } from 'react-native'; //Animate
-import MapScreen from './MapScreen';
+// import MapScreen from './MapScreen';
 import LoginScreen from './LoginScreen'
 import FloatingButton from '../components/FloatingButton';
 //import AREntery from '../ar/AREntery'
 import { Context } from '../context/GlobalContext';
+import AuthenticationModal from '../components/AuthenticationModal';
 const HomeScreen = (props) => {
-    const [state, setState] = useState({isModalVisible: false})
+    const [modalVisible, setModalVisible] = useState(false)
     const [base, setBases] = useState({isPin: false})
 
-    const { setBaseLocation, state } = useContext(Context);
-    const { setBaseError } = state;
+    const { wipeContext, setBaseLocation, state } = useContext(Context);
+    const { setBaseError, userAuth } = state;
 
     const getMod = () => {
-        if (state.isModalVisible == false)
-            setState({ isModalVisible: true })
+        if (modalVisible == false)
+            setModalVisible(true)
         else
-            setState({ isModalVisible: false })
+            setModalVisible(false)
     }
+
+    const logout = () => {
+        wipeContext();
+    }
+
     const setBase = () => {
         if(base.isPin == false)
         {
@@ -32,21 +38,24 @@ const HomeScreen = (props) => {
             return(<View><Text>ar screen</Text></View>)
         }
     }
-    //const { userAuth, loginError } = useContext(Context)
+    
+    const showAuthModal = !userAuth;
+
     return (
         //login popup, ar button, map screen, mini map style
         <>
-            <FloatingButton title="Log Out" onPress={getMod} style = {styles.FloatingButton}/>
+            {showAuthModal ? null : <FloatingButton title="Log Out" onPress={logout} style = {styles.FloatingButton}/>}
             
-            <MapScreen/> 
+            {/* <MapScreen/>  */}
         
-            <FloatingButton title={[base.isPin == true ? "Fire" : "Set Base"]} 
-                            onPress={setBase}/>
+            {showAuthModal ? null : <FloatingButton title={[base.isPin == true ? "Fire" : "Set Base"]} 
+                            onPress={setBase}/>}
             <Modal 
                 animationType="fade"
                 transparent={true}
-                visible={state.isModalVisible}>
-                <LoginScreen/>
+                visible={showAuthModal}
+            >
+                <AuthenticationModal />
             </Modal>
          </>
     )
