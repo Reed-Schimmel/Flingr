@@ -31,6 +31,6 @@ const styles = StyleSheet.create({
     paddingTop: StatusBar.currentHeight, // for Android. If this looks weird in iOS tell Reed.
     backgroundColor: '#FFF'
   },
-});
+})
 
 export default Flingr;

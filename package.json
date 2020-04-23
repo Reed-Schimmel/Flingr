@@ -6,7 +6,9 @@
     "prestart": "./node_modules/react-viro/bin/run_ngrok.sh",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "lint": "eslint *.js **/*.js"
+    "lint": "eslint *.js **/*.js",
+    "prepush": "npm run lint",
+    "postinstall": ".git/hooks/pre-push && node node_modules/husky/lib/installer/bin install && rm -rf .git/hooks/pre-commit"
   },
   "dependencies": {
     "firebase": "^7.13.2",
@@ -25,6 +27,7 @@
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.19.0",
+    "husky": "^4.2.5",
     "jest": "^25.2.7",
     "metro-react-native-babel-preset": "^0.59.0",
     "react-test-renderer": "16.8.3"
