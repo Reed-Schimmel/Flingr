@@ -1,7 +1,9 @@
 import React, { useState, useEffect, /*useContext*/ } from 'react';
 import { StyleSheet, StatusBar, Dimensions } from 'react-native'; //Animate
 import MapView, { Marker } from 'react-native-maps';
-// import { Context } from '../context/GlobalContext';
+//import { Context } from '../context/GlobalContext';
+import CompassHeading from 'react-native-compass-heading';
+
 
 const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
@@ -43,6 +45,20 @@ const MapScreen = (props) => {
     });
   }, []);
 
+  useEffect(() => {
+    console.log("useEffect");
+    navigator.geolocation.getCurrentPosition(p => console.log('p', p), null, { enableHighAccuracy: true });
+    const degree_update_rate = 0;
+
+    CompassHeading.start(degree_update_rate, degree => {
+      console.log(degree);
+      CompassHeading.stop();
+    });
+
+    return () => {
+      CompassHeading.stop();
+    };
+  }, []);
 
 
   //const { userAuth, loginError } = useContext(Context)
@@ -66,3 +82,14 @@ const styles = StyleSheet.create({
 });
 
 export default MapScreen;
+
+// if (position) {
+//     setState({
+//         region: {
+//             latitude: position.coords.latitude,
+//             longitude: position.coords.longitude,
+//             latitudeDelta: LATITUDE_DELTA,
+//             longitudeDelta: LONGITUDE_DELTA
+//         },
+//     });
+// }

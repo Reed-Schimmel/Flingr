@@ -40,7 +40,7 @@ export default () => {
   // const { state, actions } = useContext(Context);
   // const { buttonTitle, buttonAction } = state;
 
-  const [scene, setScene] = useState(VIEW_BASE);
+  const [scene, setScene] = useState(SET_BASE);
 
   return (
     <View style={{ flex: 1 }}>

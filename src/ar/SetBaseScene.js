@@ -11,7 +11,8 @@ import {
   ViroARPlaneSelector,
   ViroQuad,
   ViroAmbientLight,
-  ViroProps
+  ViroProps,
+  ViroMaterials
 } from 'react-viro';
 import CompassHeading from 'react-native-compass-heading';
 
@@ -22,7 +23,7 @@ export default class SetBaseScene extends Component {
 
     // Set initial state here
     this.state = {
-      text: "Initializing AR...",
+      text: 'Initializing AR...',
       // controllerConfig: CONTROLLER_GRIP,
       showCollisionBox: false,
       foundPlane: false,
@@ -51,11 +52,11 @@ export default class SetBaseScene extends Component {
     return (
       <ViroARScene
         onTrackingUpdated={this._onInitialized}
-        // anchorDetectionTypes="PlanesHorizontal"
+        // anchorDetectionTypes='PlanesHorizontal'
         physicsWorld={{ gravity: [0, -9.81, 0] }} ref={(component) => { this.sceneRef = component }}
-        // rotation={this.state.heading} https://github.com/viromedia/viro/issues/118#issuecomment-352500764
+      // rotation={this.state.heading} https://github.com/viromedia/viro/issues/118#issuecomment-352500764
       >
-        <ViroAmbientLight color={"#FFFFFF"} intensity={10} castsShadow={true} />
+        <ViroAmbientLight color={'#FFFFFF'} intensity={10} castsShadow={true} />
 
         <ViroARPlaneSelector ref={(component) => { this.plane = component }}
           maxPlanes={1}
@@ -66,7 +67,7 @@ export default class SetBaseScene extends Component {
             // this.setState({ foundPlane: true });
           }}
           // onAnchorFound={anc => console.log(anc)}
-          dragType="FixedToWorld"
+          dragType='FixedToWorld'
           onDrag={(position, source) => {
             // let user drag to reposition
           }}
@@ -77,8 +78,9 @@ export default class SetBaseScene extends Component {
           />
           <ViroQuad position={[0, 0, 0]} scale={[1, 1, 1.0]} rotation={[-90, 0, 0]} physicsBody={{ type: 'Static', restitution: 0.75 }}
             arShadowReceiver={true}
-            // onClickState={this.state.controllerConfig == CONTROLLER_PULL ? this.onItemPullForce("Surface") : undefined}
-            ref={(component) => { this.floorSurface = component }} onCollision={this._onFloorCollide} materials={'ground'} />
+          // onClickState={this.state.controllerConfig == CONTROLLER_PULL ? this.onItemPullForce('Surface') : undefined}
+          // ref={(component) => { this.floorSurface = component }} onCollision={this._onFloorCollide} materials={'ground'}
+          />
         </ViroARPlaneSelector>
       </ViroARScene>
     );
@@ -87,10 +89,10 @@ export default class SetBaseScene extends Component {
   _onInitialized(state, reason) {
     if (state == ViroConstants.TRACKING_NORMAL) {
       this.setState({
-        text: "Hello World!"
+        text: 'Hello World!'
       });
     } else if (state == ViroConstants.TRACKING_NONE) {
-      Alert.alert("Lost tracking!");
+      Alert.alert('Lost tracking!');
     }
   }
 }
