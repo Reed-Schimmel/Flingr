@@ -8,7 +8,7 @@
     "test": "jest",
     "lint": "eslint \"**/*.{js,jsx}\" --quiet",
     "prepush": "npm run lint",
-    "postinstall": "rm -rf .git/hooks/pre-push && node node_modules/husky/lib/installer/bin install && rm -rf .git/hooks/pre-commit"
+    "postinstall": "node_modules/react-native-debugger-open/bin/rndebugger-open.js && rm -rf .git/hooks/pre-push && node node_modules/husky/lib/installer/bin install && rm -rf .git/hooks/pre-commit"
   },
   "repository": {
     "type": "git",
@@ -35,6 +35,7 @@
     "husky": "^4.2.5",
     "jest": "^25.2.7",
     "metro-react-native-babel-preset": "^0.59.0",
+    "react-native-debugger-open": "^0.3.24",
     "react-test-renderer": "16.8.3"
   },
   "jest": {
