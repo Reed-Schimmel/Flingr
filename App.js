@@ -10,7 +10,7 @@ import HomeScreen from './src/screens/HomeScreen';
 import { Provider as GlobalProvider } from './src/context/GlobalContext';
 // import RegisterScreen from './src/screens/RegisterScreen';
 
-// import AREntery from './src/ar/AREntery';
+import AREntery from './src/ar/AREntery';
 
 const Flingr = () => {
   return (

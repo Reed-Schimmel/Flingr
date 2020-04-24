@@ -93,3 +93,5 @@ export default class SetBaseScene extends Component {
     }
   }
 }
+
+module.exports = SetBaseScene;

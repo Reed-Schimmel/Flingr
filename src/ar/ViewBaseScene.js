@@ -1,32 +1,20 @@
 'use strict';
 import React, { Component } from 'react';
-import { Alert, AsyncStorage } from 'react-native';
+import { AsyncStorage } from 'react-native';
 import {
-  ViroARScene,
-  ViroConstants,
+  ViroBox,
   ViroARPlane,
   ViroAmbientLight,
 } from 'react-viro';
+import GeopositionScene from './GeopositionScene';
 
-export default class SetBaseScene extends Component {
-
+export default class ViewBaseScene extends Component {
   constructor() {
     super();
 
-    // Set initial state here
     this.state = {
-      text: 'Initializing AR...',
-      // controllerConfig: CONTROLLER_GRIP,
-      showCollisionBox: false,
       foundPlane: false,
-      planePosition: [0, 0, 0],
-      planeRotation: [0, 0, 0],
-      totalCubes: 0,
-      base: undefined,
     };
-
-    // bind 'this' to functions
-    this._onInitialized = this._onInitialized.bind(this);
   }
 
   componentDidMount() {
@@ -37,27 +25,19 @@ export default class SetBaseScene extends Component {
 
   render() {
     return (
-      <ViroARScene
-        onTrackingUpdated={this._onInitialized}
-        // anchorDetectionTypes='PlanesHorizontal'
-        physicsWorld={{ gravity: [0, -9.81, 0] }} ref={(component) => { this.sceneRef = component; }}
-      >
+      <GeopositionScene>
         <ViroAmbientLight color={'#FFFFFF'} intensity={10} castsShadow={true} />
-
         <ViroARPlane
-          ref={(component) => { this.plane = component; console.log(this.plane); }}>
+          ref={(component) => { this.plane = component; console.log(this.plane); }}
+        >
+          <ViroBox
+            position={[0, 0, -1]} scale={[.5, .5, .5]}
+          // physicsBody={{ type: 'Dynamic', mass: 25, enabled: true, useGravity: true, restitution: 0.35, friction: 0.75 }}
+          />
         </ViroARPlane>
-      </ViroARScene>
+      </GeopositionScene>
     );
   }
-
-  _onInitialized(state) {
-    if (state == ViroConstants.TRACKING_NORMAL) {
-      this.setState({
-        text: 'Hello World!'
-      });
-    } else if (state == ViroConstants.TRACKING_NONE) {
-      Alert.alert('Lost tracking!');
-    }
-  }
 }
+
+module.exports = ViewBaseScene;
