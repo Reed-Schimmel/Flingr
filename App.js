@@ -11,10 +11,10 @@ import { Provider as GlobalProvider } from './src/context/GlobalContext';
 // import RegisterScreen from './src/screens/RegisterScreen';
 
 import AREntery from './src/ar/AREntery';
-
+// TODO MERGE SHIT DIDN'T WORK! HUSKY CHECK IT
 const Flingr = () => {
   return (
-    <GlobalProvider>
+    <GlobalProvider> 
       <SafeAreaView style={styles.container}>
         <AREntery />
         {/* <HomeScreen /> */}

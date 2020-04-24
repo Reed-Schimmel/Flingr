@@ -68,9 +68,6 @@ export default class SetBaseScene extends Component {
           }}
           // onAnchorFound={anc => console.log(anc)}
           dragType='FixedToWorld'
-          onDrag={(position, source) => {
-            // let user drag to reposition
-          }}
         >
           <ViroBox
             position={[0, 1, 0]} scale={[.5, .5, .5]}

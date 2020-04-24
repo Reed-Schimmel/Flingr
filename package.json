@@ -7,7 +7,8 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
     "lint": "eslint *.js **/*.js",
-    "prepush": "npm run lint"
+    "prepush": "npm run lint",
+    "postinstall": "rm -rf .git/hooks/pre-push && node node_modules/husky/lib/installer/bin install && rm -rf .git/hooks/pre-commit"
   },
   "repository": {
     "type": "git",
