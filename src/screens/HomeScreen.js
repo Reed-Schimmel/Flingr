@@ -13,13 +13,6 @@ const HomeScreen = (props) => {
     const { wipeContext, setBaseLocation, state } = useContext(Context);
     const { setBaseError, userAuth } = state;
 
-    const getMod = () => {
-        if (modalVisible == false)
-            setModalVisible(true)
-        else
-            setModalVisible(false)
-    }
-
     const logout = () => {
         wipeContext();
     }
