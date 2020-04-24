@@ -50,6 +50,7 @@ const HomeScreen = (props) => {
         
             {showAuthModal ? null : <FloatingButton title={[base.isPin == true ? "Fire" : "Set Base"]} 
                             onPress={setBase}/>}
+
             <Modal 
                 animationType="fade"
                 transparent={true}
