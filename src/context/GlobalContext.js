@@ -1,4 +1,5 @@
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 import createDataContext from './createDataContext';
 
 // default initial state
@@ -22,8 +23,8 @@ const WIPE_CONTEXT          = 'wipe_context';
 const DEFAULT_USER_DOC = {
   outgoingFlings: [],
   incomingFlings: [],
-  homeLatitude: undefined,
-  homeLongitude: undefined,
+  homeLatitude: 0,
+  homeLongitude: 0,
 }
 
 // REDUCER
@@ -92,15 +93,14 @@ const emailPasswordLogin = (dispatch) => (email, password) => {
 
 const emailPasswordCreateAccount = (dispatch) => (email, password, username) => {
   firebase.auth().createUserWithEmailAndPassword(email, password)
-    .then((userCredentials) => {
-      dispatch({ type: LOGIN_SUCCESS, payload: userCredentials });
-      firebase.firestore().collection('users').add({
+    .then(async ({ user }) => {
+      dispatch({ type: LOGIN_SUCCESS, payload: user });
+      await firebase.firestore().collection('users').doc(`${user.uid}`).set({
         ...DEFAULT_USER_DOC,
-        email: userCredentials.email,
+        email: user.email,
         username,
       })
-      .then((userRef) => console.log(userRef))
-      .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e.message }))
+      .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: `error setting data: ${e.message} ${user}` }))
     })
     .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e.message }))
 };
