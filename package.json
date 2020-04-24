@@ -6,7 +6,7 @@
     "prestart": "./node_modules/react-viro/bin/run_ngrok.sh",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "lint": "eslint *.js **/*.js",
+    "lint": "eslint \"**/*.{js,jsx}\" --quiet",
     "prepush": "npm run lint",
     "postinstall": "rm -rf .git/hooks/pre-push && node node_modules/husky/lib/installer/bin install && rm -rf .git/hooks/pre-commit"
   },

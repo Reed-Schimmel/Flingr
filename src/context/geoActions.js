@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 // GEO LOCATION ACTIONS
 // (1/111111) * meters = deltaLat/Lon https://drive.google.com/open?id=1XWlZ8BM00PIZ4qk43DieoJjcXjK4z7xe&usp=sharing
 const METERS_TO_COORD = (1/111111);

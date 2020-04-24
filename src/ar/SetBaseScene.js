@@ -1,18 +1,18 @@
 'use strict';
 import React, { Component } from 'react';
-import { StyleSheet, Alert, AsyncStorage } from 'react-native';
+import { Alert, AsyncStorage } from 'react-native';
 import {
   ViroARScene,
-  ViroText,
+  // ViroText,
   ViroConstants,
-  ViroNode,
-  ViroARPlane,
+  // ViroNode,
+  // ViroARPlane,
   ViroBox,
   ViroARPlaneSelector,
   ViroQuad,
   ViroAmbientLight,
-  ViroProps,
-  ViroMaterials
+  // ViroProps,
+  // ViroMaterials
 } from 'react-viro';
 import CompassHeading from 'react-native-compass-heading';
 
@@ -45,7 +45,7 @@ export default class SetBaseScene extends Component {
   }
 
   componentWillUnmount() {
-    CompassHeading.stop()
+    CompassHeading.stop();
   }
 
   render() {
@@ -53,12 +53,12 @@ export default class SetBaseScene extends Component {
       <ViroARScene
         onTrackingUpdated={this._onInitialized}
         // anchorDetectionTypes='PlanesHorizontal'
-        physicsWorld={{ gravity: [0, -9.81, 0] }} ref={(component) => { this.sceneRef = component }}
+        physicsWorld={{ gravity: [0, -9.81, 0] }} ref={(component) => { this.sceneRef = component; }}
       // rotation={this.state.heading} https://github.com/viromedia/viro/issues/118#issuecomment-352500764
       >
         <ViroAmbientLight color={'#FFFFFF'} intensity={10} castsShadow={true} />
 
-        <ViroARPlaneSelector ref={(component) => { this.plane = component }}
+        <ViroARPlaneSelector ref={(component) => { this.plane = component; }}
           maxPlanes={1}
           onPlaneSelected={(plane) => {
             AsyncStorage.setItem('base', JSON.stringify(plane)).then(() => console.log('set'));
@@ -83,7 +83,7 @@ export default class SetBaseScene extends Component {
     );
   }
 
-  _onInitialized(state, reason) {
+  _onInitialized(state) {
     if (state == ViroConstants.TRACKING_NORMAL) {
       this.setState({
         text: 'Hello World!'
@@ -93,15 +93,3 @@ export default class SetBaseScene extends Component {
     }
   }
 }
-
-var styles = StyleSheet.create({
-  helloWorldTextStyle: {
-    fontFamily: 'Arial',
-    fontSize: 30,
-    color: '#ffffff',
-    textAlignVertical: 'center',
-    textAlign: 'center',
-  },
-});
-
-module.exports = SetBaseScene;

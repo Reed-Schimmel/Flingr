@@ -1,17 +1,11 @@
 'use strict';
 import React, { Component } from 'react';
-import { StyleSheet, Alert, AsyncStorage } from 'react-native';
+import { Alert, AsyncStorage } from 'react-native';
 import {
   ViroARScene,
-  ViroText,
   ViroConstants,
-  ViroNode,
   ViroARPlane,
-  ViroBox,
-  ViroARPlaneSelector,
-  ViroQuad,
   ViroAmbientLight,
-  ViroProps
 } from 'react-viro';
 
 export default class SetBaseScene extends Component {
@@ -21,7 +15,7 @@ export default class SetBaseScene extends Component {
 
     // Set initial state here
     this.state = {
-      text: "Initializing AR...",
+      text: 'Initializing AR...',
       // controllerConfig: CONTROLLER_GRIP,
       showCollisionBox: false,
       foundPlane: false,
@@ -38,45 +32,32 @@ export default class SetBaseScene extends Component {
   componentDidMount() {
     // AsyncStorage.getItem('base').then(base => this.setState({ base: JSON.parse(base) }))
     // AsyncStorage.getItem('base').then(base => this.plane.setNativeProps(JSON.parse(base)) )
-    AsyncStorage.getItem('base').then(base => this.setState({base: JSON.parse(base) }) )
+    AsyncStorage.getItem('base').then(base => this.setState({ base: JSON.parse(base) }));
   }
 
   render() {
     return (
       <ViroARScene
         onTrackingUpdated={this._onInitialized}
-        // anchorDetectionTypes="PlanesHorizontal"
-        physicsWorld={{ gravity: [0, -9.81, 0] }} ref={(component) => { this.sceneRef = component }}
+        // anchorDetectionTypes='PlanesHorizontal'
+        physicsWorld={{ gravity: [0, -9.81, 0] }} ref={(component) => { this.sceneRef = component; }}
       >
-        <ViroAmbientLight color={"#FFFFFF"} intensity={10} castsShadow={true} />
+        <ViroAmbientLight color={'#FFFFFF'} intensity={10} castsShadow={true} />
 
         <ViroARPlane
-        {...this.state.base}
-        ref={(component) => { this.plane = component; console.log(this.plane) }}>
+          ref={(component) => { this.plane = component; console.log(this.plane); }}>
         </ViroARPlane>
       </ViroARScene>
     );
   }
 
-  _onInitialized(state, reason) {
+  _onInitialized(state) {
     if (state == ViroConstants.TRACKING_NORMAL) {
       this.setState({
-        text: "Hello World!"
+        text: 'Hello World!'
       });
     } else if (state == ViroConstants.TRACKING_NONE) {
-      Alert.alert("Lost tracking!");
+      Alert.alert('Lost tracking!');
     }
   }
 }
-
-var styles = StyleSheet.create({
-  helloWorldTextStyle: {
-    fontFamily: 'Arial',
-    fontSize: 30,
-    color: '#ffffff',
-    textAlignVertical: 'center',
-    textAlign: 'center',
-  },
-});
-
-module.exports = SetBaseScene;

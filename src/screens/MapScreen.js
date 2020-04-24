@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React, { useState, useEffect, /*useContext*/ } from 'react';
 import { StyleSheet, StatusBar, Dimensions } from 'react-native'; //Animate
 import MapView, { Marker } from 'react-native-maps';
@@ -46,7 +47,7 @@ const MapScreen = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log("useEffect");
+    console.log('useEffect');
     navigator.geolocation.getCurrentPosition(p => console.log('p', p), null, { enableHighAccuracy: true });
     const degree_update_rate = 0;
 

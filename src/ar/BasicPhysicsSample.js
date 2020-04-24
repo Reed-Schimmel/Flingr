@@ -1,3 +1,4 @@
+/*eslint-disable*/
 'use strict';
 
 import React, { Component } from 'react';
