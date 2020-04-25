@@ -53,7 +53,7 @@ const HomeScreen = () => {
     //login popup, ar button, map screen, mini map style
     <>
       <FloatingButton title='Log Out' onPress={getMod} style={styles.FloatingButton} />
-      
+
       <MapScreen />
 
       <FloatingButton title={[base.isPin == true ? 'Fire' : 'Set Base']}
