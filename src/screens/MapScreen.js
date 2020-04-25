@@ -1,26 +1,16 @@
-/* eslint-disable no-undef */
-import React, { useState, useEffect, /*useContext*/ } from 'react';
-import { StyleSheet, StatusBar, Dimensions } from 'react-native'; //Animate
+import React, { useState, useEffect, useContext } from 'react';
+import { StyleSheet, Dimensions } from 'react-native'; //Animate
 import MapView, { Marker } from 'react-native-maps';
-//import { Context } from '../context/GlobalContext';
-import CompassHeading from 'react-native-compass-heading';
-
+import { Context } from '../context/GlobalContext';
 
 const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-const getCurrentLocation = () => {
-  return new Promise((resolve, reject) => {
-    // eslint-disable-next-line no-undef
-    navigator.geolocation.getCurrentPosition(position => resolve(position), e => reject(e));
-  });
-};
-
 const MapScreen = (props) => {
-  // const { queryNewBaseLocations, state } = useContext(Context);
-  // const { renderedBases, queryBasesError } = state;
+  const { queryNewBaseLocations, state } = useContext(Context);
+  const { renderedBases, queryBasesError, coords } = state;
 
   const [region, setRegion] = useState({
     latitude: 39,
@@ -29,38 +19,15 @@ const MapScreen = (props) => {
     longitudeDelta: LONGITUDE_DELTA,
   });
 
-  // const [base, setBase] = useState({
-  //   message: true
-  // });
-
   useEffect(() => {
-    getCurrentLocation().then(position => {
-      if (position) {
-        setRegion({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          latitudeDelta: LATITUDE_DELTA,
-          longitudeDelta: LONGITUDE_DELTA
-        });
-      }
+    // update region state every time the global context has new coords
+    setRegion({
+      latitude: coords.latitude,
+      longitude: coords.longitude,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA
     });
-  }, []);
-
-  useEffect(() => {
-    console.log('useEffect');
-    navigator.geolocation.getCurrentPosition(p => console.log('p', p), null, { enableHighAccuracy: true });
-    const degree_update_rate = 0;
-
-    CompassHeading.start(degree_update_rate, degree => {
-      console.log(degree);
-      CompassHeading.stop();
-    });
-
-    return () => {
-      CompassHeading.stop();
-    };
-  }, []);
-
+  }, [coords.latitude, coords.longitude]);
 
   //const { userAuth, loginError } = useContext(Context)
   return (
@@ -73,24 +40,11 @@ const MapScreen = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: StatusBar.currentHeight, // for Android. If this looks weird in iOS tell Reed.
-    backgroundColor: '#FFF'
+    backgroundColor: '#FFF',
   },
-
   map: {
     ...StyleSheet.absoluteFillObject,
   },
 });
 
 export default MapScreen;
-
-// if (position) {
-//     setState({
-//         region: {
-//             latitude: position.coords.latitude,
-//             longitude: position.coords.longitude,
-//             latitudeDelta: LATITUDE_DELTA,
-//             longitudeDelta: LONGITUDE_DELTA
-//         },
-//     });
-// }
