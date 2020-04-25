@@ -144,6 +144,7 @@ export const { Context, Provider } = createDataContext(
     emailPasswordCreateAccount,
     queryNewBaseLocations,
     setBaseLocation,
+    setCoords,
   }, // actions (functions to be used to update global state)
   {
     userAuth: undefined,
