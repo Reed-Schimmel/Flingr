@@ -8,6 +8,7 @@ const UPDATE_BASE_LOCATIONS = 'update_base_locations';
 const SET_USER_BASE = 'set_user_base';
 const SET_BASE_ERROR = 'set_base_error';
 const QUERY_BASES_ERROR = 'query_bases_error';
+const SET_COORDS = 'set_coords';
 
 // default user document fields when a new user is generated
 const DEFAULT_USER_DOC = {
@@ -61,6 +62,11 @@ const reducer = (state, action) => {
       queryBasesError: action.payload,
     };
 
+  case SET_COORDS:
+    return {
+      ...state,
+      coords: action.payload,
+    };
   default:
     return state;
   }
@@ -126,6 +132,10 @@ const setBaseLocation = (dispatch) => async (latitude, longitude, uid) => {
     .catch((e) => dispatch({ type: SET_BASE_ERROR, payload: e }));
 };
 
+const setCoords = (dispatch) => ({ coords }) => {
+  dispatch({ type: SET_COORDS, payload: coords });
+};
+
 // export the newly created context
 export const { Context, Provider } = createDataContext(
   reducer,
@@ -140,6 +150,13 @@ export const { Context, Provider } = createDataContext(
     userData: {},
     loginError: '',
     renderedBases: [],
+    coords: {
+      longitude: null,
+      latitude: null,
+      altitude: null,
+      accuracy: null,
+      altitudeAccuracy: null,
+    },
   }, // initial state
 );
 
