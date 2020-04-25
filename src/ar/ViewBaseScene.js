@@ -9,7 +9,35 @@ import {
 } from 'react-viro';
 
 const compareAnchors = (anc1, anc2) => {
+  if (anc1 === undefined || anc2 === undefined) return false;
+
+  // Below are the keys to properties I think is important when comparing two anchors
   const keys = ['center', 'height', 'width', 'position', 'rotation', 'alignment'];
+
+  // One anchor is of the saved base, and the other is from the AR tracking system
+  // if the property is a string then the values must be exact
+  // if the property is a number then they need to be within a margin of error
+
+  const margin = 0.10;
+
+  const percDiff = (a, b) => {
+    const avg = ((a + b) / 2) || 1; // make 1 if avg is 0
+    const diff = Math.abs(a - b) / avg;
+    return diff;
+  };
+
+  return keys.every((key) => {
+    if (typeof anc1[key] === 'string') {
+      return anc1[key] === anc2[key];
+
+    } else if (typeof anc1[key] === 'number') {
+      return percDiff(anc1[key], anc2[key]) <= margin; // must be 10% alike
+
+    } else if (typeof anc1[key] === 'object') {
+      // this SHOULD  be an array of length 3, like center, rotation, and position
+      return anc1[key].every((num, i) => percDiff(num, anc2[key][i]) <= margin);
+    }
+  });
 };
 
 export default class ViewBaseScene extends Component {
@@ -62,9 +90,8 @@ export default class ViewBaseScene extends Component {
       return;
     }
 
-    // conditions to match anchor for storage
-    // if (foundAnchor)
-    this.setState({ foundAnchor });
+    // conditions to match foundAnchor to the base's anchor
+    if (compareAnchors(foundAnchor, this.state.base)) this.setState({ foundAnchor });
 
     console.log(foundAnchor, this.props.base);
     // this.plane.setNativeProps({ 'pauseUpdates': true });
