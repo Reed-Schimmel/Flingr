@@ -9,8 +9,8 @@ const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 const MapScreen = (props) => {
-  const { queryNewBaseLocations, state } = useContext(Context);
-  const { renderedBases, queryBasesError, coords } = state;
+  const { /*queryNewBaseLocations,*/ state } = useContext(Context);
+  const { /*renderedBases, queryBasesError,*/ coords } = state;
 
   const [region, setRegion] = useState({
     latitude: 39,
@@ -20,10 +20,11 @@ const MapScreen = (props) => {
   });
 
   useEffect(() => {
+    console.log(coords);
     // update region state every time the global context has new coords
     setRegion({
-      latitude: coords.latitude,
-      longitude: coords.longitude,
+      latitude: coords.latitude || region.latitude,
+      longitude: coords.longitude || region.longitude,
       latitudeDelta: LATITUDE_DELTA,
       longitudeDelta: LONGITUDE_DELTA
     });

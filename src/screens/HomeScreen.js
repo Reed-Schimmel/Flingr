@@ -14,14 +14,19 @@ const HomeScreen = () => {
   const { setBaseError } = state;
 
   useEffect(() => {
+    // navigator.geolocation.getCurrentPosition();
     // Watch to GPS changes and keep the global content updated
     // Set GPS watching and update context https://reactnative.dev/docs/geolocation.html#watchposition
     navigator.geolocation.watchPosition((position) => { // eslint-disable-line no-undef
       setCoords(position);
-    }, (e) => console.log('GPS error', e), {
+    }, (e) => {
+      console.log('GPS error', e);
+      // if (e.PERMISSION_DENIED) navigator.geolocation.requestAuthorization();
+    }, {
       enableHighAccuracy: true,
       distanceFilter: 1, // meters - might be too low,
-      maximumAge: 0, //ms
+      maximumAge: 1000, //ms
+      timeout: 200000,
     });
     return () => navigator.geolocation.stopObserving(); // eslint-disable-line no-undef
   }, []);
