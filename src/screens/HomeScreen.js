@@ -1,4 +1,4 @@
-import React, { useState, /*useContext*/ } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { StyleSheet, StatusBar, Modal, Text, View, Alert } from 'react-native'; //Animate
 import MapScreen from './MapScreen';
 import LoginScreen from './LoginScreen';
@@ -10,8 +10,8 @@ const HomeScreen = () => {
   const [isModalVisible, setModalVisibility] = useState(false);
   const [base, setBases] = useState({ isPin: false });
 
-  // const { setBaseLocation, state } = useContext(Context);
-  // const { setBaseError } = state;
+  const { setCoords, setBaseLocation, state } = useContext(Context);
+  const { setBaseError } = state;
 
   const getMod = () => {
     if (isModalVisible === false)
@@ -33,6 +33,19 @@ const HomeScreen = () => {
       return (<View><Text>ar screen</Text></View>);
     }
   };
+
+  useEffect(() => {
+    // Watch to GPS changes and keep the global content updated
+    // Set GPS watching and update context https://reactnative.dev/docs/geolocation.html#watchposition
+    navigator.geolocation.watchPosition((position) => {
+      setCoords(position);
+    }, (e) => console.log('GPS error', e), {
+      enableHighAccuracy: true,
+      distanceFilter: 1, // meters - might be too low,
+      maximumAge: 0, //ms
+    });
+    return () => navigator.geolocation.stopObserving();
+  }, []);
 
   //const { userAuth, loginError } = useContext(Context)
   return (
