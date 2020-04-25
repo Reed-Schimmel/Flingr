@@ -18,7 +18,6 @@ const _viroToGeo = (coords, plane) => { // TODO: https://stackoverflow.com/quest
     // latitude: latitude + METERS_TO_COORD * z,
     // longitude: longitude + METERS_TO_COORD * x
   };
-
 };
 
 const setBase = (dispatch) => async (selectedPlane) => {

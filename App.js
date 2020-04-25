@@ -16,8 +16,8 @@ const Flingr = () => {
   return (
     <GlobalProvider> 
       <SafeAreaView style={styles.container}>
-        {/* <AREntery /> */}
-        <HomeScreen />
+        <AREntery />
+        {/* <HomeScreen /> */}
         {/* <LoginScreen /> */}
         {/* <RegisterScreen /> */}
       </SafeAreaView>
@@ -28,7 +28,7 @@ const Flingr = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: StatusBar.currentHeight, // for Android. If this looks weird in iOS tell Reed.
+    // paddingTop: StatusBar.currentHeight, // for Android. If this looks weird in iOS tell Reed.
     backgroundColor: '#FFF'
   },
 });

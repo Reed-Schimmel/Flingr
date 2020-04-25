@@ -1,20 +1,16 @@
-import React, { useState, /*useContext*/ } from 'react';
-import { View, TouchableOpacity, Text } from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { View, TouchableOpacity, Text, AsyncStorage, ViewBase } from 'react-native';
 import { ViroARSceneNavigator } from 'react-viro';
+import CompassHeading from 'react-native-compass-heading';
+
 // import { Context } from '../context/GlobalContext';
 
-import GeopositionScene from './GeopositionScene';
+// import GeopositionScene from './GeopositionScene';
 // import InitialARScene from './HelloWorldSceneAR';
-// import SetBaseScene from './SetBaseScene';
-// import ViewBaseScene from './ViewBaseScene';
-// import GeopositionScene from './GeopositionScene2';
+import SetBaseScene from './SetBaseScene';
+import ViewBaseScene from './ViewBaseScene';
+import GeopositionScene from './GeopositionScene2';
 import BasicARPhysicsSample from './BasicPhysicsSample';
-/*
- TODO: Insert your API key below
- */
-var sharedProps = {
-  apiKey: 'API_KEY_HERE',
-};
 
 // Set base flow
 // 1. confirm world location via gps
@@ -40,14 +36,49 @@ var sharedProps = {
 
 const AREntry = () => {
   // const { state, actions } = useContext(Context);
-  // const { buttonTitle, buttonAction } = state;
+  // const { userData } = state;
 
   // const [scene, setScene] = useState(SET_BASE);
+  const [base, setBase] = useState(undefined);
+  const [heading, setHeading] = useState(null);
 
-  return (
-    <ViroARSceneNavigator {...sharedProps}
-      initialScene={{ scene: GeopositionScene }}
-      // worldAlignment='Camera'
+  useEffect(() => {
+    AsyncStorage.getItem('base').then(data => {
+      setBase(JSON.parse(data));
+      // console.log(data);
+    }).catch(e => console.log(e));
+  }, []);
+
+  useEffect(() => {
+    CompassHeading.start(3, heading => {
+      setHeading(heading);
+    });
+    return () => CompassHeading.stop();
+  }, []);
+
+  // return <ViroARSceneNavigator {...sharedProps} initialScene={{ scene: GeopositionScene }} />;
+
+  if (heading === null) return (
+    <View style={{ flex: 1, justifyContent: 'center' }}>
+      <Text style={{ fontSize: 32, textAlign: 'center' }}>Hold phone portrait style in hand, please aim the camera north</Text>
+      <Text style={{ fontSize: 32, textAlign: 'center', margin: 20 }}>Heading: {heading}</Text>
+      <Text style={{ fontSize: 26, textAlign: 'center' }}>North is 0</Text>
+    </View>
+    // when just about 0 have user click button and then when scene inits succ tell user it's okay to move.
+  );
+
+  if (base === undefined) return <View style={{ flex: 1, justifyContent: 'center' }}><Text>Loading</Text></View>;
+  else if (base === null) return (
+    <ViroARSceneNavigator
+      initialScene={{ scene: SetBaseScene }}
+    // initialScene={{ scene: GeopositionScene }}
+    // worldAlignment='Camera'  
+    // worldAlignment='GravityAndHeading'
+    />
+  );
+  else return (
+    <ViroARSceneNavigator
+      initialScene={{ scene: ViewBaseScene, passProps: { base } }}
     />
   );
 };

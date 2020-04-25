@@ -4,6 +4,7 @@ import {
   ViroCamera,
   ViroBox,
   ViroConstants,
+  ViroAmbientLight,
 } from 'react-viro';
 import CompassHeading from 'react-native-compass-heading';
 // import { Context } from '../context/GlobalContext';
@@ -18,6 +19,7 @@ const GeopositionScene = ({ children, ...otherProps }) => {
 
   const [tracking, setTracking] = useState({ state: null, reason: null });
   const [yRot, setYRot] = useState(0);
+  const [ambientLight, setAmbientLight] = useState({ color: '#FFFFFF', intensity: 10 });
 
   const sceneRef = useRef();
 
@@ -25,23 +27,27 @@ const GeopositionScene = ({ children, ...otherProps }) => {
     <ViroARScene
       ref={sceneRef}
       physicsWorld={{ gravity: [0, -9.81, 0] }}
-      onTrackingUpdated={(state, reason) => {
-        if (tracking.state === null && state === ViroConstants.TRACKING_NORMAL) {
-          // The first time the scene get's it tracking find the compass heading
-          // and rotate the scene in the opposite direction so positions of AR objects
-          // do not need to correct for compass heading. This is aligning all AR users
-          // worlds to point North / South
-          CompassHeading.start(360, degree => {
-            CompassHeading.stop(); // TODO: prevent mutifiring
-            setYRot(-1 * degree);
-            // setTracking({ state, reason });
-          });
-        }
-        // setTracking({ state, reason });
+      // onTrackingUpdated={(state, reason) => {
+      //   if (tracking.state === null && state === ViroConstants.TRACKING_NORMAL) {
+      //     // The first time the scene get's it tracking find the compass heading
+      //     // and rotate the scene in the opposite direction so positions of AR objects
+      //     // do not need to correct for compass heading. This is aligning all AR users
+      //     // worlds to point North / South
+      //     CompassHeading.start(360, degree => {
+      //       CompassHeading.stop(); // TODO: prevent mutifiring
+      //       setYRot(-1 * degree);
+      //       // setTracking({ state, reason });
+      //     });
+      //   }
+      //   // setTracking({ state, reason });
+      // }}
+      onAmbientLightUpdate={(light) => {
+        // console.log(light);
+        // setAmbientLight() TODO: update light
       }}
-      onAmbientLightUpdate={(light) => console.log(light)}
       {...otherProps}
     >
+      <ViroAmbientLight color={ambientLight.color} intensity={ambientLight.intensity} castsShadow={true} />
       <ViroCamera
         position={[0, 0, 0]}
         rotation={[0, yRot, 0]}
