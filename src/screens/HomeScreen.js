@@ -1,10 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { StyleSheet, StatusBar, Modal, Text, View, Alert } from 'react-native'; //Animate
+import { StyleSheet, Modal, Text, View, Alert } from 'react-native'; //Animate
 import MapScreen from './MapScreen';
 import LoginScreen from './LoginScreen';
 import FloatingButton from '../components/FloatingButton';
 //import AREntery from '../ar/AREntery'
-// import { Context } from '../context/GlobalContext';
+import { Context } from '../context/GlobalContext';
 
 const HomeScreen = () => {
   const [isModalVisible, setModalVisibility] = useState(false);
@@ -12,6 +12,20 @@ const HomeScreen = () => {
 
   const { setCoords, setBaseLocation, state } = useContext(Context);
   const { setBaseError } = state;
+
+  useEffect(() => {
+    // Watch to GPS changes and keep the global content updated
+    // Set GPS watching and update context https://reactnative.dev/docs/geolocation.html#watchposition
+    navigator.geolocation.watchPosition((position) => { // eslint-disable-line no-undef
+      setCoords(position);
+    }, (e) => console.log('GPS error', e), {
+      enableHighAccuracy: true,
+      distanceFilter: 1, // meters - might be too low,
+      maximumAge: 0, //ms
+    });
+    return () => navigator.geolocation.stopObserving(); // eslint-disable-line no-undef
+  }, []);
+
 
   const getMod = () => {
     if (isModalVisible === false)
@@ -34,29 +48,17 @@ const HomeScreen = () => {
     }
   };
 
-  useEffect(() => {
-    // Watch to GPS changes and keep the global content updated
-    // Set GPS watching and update context https://reactnative.dev/docs/geolocation.html#watchposition
-    navigator.geolocation.watchPosition((position) => {
-      setCoords(position);
-    }, (e) => console.log('GPS error', e), {
-      enableHighAccuracy: true,
-      distanceFilter: 1, // meters - might be too low,
-      maximumAge: 0, //ms
-    });
-    return () => navigator.geolocation.stopObserving();
-  }, []);
-
   //const { userAuth, loginError } = useContext(Context)
   return (
     //login popup, ar button, map screen, mini map style
     <>
       <FloatingButton title='Log Out' onPress={getMod} style={styles.FloatingButton} />
-
+      
       <MapScreen />
 
       <FloatingButton title={[base.isPin == true ? 'Fire' : 'Set Base']}
-        onPress={setBase} />
+        onPress={setBase}
+      />
       <Modal
         animationType='fade'
         transparent={true}
@@ -70,7 +72,6 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: StatusBar.currentHeight, // for Android. If this looks weird in iOS tell Reed.
   },
   map: {
     ...StyleSheet.absoluteFillObject,
