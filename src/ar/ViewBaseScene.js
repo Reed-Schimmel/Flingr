@@ -1,6 +1,6 @@
 'use strict';
 import React, { Component } from 'react';
-import { AsyncStorage } from 'react-native';
+// import { AsyncStorage } from 'react-native';
 import {
   ViroBox,
   ViroARPlane,

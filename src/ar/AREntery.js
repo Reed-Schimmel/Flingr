@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { View, TouchableOpacity, Text, AsyncStorage, ViewBase } from 'react-native';
+import React, { useState, /*useContext,*/ useEffect } from 'react';
+import { View, Text, AsyncStorage } from 'react-native';
 import { ViroARSceneNavigator } from 'react-viro';
 import CompassHeading from 'react-native-compass-heading';
 
@@ -9,8 +9,8 @@ import CompassHeading from 'react-native-compass-heading';
 // import InitialARScene from './HelloWorldSceneAR';
 import SetBaseScene from './SetBaseScene';
 import ViewBaseScene from './ViewBaseScene';
-import GeopositionScene from './GeopositionScene2';
-import BasicARPhysicsSample from './BasicPhysicsSample';
+// import GeopositionScene from './GeopositionScene2';
+// import BasicARPhysicsSample from './BasicPhysicsSample';
 
 // Set base flow
 // 1. confirm world location via gps
@@ -34,14 +34,14 @@ import BasicARPhysicsSample from './BasicPhysicsSample';
 // const SET_BASE = 'set_base';
 // const VIEW_BASE = 'view_base';
 
-const AREntry = (props) => {
+const AREntry = () => {
   // const { state, actions } = useContext(Context);
   // const { userData } = state;
 
   // const [scene, setScene] = useState(SET_BASE);
   const [base, setBase] = useState(undefined);
   const [heading, setHeading] = useState(null);
-  const [inPosition, setInPosition] = useState(false);
+  const [inPosition, /*setInPosition*/] = useState(false);
 
   useEffect(() => {
     AsyncStorage.getItem('base').then(data => {

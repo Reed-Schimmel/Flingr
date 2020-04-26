@@ -1,8 +1,8 @@
-import React, { Component, useState, /*useContext,*/ } from 'react';
+import React, { Component, /*useState, useContext,*/ } from 'react';
 import {
   ViroARScene,
   ViroBox,
-  ViroConstants,
+  // ViroConstants,
   ViroAmbientLight,
 } from 'react-viro';
 import CompassHeading from 'react-native-compass-heading';
@@ -18,7 +18,7 @@ export default class GeopositionScene extends Component {
       ambientLight: { color: '#FFFFFF', intensity: 10 },
     };
 
-    this.sceneRef = undefined
+    this.sceneRef = undefined;
     this.baseRef = React.createRef();
 
     this.heading = undefined;
@@ -40,7 +40,7 @@ export default class GeopositionScene extends Component {
   }
 
   render() {
-    const { tracking, yRot, ambientLight } = this.state;
+    const { /*tracking, yRot,*/ ambientLight } = this.state;
     return (
       <ViroARScene
         ref={(component) => this.sceneRef = component }

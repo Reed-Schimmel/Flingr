@@ -10,8 +10,8 @@ const HomeScreen = () => {
   const [isModalVisible, setModalVisibility] = useState(false);
   const [base, setBases] = useState({ isPin: false });
 
-  const { setCoords, setBaseLocation, state } = useContext(Context);
-  const { setBaseError } = state;
+  const { setCoords, /*setBaseLocation, state*/ } = useContext(Context);
+  // const { setBaseError } = state;
 
   let accuracy = 5; // meters of gps accuracy
 

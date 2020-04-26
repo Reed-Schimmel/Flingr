@@ -6,6 +6,7 @@ import {
   ViroARScene,
   Viro3DObject,
   ViroLightingEnvironment,
+  ViroConstants
 } from 'react-viro';
 
 export default class FireProjectileScene extends Component {
@@ -43,7 +44,7 @@ export default class FireProjectileScene extends Component {
 
 
         {/* A Single Ball we have spawned in our scene */}
-        <Viro3DObject ref={(obj) => { this.ball = obj }}
+        <Viro3DObject ref={(obj) => { this.ball = obj; }}
           source={require('./res/object_basketball_pbr.vrx')}
           scale={[0.5, 0.5, 0.5]}
           position={[0, 0, 1.0]}
@@ -63,7 +64,7 @@ export default class FireProjectileScene extends Component {
     );
   }
 
-  _onInitialized(state, reason) {
+  _onInitialized(state/*, reason*/) {
     if (state == ViroConstants.TRACKING_NORMAL) {
       // Ready to fire!
     } else if (state == ViroConstants.TRACKING_NONE) {
@@ -72,6 +73,5 @@ export default class FireProjectileScene extends Component {
   }
 }
 
-}
 
 module.exports = FireProjectileScene;

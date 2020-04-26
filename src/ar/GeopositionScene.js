@@ -3,23 +3,23 @@ import {
   ViroARScene,
   ViroCamera,
   ViroBox,
-  ViroConstants,
+  // ViroConstants,
   ViroAmbientLight,
 } from 'react-viro';
-import CompassHeading from 'react-native-compass-heading';
+// import CompassHeading from 'react-native-compass-heading';
 // import { Context } from '../context/GlobalContext';
 
 /**
  * The 
  */
 
-const GeopositionScene = ({ children, ...otherProps }) => {
+const GeopositionScene = ({ /*children,*/ ...otherProps }) => {
   // const { state, actions } = useContext(Context);
   // const { buttonTitle, buttonAction } = state;
 
-  const [tracking, setTracking] = useState({ state: null, reason: null });
-  const [yRot, setYRot] = useState(0);
-  const [ambientLight, setAmbientLight] = useState({ color: '#FFFFFF', intensity: 10 });
+  // const [tracking, setTracking] = useState({ state: null, reason: null });
+  const [yRot, /*setYRot*/] = useState(0);
+  const [ambientLight, /*setAmbientLight*/] = useState({ color: '#FFFFFF', intensity: 10 });
 
   const sceneRef = useRef();
 
@@ -41,10 +41,10 @@ const GeopositionScene = ({ children, ...otherProps }) => {
       //   }
       //   // setTracking({ state, reason });
       // }}
-      onAmbientLightUpdate={(light) => {
-        // console.log(light);
-        // setAmbientLight() TODO: update light
-      }}
+      // onAmbientLightUpdate={(light) => {
+      // console.log(light);
+      // setAmbientLight() TODO: update light
+      // }}
       {...otherProps}
     >
       <ViroAmbientLight color={ambientLight.color} intensity={ambientLight.intensity} castsShadow={true} />
