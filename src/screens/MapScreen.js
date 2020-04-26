@@ -8,7 +8,7 @@ const ASPECT_RATIO = screen.width / screen.height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-const MapScreen = (props) => {
+const MapScreen = (props) => { // TODO: very slow buttons bug
   const { /*queryNewBaseLocations,*/ state } = useContext(Context);
   const { /*renderedBases, queryBasesError,*/ coords } = state;
 
@@ -28,7 +28,7 @@ const MapScreen = (props) => {
       latitudeDelta: LATITUDE_DELTA,
       longitudeDelta: LONGITUDE_DELTA
     });
-  }, [coords.latitude, coords.longitude]);
+  }, [coords.latitude === null]);
 
   //const { userAuth, loginError } = useContext(Context)
   return (

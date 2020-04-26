@@ -13,20 +13,22 @@ const HomeScreen = () => {
   const { setCoords, setBaseLocation, state } = useContext(Context);
   const { setBaseError } = state;
 
+  let accuracy = 5; // meters of gps accuracy
+
   useEffect(() => {
-    // navigator.geolocation.getCurrentPosition();
     // Watch to GPS changes and keep the global content updated
     // Set GPS watching and update context https://reactnative.dev/docs/geolocation.html#watchposition
     navigator.geolocation.watchPosition((position) => { // eslint-disable-line no-undef
+      accuracy = position.coords.accuracy;
       setCoords(position);
     }, (e) => {
       console.log('GPS error', e);
       // if (e.PERMISSION_DENIED) navigator.geolocation.requestAuthorization();
     }, {
       enableHighAccuracy: true,
-      distanceFilter: 1, // meters - might be too low,
-      maximumAge: 1000, //ms
-      timeout: 200000,
+      distanceFilter: 1.2 * accuracy, // meters - should be higher than accuracy
+      // maximumAge: 1000, //ms
+      // timeout: 200000,
     });
     return () => navigator.geolocation.stopObserving(); // eslint-disable-line no-undef
   }, []);
