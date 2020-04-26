@@ -14,38 +14,20 @@ import {
   // ViroProps,
   // ViroMaterials
 } from 'react-viro';
-import CompassHeading from 'react-native-compass-heading';
 
 export default class SetBaseScene extends Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
-    // Set initial state here
     this.state = {
       text: 'Initializing AR...',
-      // controllerConfig: CONTROLLER_GRIP,
-      showCollisionBox: false,
       foundPlane: false,
-      planePosition: [0, 0, 0],
-      planeRotation: [0, 0, 0],
-      totalCubes: 0,
       heading: 0.0,
     };
 
     // bind 'this' to functions
     this._onInitialized = this._onInitialized.bind(this);
-  }
-
-  componentDidMount() {
-    CompassHeading.start(0, degree => {
-      this.setState({ heading: degree });
-      CompassHeading.stop();
-    });
-  }
-
-  componentWillUnmount() {
-    CompassHeading.stop();
   }
 
   render() {
@@ -61,7 +43,14 @@ export default class SetBaseScene extends Component {
         <ViroARPlaneSelector ref={(component) => { this.plane = component; }}
           maxPlanes={1}
           onPlaneSelected={(plane) => {
-            AsyncStorage.setItem('base', JSON.stringify(plane)).then(() => console.log('set'));
+            // get plane info,
+            // get camera info
+            // call func
+            // func: find geo and heading, translate
+
+
+
+            AsyncStorage.setItem('base', JSON.stringify(plane)).then(() => console.log('set', plane));
             // AsyncStorage.setItem('base', JSON.stringify(this.plane.props)).then(() => console.log('set'));
             // show button to set base
             // this.setState({ foundPlane: true });
@@ -72,11 +61,12 @@ export default class SetBaseScene extends Component {
           <ViroBox
             position={[0, 1, 0]} scale={[.5, .5, .5]}
             physicsBody={{ type: 'Dynamic', mass: 25, enabled: true, useGravity: true, restitution: 0.35, friction: 0.75 }}
+            ref={(component) => { this.box = component; }}
           />
-          <ViroQuad position={[0, 0, 0]} scale={[1, 1, 1.0]} rotation={[-90, 0, 0]} physicsBody={{ type: 'Static', restitution: 0.75 }}
+          <ViroQuad position={[0, 0, 0]} scale={[1, 1, 1]} rotation={[-90, 0, 0]} physicsBody={{ type: 'Static', restitution: 0.75 }}
             arShadowReceiver={true}
-          // onClickState={this.state.controllerConfig == CONTROLLER_PULL ? this.onItemPullForce('Surface') : undefined}
-          // ref={(component) => { this.floorSurface = component }} onCollision={this._onFloorCollide} materials={'ground'}
+            // onClickState={this.state.controllerConfig == CONTROLLER_PULL ? this.onItemPullForce('Surface') : undefined}
+            ref={(component) => { this.floorSurface = component; }} /*onCollision={this._onFloorCollide}*/ materials={'ground'}
           />
         </ViroARPlaneSelector>
       </ViroARScene>
@@ -93,3 +83,5 @@ export default class SetBaseScene extends Component {
     }
   }
 }
+
+module.exports = SetBaseScene;

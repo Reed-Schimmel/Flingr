@@ -3,18 +3,17 @@ import {
   StyleSheet,
   SafeAreaView,
   StatusBar,
-  //Animate
 } from 'react-native';
 import HomeScreen from './src/screens/HomeScreen';
 // import LoginScreen from './src/screens/LoginScreen';
 import { Provider as GlobalProvider } from './src/context/GlobalContext';
 // import RegisterScreen from './src/screens/RegisterScreen';
-
 // import AREntery from './src/ar/AREntery';
+
 
 const Flingr = () => {
   return (
-    <GlobalProvider> 
+    <GlobalProvider>
       <SafeAreaView style={styles.container}>
         {/* <AREntery /> */}
         <HomeScreen />

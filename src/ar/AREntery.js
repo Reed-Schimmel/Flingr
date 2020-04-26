@@ -1,14 +1,16 @@
-import React, { useState, /*useContext*/ } from 'react';
-import { View, TouchableOpacity, Text } from 'react-native';
+import React, { useState, /*useContext,*/ useEffect } from 'react';
+import { View, Text, AsyncStorage } from 'react-native';
 import { ViroARSceneNavigator } from 'react-viro';
+import CompassHeading from 'react-native-compass-heading';
+
 // import { Context } from '../context/GlobalContext';
 
-/*
- TODO: Insert your API key below
- */
-var sharedProps = {
-  apiKey: 'API_KEY_HERE',
-};
+// import GeopositionScene from './GeopositionScene';
+// import InitialARScene from './HelloWorldSceneAR';
+import SetBaseScene from './SetBaseScene';
+import ViewBaseScene from './ViewBaseScene';
+// import GeopositionScene from './GeopositionScene2';
+// import BasicARPhysicsSample from './BasicPhysicsSample';
 
 // Set base flow
 // 1. confirm world location via gps
@@ -27,100 +29,61 @@ var sharedProps = {
 // 3. launching animation
 // 4. record & upload launch
 
-// Sets the default scene you want for AR and VR
-// var InitialARScene = require('./HelloWorldSceneAR');
-var SetBaseScene = require('./SetBaseScene');
-var ViewBaseScene = require('./ViewBaseScene');
-// var BasicARPhysicsSample = require('./BasicPhysicsSample');
 
-const SET_BASE = 'set_base';
-const VIEW_BASE = 'view_base';
 
-export default () => {
+// const SET_BASE = 'set_base';
+// const VIEW_BASE = 'view_base';
+
+const AREntry = () => {
   // const { state, actions } = useContext(Context);
-  // const { buttonTitle, buttonAction } = state;
+  // const { userData } = state;
 
-  const [scene, setScene] = useState(SET_BASE);
+  // const [scene, setScene] = useState(SET_BASE);
+  const [base, setBase] = useState(undefined);
+  const [heading, setHeading] = useState(null);
+  const [inPosition, /*setInPosition*/] = useState(false);
 
-  return (
-    <View style={{ flex: 1 }}>
-      {
-        (scene === SET_BASE) && <ViroARSceneNavigator {...sharedProps}
-          initialScene={{ scene: SetBaseScene }}
-        />}{
-        (scene === VIEW_BASE) && <ViroARSceneNavigator {...sharedProps}
-          initialScene={{ scene: ViewBaseScene }}
-        />
-      }
-      <View style={{ height: 60, flexDirection: 'row', justifyContent: 'space-around' }}>
-        <TouchableOpacity
-          style={{ borderWidth: 1, margin: 5, textAlign: 'center', justifyContent: 'center' }}
-          onPress={() => setScene(SET_BASE)}
-        >
-          <Text>Set Base</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{ borderWidth: 1, margin: 5, textAlign: 'center', justifyContent: 'center' }}
-          onPress={() => setScene(VIEW_BASE)}
-        >
-          <Text>View Base</Text>
-        </TouchableOpacity>
-      </View>
-    </View >
+  useEffect(() => {
+    AsyncStorage.getItem('base').then(data => {
+      setBase(JSON.parse(data));
+      // console.log(data);
+    }).catch(e => console.log(e));
+  }, []);
+
+  useEffect(() => {
+    CompassHeading.start(3, heading => {
+      setHeading(heading);
+    });
+    return () => CompassHeading.stop();
+  }, []);
+
+  // return <ViroARSceneNavigator {...sharedProps} initialScene={{ scene: GeopositionScene }} />;
+
+  if (!inPosition) return (
+    <View style={{ flex: 1, justifyContent: 'center' }}>
+      <Text style={{ fontSize: 32, textAlign: 'center' }}>Hold phone portrait style in hand, please aim the camera north</Text>
+      <Text style={{ fontSize: 32, textAlign: 'center', margin: 20 }}>Heading: {heading}</Text>
+      <Text style={{ fontSize: 26, textAlign: 'center' }}>North is 0</Text>
+      {/* (heading === 0) && <Button to to set inPosition trye/> */}
+    </View>
+    // when just about 0 have user click button and then when scene inits succ tell user it's okay to move.
+  );
+
+  if (base === undefined) return <View style={{ flex: 1, justifyContent: 'center' }}><Text>Loading</Text></View>;
+  else if (base === null) return (
+    <ViroARSceneNavigator
+      initialScene={{ scene: SetBaseScene }}
+    // initialScene={{ scene: GeopositionScene }}
+    // worldAlignment='Camera'  
+    // worldAlignment='GravityAndHeading'
+    />
+  );
+  else return (
+    <ViroARSceneNavigator
+      initialScene={{ scene: ViewBaseScene, passProps: { base } }}
+    />
   );
 };
 
-// var localStyles = StyleSheet.create({
-//   viroContainer: {
-//     flex: 1,
-//     backgroundColor: 'black',
-//   },
-//   outer: {
-//     flex: 1,
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     backgroundColor: 'black',
-//   },
-//   inner: {
-//     flex: 1,
-//     flexDirection: 'column',
-//     alignItems: 'center',
-//     backgroundColor: 'black',
-//   },
-//   titleText: {
-//     paddingTop: 30,
-//     paddingBottom: 20,
-//     color: '#fff',
-//     textAlign: 'center',
-//     fontSize: 25
-//   },
-//   buttonText: {
-//     color: '#fff',
-//     textAlign: 'center',
-//     fontSize: 20
-//   },
-//   buttons: {
-//     height: 80,
-//     width: 150,
-//     paddingTop: 20,
-//     paddingBottom: 20,
-//     marginTop: 10,
-//     marginBottom: 10,
-//     backgroundColor: '#68a0cf',
-//     borderRadius: 10,
-//     borderWidth: 1,
-//     borderColor: '#fff',
-//   },
-//   exitButton: {
-//     height: 50,
-//     width: 100,
-//     paddingTop: 10,
-//     paddingBottom: 10,
-//     marginTop: 10,
-//     marginBottom: 10,
-//     backgroundColor: '#68a0cf',
-//     borderRadius: 10,
-//     borderWidth: 1,
-//     borderColor: '#fff',
-//   }
-// });
+export default AREntry;
+module.exports = AREntry;
