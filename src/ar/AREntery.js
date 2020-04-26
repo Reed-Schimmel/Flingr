@@ -34,13 +34,14 @@ import BasicARPhysicsSample from './BasicPhysicsSample';
 // const SET_BASE = 'set_base';
 // const VIEW_BASE = 'view_base';
 
-const AREntry = () => {
+const AREntry = (props) => {
   // const { state, actions } = useContext(Context);
   // const { userData } = state;
 
   // const [scene, setScene] = useState(SET_BASE);
   const [base, setBase] = useState(undefined);
   const [heading, setHeading] = useState(null);
+  const [inPosition, setInPosition] = useState(false);
 
   useEffect(() => {
     AsyncStorage.getItem('base').then(data => {
@@ -58,11 +59,12 @@ const AREntry = () => {
 
   // return <ViroARSceneNavigator {...sharedProps} initialScene={{ scene: GeopositionScene }} />;
 
-  if (heading === null) return (
+  if (!inPosition) return (
     <View style={{ flex: 1, justifyContent: 'center' }}>
       <Text style={{ fontSize: 32, textAlign: 'center' }}>Hold phone portrait style in hand, please aim the camera north</Text>
       <Text style={{ fontSize: 32, textAlign: 'center', margin: 20 }}>Heading: {heading}</Text>
       <Text style={{ fontSize: 26, textAlign: 'center' }}>North is 0</Text>
+      {/* (heading === 0) && <Button to to set inPosition trye/> */}
     </View>
     // when just about 0 have user click button and then when scene inits succ tell user it's okay to move.
   );
