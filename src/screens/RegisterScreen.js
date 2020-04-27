@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { StyleSheet, TextInput, View, Text, TouchableOpacity } from 'react-native';
 import { Context as GlobalContext } from '../context/GlobalContext';
 
-const RegisterScreen = () => {
+const RegisterScreen = (props) => {
 
   const [textFields, setTextFields] = useState({
     email: '',

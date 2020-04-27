@@ -3,7 +3,7 @@ import React, { useState, useContext } from 'react';
 import { StyleSheet, TextInput, View, TouchableOpacity, Text } from 'react-native';
 import { Context as GlobalContext } from '../context/GlobalContext';
 
-const LoginScreen = () => {
+const LoginScreen = (props) => {
   const [textFields, setTextFields] = useState({
     username: '',
     password: '',
