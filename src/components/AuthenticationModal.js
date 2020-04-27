@@ -1,5 +1,4 @@
 import React, { useState, useContext } from 'react';
-import { View } from 'react-native';
 
 import { Context as GlobalContext } from '../context/GlobalContext';
 import LoginScreen from '../screens/LoginScreen';
