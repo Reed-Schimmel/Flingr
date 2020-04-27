@@ -11,14 +11,15 @@ const INITIAL_STATE = {
 };
 
 // these are just to ensure string consistency
-const LOGIN_SUCCESS         = 'login_success';
-const LOGIN_FAILURE         = 'login_failure';
-const UPDATE_BASE_LOCATIONS = 'update_base_locations';
-const SET_USER_BASE         = 'set_user_base';
-const SET_BASE_ERROR        = 'set_base_error';
-const QUERY_BASES_ERROR     = 'query_bases_error';
-const WIPE_CONTEXT          = 'wipe_context';
-const SET_COORDS            = 'set_coords';
+const LOGIN_SUCCESS          = 'login_success';
+const LOGIN_FAILURE          = 'login_failure';
+const UPDATE_BASE_LOCATIONS  = 'update_base_locations';
+const SET_USER_BASE          = 'set_user_base';
+const SET_BASE_ERROR         = 'set_base_error';
+const QUERY_BASES_ERROR      = 'query_bases_error';
+const WIPE_CONTEXT           = 'wipe_context';
+const SET_COORDS             = 'set_coords';
+const CREATE_ACCOUNT_SUCCESS = 'create_account_success';
 
 // default user document fields when a new user is generated
 const DEFAULT_USER_DOC = {
@@ -36,6 +37,13 @@ const reducer = (state, action) => {
     return {
       ...state,
       userAuth: action.payload,
+    };
+
+  case CREATE_ACCOUNT_SUCCESS:
+    return {
+      ...state,
+      userData: action.payload.userData,
+      userAuth: action.payload.userAuth,
     };
 
   case LOGIN_FAILURE:
@@ -99,14 +107,15 @@ const emailPasswordLogin = (dispatch) => (email, password) => {
 
 const emailPasswordCreateAccount = (dispatch) => (email, password, username) => {
   firebase.auth().createUserWithEmailAndPassword(email, password)
-    .then(async ({ user }) => {
-      dispatch({ type: LOGIN_SUCCESS, payload: user });
-      await firebase.firestore().collection('users').doc(`${user.uid}`).set({
+    .then(async ({ userAuth }) => {
+      const userData = {
         ...DEFAULT_USER_DOC,
-        email: user.email,
-        username,
-      })
-        .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: `error setting data: ${e.message} ${user}` }));
+        email: userAuth.email,
+        username
+      };
+      dispatch({ type: CREATE_ACCOUNT_SUCCESS, payload: { userAuth, userData } });
+      await firebase.firestore().collection('users').doc(`${userAuth.uid}`).set(userData)
+        .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: `error setting data: ${e.message} ${userAuth}` }));
     })
     .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e.message }));
 };
