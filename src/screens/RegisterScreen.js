@@ -1,8 +1,8 @@
-import React, { /*useContext,*/ useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { StyleSheet, TextInput, View, Text, TouchableOpacity } from 'react-native';
-// import { Context as GlobalContext } from '../context/GlobalContext';
+import { Context as GlobalContext } from '../context/GlobalContext';
 
-const RegisterScreen = () => {
+const RegisterScreen = (props) => {
 
   const [textFields, setTextFields] = useState({
     email: '',
@@ -10,28 +10,34 @@ const RegisterScreen = () => {
     password: '',
   });
 
-  // const { emailPasswordCreateAccount } = useContext(GlobalContext);
+  const { emailPasswordCreateAccount, state: { loginError } } = useContext(GlobalContext);
+
+  const onRegisterPress = () => {
+    // check for validity
+    emailPasswordCreateAccount(textFields.email, textFields.password, textFields.username);
+  };
 
   return (
-    <View style={styles.container}>
+    <View style ={styles.container}>
+      <Text style={styles.mainheader}>Flingr</Text>
+      <Text>{loginError}</Text>
 
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.textinput}
-          underlineColorAndroid='transparent'
-          placeholder='Email'
-          placeholderTextColor='#ffffff'
-          onchangeText={(email) => setTextFields({ ...textFields, email })}
+      <View style ={styles.inputView}>
+        <TextInput 
+          style ={styles.textinput}
+          underlineColorAndroid = 'transparent'
+          placeholder ="Email"
+          placeholderTextColor= "#ffffff"
+          value={textFields.email}
+          onChangeText ={(email) => setTextFields ({ ...textFields, email })}
         />
       </View>
 
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.textinput}
-          underlineColorAndroid='transparent'
-          placeholder='Username'
-          placeholderTextColor='#ffffff'
-          onchangeText={(username) => setTextFields({ ...textFields, username })}
+      <View style ={styles.inputView}>
+        <TextInput 
+          style ={styles.textinput}
+          underlineColorAndroid = 'transparent'
+          placeholder ="Username"props
         />
       </View>
 
@@ -40,19 +46,20 @@ const RegisterScreen = () => {
         <TextInput
           secureTextEntry
           style={styles.textinput}
-          underlineColorAndroid='transparent'
-          placeholder='Password'
-          placeholderTextColor='#ffffff'
-          onchangeText={(password) => setTextFields({ ...textFields, password })}
+          underlineColorAndroid = 'transparent'
+          placeholder ="Password"
+          placeholderTextColor= "#ffffff"
+          value={textFields.password}
+          onChangeText ={(password) => setTextFields ({ ...textFields, password })}
         />
       </View>
 
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttontext}>Register</Text>
+      <TouchableOpacity style = {styles.button} onPress={onRegisterPress}>
+        <Text style ={styles.buttontext}>Register</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => console.log('navigate to LoginScreen')} style={styles.button}>
-        <Text style={styles.buttontext}>Already have an account? Login here!</Text>
+      <TouchableOpacity onPress={() => props.navigateLogin()} style = {styles.button}>
+        <Text style ={styles.buttontext}>Already have an account? Login here!</Text>
       </TouchableOpacity>
 
     </View>
@@ -62,9 +69,11 @@ const RegisterScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#2f4f4f',
+    backgroundColor: 'rgba(47,79,79,0.4)',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    margin: 20,
+    borderRadius: 10,
   },
   inputView: {
     width: '80%',
@@ -86,14 +95,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#ffffff',
     marginVertical: 10
-
   },
+
+  mainheader:{
+    fontFamily: 'System',
+    fontWeight: 'bold',
+    color: '#f5f5f5',
+    fontSize: 50,
+    marginBottom: 40
+  },
+
   button: {
     width: 300,
     marginVertical: 10,
     paddingVertical: 12,
-    backgroundColor: '#1c313a',
+    backgroundColor: '#1c313a'
   },
+
   buttontext: {
     fontSize: 16,
     color: '#ffffff',

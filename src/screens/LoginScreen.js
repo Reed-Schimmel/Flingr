@@ -1,27 +1,33 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { useState, /*useContext*/ } from 'react';
+import React, { useState, useContext } from 'react';
 import { StyleSheet, TextInput, View, TouchableOpacity, Text } from 'react-native';
-// import { Context as GlobalContext } from '../context/GlobalContext';
+import { Context as GlobalContext } from '../context/GlobalContext';
 
-const LoginScreen = () => {
+const LoginScreen = (props) => {
   const [textFields, setTextFields] = useState({
     username: '',
     password: '',
   });
 
-  // const { emailPasswordLogin } = useContext(GlobalContext);
+  const { emailPasswordLogin, state: { loginError } } = useContext(GlobalContext);
+
+  const onLoginPress = () => {
+    // check for validity
+    emailPasswordLogin(textFields.username, textFields.password);
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.mainheader}>Flingr</Text>
+      <Text>{loginError}</Text>
 
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.textinput}
-          underlineColorAndroid='transparent'
-          placeholder='Username'
-          placeholderTextColor='#ffffff'
-          onchangeText={(username) => setTextFields({ ...textFields, username })}
+      <View style ={styles.inputView}>
+        <TextInput 
+          style ={styles.textinput}
+          underlineColorAndroid = 'transparent'
+          placeholder ="Username"
+          placeholderTextColor= "#ffffff"
+          onChangeText ={(username) => setTextFields({ ...textFields, username })}
         />
       </View>
 
@@ -30,19 +36,19 @@ const LoginScreen = () => {
         <TextInput
           secureTextEntry
           style={styles.textinput}
-          underlineColorAndroid='transparent'
-          placeholder='Password'
-          placeholderTextColor='#ffffff'
-          onchangeText={(password) => setTextFields({ ...textFields, password })}
+          underlineColorAndroid = 'transparent'
+          placeholder ="Password"
+          placeholderTextColor= "#ffffff"
+          onChangeText ={(password) => setTextFields({ ...textFields, password })}
         />
       </View>
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={onLoginPress}>
         <Text style={styles.buttontext}>Login</Text>
       </TouchableOpacity>
 
 
-      <TouchableOpacity onPress={() => console.log('navigate to create account screen')} style={styles.button}>
+      <TouchableOpacity onPress={() => props.navigateRegister()} style={styles.button}>
         <Text style={styles.buttontext}>Don't have an account? Signup here!</Text>
       </TouchableOpacity>
     </View>
@@ -52,9 +58,11 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#2f4f4f',
+    backgroundColor: 'rgba(47,79,79,0.4)',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    margin: 20,
+    borderRadius: 10,
   },
 
   mainheader: {

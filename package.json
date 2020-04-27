@@ -15,7 +15,7 @@
     "url": "https://github.com/Reed-Schimmel/Flingr"
   },
   "dependencies": {
-    "firebase": "^7.13.2",
+    "firebase": "^7.14.2",
     "react": "16.8.3",
     "react-native": "0.59.9",
     "react-native-compass-heading": "^1.0.0",

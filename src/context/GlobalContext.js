@@ -1,27 +1,37 @@
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 import createDataContext from './createDataContext';
 
+// default initial state
+const INITIAL_STATE = {
+  userAuth: undefined,
+  userData: {},
+  loginError: '',
+  renderedBases: [],
+};
+
 // these are just to ensure string consistency
-const LOGIN_SUCCESS = 'login_success';
-const LOGIN_FAILURE = 'login_failure';
+const LOGIN_SUCCESS         = 'login_success';
+const LOGIN_FAILURE         = 'login_failure';
 const UPDATE_BASE_LOCATIONS = 'update_base_locations';
-const SET_USER_BASE = 'set_user_base';
-const SET_BASE_ERROR = 'set_base_error';
-const QUERY_BASES_ERROR = 'query_bases_error';
-const SET_COORDS = 'set_coords';
+const SET_USER_BASE         = 'set_user_base';
+const SET_BASE_ERROR        = 'set_base_error';
+const QUERY_BASES_ERROR     = 'query_bases_error';
+const WIPE_CONTEXT          = 'wipe_context';
+const SET_COORDS            = 'set_coords';
 
 // default user document fields when a new user is generated
 const DEFAULT_USER_DOC = {
   outgoingFlings: [],
   incomingFlings: [],
-  homeLatitude: undefined,
-  homeLongitude: undefined,
+  homeLatitude: 0,
+  homeLongitude: 0,
 };
 
 // REDUCER
 // a reducer processes actions and updates the state
 const reducer = (state, action) => {
-  switch (action.type) {
+  switch(action.type) {
   case LOGIN_SUCCESS:
     return {
       ...state,
@@ -44,7 +54,7 @@ const reducer = (state, action) => {
     return {
       ...state,
       userData: {
-        ...state.userData,
+        ...state.userData, 
         baseLatitude: action.payload.latitude,
         baseLongitude: action.payload.longitude,
       },
@@ -61,6 +71,9 @@ const reducer = (state, action) => {
       ...state,
       queryBasesError: action.payload,
     };
+
+  case WIPE_CONTEXT:
+    return INITIAL_STATE;
 
   case SET_COORDS:
     return {
@@ -81,20 +94,21 @@ const reducer = (state, action) => {
 const emailPasswordLogin = (dispatch) => (email, password) => {
   firebase.auth().signInWithEmailAndPassword(email, password)
     .then((userCredentials) => dispatch({ type: LOGIN_SUCCESS, payload: userCredentials }))
-    .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e }));
+    .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e.message }));
 };
 
 const emailPasswordCreateAccount = (dispatch) => (email, password, username) => {
   firebase.auth().createUserWithEmailAndPassword(email, password)
-    .then((userCredentials) => {
-      dispatch({ type: LOGIN_SUCCESS, payload: userCredentials });
-      firebase.firestore().collection('users').add({
+    .then(async ({ user }) => {
+      dispatch({ type: LOGIN_SUCCESS, payload: user });
+      await firebase.firestore().collection('users').doc(`${user.uid}`).set({
         ...DEFAULT_USER_DOC,
-        email: userCredentials.email,
+        email: user.email,
         username,
-      });
+      })
+        .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: `error setting data: ${e.message} ${user}` }));
     })
-    .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e }));
+    .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e.message }));
 };
 
 const queryNewBaseLocations = (dispatch) => (region) => {
@@ -136,6 +150,10 @@ const setCoords = (dispatch) => ({ coords }) => {
   dispatch({ type: SET_COORDS, payload: coords });
 };
 
+const wipeContext = (dispatch) => () => {
+  dispatch({ type: WIPE_CONTEXT });
+};
+
 // export the newly created context
 export const { Context, Provider } = createDataContext(
   reducer,
@@ -144,9 +162,11 @@ export const { Context, Provider } = createDataContext(
     emailPasswordCreateAccount,
     queryNewBaseLocations,
     setBaseLocation,
+    wipeContext,
     setCoords,
   }, // actions (functions to be used to update global state)
-  {
+  INITIAL_STATE, // initial state
+  { // actions (functions to be used to update global state)
     userAuth: undefined,
     userData: {},
     loginError: '',
