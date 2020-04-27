@@ -5,8 +5,8 @@ import FloatingButton from '../components/FloatingButton';
 //import AREntery from '../ar/AREntery'
 import { Context } from '../context/GlobalContext';
 import AuthenticationModal from '../components/AuthenticationModal';
-const HomeScreen = (props) => {
-  const [base, setBases] = useState({isPin: false})
+const HomeScreen = () => {
+  const [base, setBases] = useState({isPin: false});
 
   const { wipeContext, setBaseLocation, state, setCoords } = useContext(Context);
   const { setBaseError, userAuth } = state;
@@ -32,45 +32,45 @@ const HomeScreen = (props) => {
   }, []);
 
   const setBase = () => {
-      if(base.isPin == false)
-      {
-          Alert.alert("Important", "Are you sure you would like to set your base at your current location?",
-          [
-              {text: "Yes", onPress: () => {setBases({isPin: true})}, style: 'OK'},
-              {text: "No", onPress: () => {setBases({isPin: false})}, style: "cancel"}
-          ]);
-      }
-      else{
-          //<AREntery/>
-          return(<View><Text>ar screen</Text></View>)
-      }
-  }
+    if(base.isPin == false)
+    {
+      Alert.alert('Important', 'Are you sure you would like to set your base at your current location?',
+        [
+          {text: 'Yes', onPress: () => {setBases({isPin: true});}, style: 'OK'},
+          {text: 'No', onPress: () => {setBases({isPin: false});}, style: 'cancel'}
+        ]);
+    }
+    else{
+      //<AREntery/>
+      return(<View><Text>ar screen</Text></View>);
+    }
+  };
 
   const logout = () => {
     wipeContext();
-  }
+  };
   
   const showAuthModal = !userAuth;
 
   return (
-      //login popup, ar button, map screen, mini map style
-      <>
-          {showAuthModal ? null : <FloatingButton title="Log Out" onPress={logout} style = {styles.FloatingButton}/>}
+  //login popup, ar button, map screen, mini map style
+    <>
+      {showAuthModal ? null : <FloatingButton title="Log Out" onPress={logout} style = {styles.FloatingButton}/>}
           
-          {/* <MapScreen/>  */}
+      {/* <MapScreen/>  */}
       
-          {showAuthModal ? null : <FloatingButton title={[base.isPin == true ? "Fire" : "Set Base"]} 
-                          onPress={setBase}/>}
+      {showAuthModal ? null : <FloatingButton title={[base.isPin == true ? 'Fire' : 'Set Base']} 
+        onPress={setBase}/>}
 
-          <Modal 
-              animationType="fade"
-              transparent={true}
-              visible={showAuthModal}
-          >
-              <AuthenticationModal />
-          </Modal>
-        </>
-  )
+      <Modal 
+        animationType="fade"
+        transparent={true}
+        visible={showAuthModal}
+      >
+        <AuthenticationModal />
+      </Modal>
+    </>
+  );
 };
 
 const styles = StyleSheet.create({

@@ -14,7 +14,7 @@ const LoginScreen = (props) => {
   const onLoginPress = () => {
     // check for validity
     emailPasswordLogin(textFields.username, textFields.password);
-  }
+  };
 
   return (
     <View style={styles.container}>

@@ -15,7 +15,7 @@ const RegisterScreen = (props) => {
   const onRegisterPress = () => {
     // check for validity
     emailPasswordCreateAccount(textFields.email, textFields.password, textFields.username);
-  }
+  };
 
   return (
     <View style ={styles.container}>
@@ -37,10 +37,7 @@ const RegisterScreen = (props) => {
         <TextInput 
           style ={styles.textinput}
           underlineColorAndroid = 'transparent'
-          placeholder ="Username"
-          placeholderTextColor= "#ffffff"
-          value={textFields.username}
-          onChangeText ={(username) => setTextFields ({ ...textFields, username })}
+          placeholder ="Username"props
         />
       </View>
 
@@ -102,15 +99,14 @@ const styles = StyleSheet.create({
 
   mainheader:{
     fontFamily: 'System',
-    fontWeight: "bold",
-    color: "#f5f5f5",
+    fontWeight: 'bold',
+    color: '#f5f5f5',
     fontSize: 50,
     marginBottom: 40
   },
 
   button: {
     width: 300,
-    backgroundColor: '#a9a9a9',
     marginVertical: 10,
     paddingVertical: 12,
     backgroundColor: '#1c313a'

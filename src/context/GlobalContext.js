@@ -26,62 +26,62 @@ const DEFAULT_USER_DOC = {
   incomingFlings: [],
   homeLatitude: 0,
   homeLongitude: 0,
-}
+};
 
 // REDUCER
 // a reducer processes actions and updates the state
 const reducer = (state, action) => {
   switch(action.type) {
-    case LOGIN_SUCCESS:
-      return {
-        ...state,
-        userAuth: action.payload,
-      };
+  case LOGIN_SUCCESS:
+    return {
+      ...state,
+      userAuth: action.payload,
+    };
 
-    case LOGIN_FAILURE:
-      return {
-        ...state,
-        loginError: action.payload,
-      };
+  case LOGIN_FAILURE:
+    return {
+      ...state,
+      loginError: action.payload,
+    };
 
-    case UPDATE_BASE_LOCATIONS:
-      return {
-        ...state,
-        renderedBases: action.payload,
-      };
+  case UPDATE_BASE_LOCATIONS:
+    return {
+      ...state,
+      renderedBases: action.payload,
+    };
 
-    case SET_USER_BASE:
-      return {
-        ...state,
-        userData: {
-          ...state.userData, 
-          baseLatitude: action.payload.latitude,
-          baseLongitude: action.payload.longitude,
-        },
-      };
+  case SET_USER_BASE:
+    return {
+      ...state,
+      userData: {
+        ...state.userData, 
+        baseLatitude: action.payload.latitude,
+        baseLongitude: action.payload.longitude,
+      },
+    };
 
-    case SET_BASE_ERROR:
-      return {
-        ...state,
-        setBaseError: action.payload,
-      };
+  case SET_BASE_ERROR:
+    return {
+      ...state,
+      setBaseError: action.payload,
+    };
 
-    case QUERY_BASES_ERROR:
-      return {
-        ...state,
-        queryBasesError: action.payload,
-      };
+  case QUERY_BASES_ERROR:
+    return {
+      ...state,
+      queryBasesError: action.payload,
+    };
 
-    case WIPE_CONTEXT:
-      return INITIAL_STATE;
+  case WIPE_CONTEXT:
+    return INITIAL_STATE;
 
-    case SET_COORDS:
-      return {
-        ...state,
-        coords: action.payload,
-      };
-    default:
-      return state;
+  case SET_COORDS:
+    return {
+      ...state,
+      coords: action.payload,
+    };
+  default:
+    return state;
   }
 };
 
@@ -106,9 +106,9 @@ const emailPasswordCreateAccount = (dispatch) => (email, password, username) => 
         email: user.email,
         username,
       })
-      .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: `error setting data: ${e.message} ${user}` }))
+        .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: `error setting data: ${e.message} ${user}` }));
     })
-    .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e.message }))
+    .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e.message }));
 };
 
 const queryNewBaseLocations = (dispatch) => (region) => {
@@ -152,7 +152,7 @@ const setCoords = (dispatch) => ({ coords }) => {
 
 const wipeContext = (dispatch) => () => {
   dispatch({ type: WIPE_CONTEXT });
-}
+};
 
 // export the newly created context
 export const { Context, Provider } = createDataContext(
