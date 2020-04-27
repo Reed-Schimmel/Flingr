@@ -20,6 +20,7 @@ const QUERY_BASES_ERROR      = 'query_bases_error';
 const WIPE_CONTEXT           = 'wipe_context';
 const SET_COORDS             = 'set_coords';
 const CREATE_ACCOUNT_SUCCESS = 'create_account_success';
+const LOAD_USER_DATA         = 'load_user_data';
 
 // default user document fields when a new user is generated
 const DEFAULT_USER_DOC = {
@@ -44,6 +45,12 @@ const reducer = (state, action) => {
       ...state,
       userData: action.payload.userData,
       userAuth: action.payload.userAuth,
+    };
+
+  case LOAD_USER_DATA:
+    return {
+      ...state,
+      userData: action.payload,
     };
 
   case LOGIN_FAILURE:
@@ -101,7 +108,12 @@ const reducer = (state, action) => {
 
 const emailPasswordLogin = (dispatch) => (email, password) => {
   firebase.auth().signInWithEmailAndPassword(email, password)
-    .then((userCredentials) => dispatch({ type: LOGIN_SUCCESS, payload: userCredentials }))
+    .then((userCredentials) => {
+      dispatch({ type: LOGIN_SUCCESS, payload: userCredentials });
+      const userDoc = firebase.firestore().collection('users').doc(userCredentials.uid);
+      userDoc.get()
+        .then((user) => dispatch({ type: LOAD_USER_DATA, payload: user.data() }));
+    })
     .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e.message }));
 };
 
