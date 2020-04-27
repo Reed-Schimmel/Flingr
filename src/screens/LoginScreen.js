@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { useState, /*useContext*/ } from 'react';
+import React, { useState, useContext } from 'react';
 import { StyleSheet, TextInput, View, TouchableOpacity, Text } from 'react-native';
-// import { Context as GlobalContext } from '../context/GlobalContext';
+import { Context as GlobalContext } from '../context/GlobalContext';
 
 const LoginScreen = () => {
   const [textFields, setTextFields] = useState({

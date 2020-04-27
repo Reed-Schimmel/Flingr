@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, Modal, Text, View, Alert } from 'react-native'; //Animate
 // import MapScreen from './MapScreen';
-import LoginScreen from './LoginScreen'
 import FloatingButton from '../components/FloatingButton';
 //import AREntery from '../ar/AREntery'
 import { Context } from '../context/GlobalContext';
