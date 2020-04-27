@@ -18,6 +18,7 @@ const SET_USER_BASE         = 'set_user_base';
 const SET_BASE_ERROR        = 'set_base_error';
 const QUERY_BASES_ERROR     = 'query_bases_error';
 const WIPE_CONTEXT          = 'wipe_context';
+const SET_COORDS            = 'set_coords';
 
 // default user document fields when a new user is generated
 const DEFAULT_USER_DOC = {
@@ -74,10 +75,15 @@ const reducer = (state, action) => {
     case WIPE_CONTEXT:
       return INITIAL_STATE;
 
+    case SET_COORDS:
+      return {
+        ...state,
+        coords: action.payload,
+      };
     default:
       return state;
   }
-}
+};
 
 // ACTIONS
 // actions take the form of an object with 2 key/value pairs:
@@ -107,10 +113,10 @@ const emailPasswordCreateAccount = (dispatch) => (email, password, username) => 
 
 const queryNewBaseLocations = (dispatch) => (region) => {
   const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
-  const left   = longitude - longitudeDelta;
-  const right  = longitude + longitudeDelta;
+  const left = longitude - longitudeDelta;
+  const right = longitude + longitudeDelta;
   const bottom = latitude - latitudeDelta;
-  const top    = latitude + latitudeDelta;
+  const top = latitude + latitudeDelta;
 
   const regionBases = [];
 
@@ -138,7 +144,11 @@ const setBaseLocation = (dispatch) => async (latitude, longitude, uid) => {
   })
     .then(() => dispatch({ type: SET_USER_BASE, payload: { latitude, longitude } }))
     .catch((e) => dispatch({ type: SET_BASE_ERROR, payload: e }));
-}
+};
+
+const setCoords = (dispatch) => ({ coords }) => {
+  dispatch({ type: SET_COORDS, payload: coords });
+};
 
 const wipeContext = (dispatch) => () => {
   dispatch({ type: WIPE_CONTEXT });
@@ -153,8 +163,22 @@ export const { Context, Provider } = createDataContext(
     queryNewBaseLocations,
     setBaseLocation,
     wipeContext,
+    setCoords,
   }, // actions (functions to be used to update global state)
   INITIAL_STATE, // initial state
+  { // actions (functions to be used to update global state)
+    userAuth: undefined,
+    userData: {},
+    loginError: '',
+    renderedBases: [],
+    coords: {
+      longitude: null,
+      latitude: null,
+      altitude: null,
+      accuracy: null,
+      altitudeAccuracy: null,
+    },
+  }, // initial state
 );
 
 // if you need to update the global state somehow, and there doesn't

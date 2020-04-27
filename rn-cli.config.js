@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 /**
  * Copyright (c) 2015-present, Facebook, Inc.
  * All rights reserved.
@@ -22,7 +23,7 @@ module.exports = {
   },
 
   getAssetExts() {
-    return ["obj", "mtl", "JPG", "vrx", "hdr", "gltf", "glb", "bin", "arobject"];
+    return ['obj', 'mtl', 'JPG', 'vrx', 'hdr', 'gltf', 'glb', 'bin', 'arobject'];
   },
 
   _getRoots() {
