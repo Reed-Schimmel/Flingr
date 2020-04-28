@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, Modal, Text, View, Alert } from 'react-native'; //Animate
-// import MapScreen from './MapScreen';
+import MapScreen from './MapScreen';
 import FloatingButton from '../components/FloatingButton';
 //import AREntery from '../ar/AREntery'
 import { Context } from '../context/GlobalContext';
@@ -10,8 +10,6 @@ const HomeScreen = () => {
 
   const { wipeContext, /*setBaseLocation*/ state, setCoords } = useContext(Context);
   const { /*setBaseError*/ userAuth } = state;
-
-  console.log(state, state.userData);
 
   let accuracy = 5; // meters of gps accuracy
 
@@ -59,7 +57,7 @@ const HomeScreen = () => {
     <>
       {showAuthModal ? null : <FloatingButton title="Log Out" onPress={logout} style = {styles.FloatingButton}/>}
           
-      {/* <MapScreen/>  */}
+      <MapScreen userBaseLocation = {base.isPin}/>
       
       {showAuthModal ? null : <FloatingButton title={[base.isPin == true ? 'Fire' : 'Set Base']} 
         onPress={setBase}/>}
@@ -103,3 +101,4 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
+
