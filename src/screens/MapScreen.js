@@ -1,78 +1,48 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, StyleSheet, StatusBar, Dimensions } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native'; //Animate
 import MapView, { Marker } from 'react-native-maps';
-import FloatingButton from '../components/FloatingButton';
 import { Context } from '../context/GlobalContext';
 
-//These constants determine how zoomed in the map view is when hovering over a location.
 const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-//Description of the function getCurrentLocation:
-
-// @pre The user allows location services 
-
-// @post the position of the user is found
-const getCurrentLocation = () => {
-  return new Promise((resolve, reject) => {
-    navigator.geolocation.getCurrentPosition(position => resolve(position), e => reject(e));
-      });
-    };
-
-  //const { userAuth, loginError } = useContext(Context)
-
-const MapScreen = (props) => {
+const MapScreen = (props) => { // TODO: very slow buttons bug
   const { /*queryNewBaseLocations,*/ state } = useContext(Context);
+  const { /*renderedBases, queryBasesError,*/ coords } = state;
 
-    //Description of the function useEffect:
-
-    // @pre The location of the user is found
-
-    // @post Stores the coordinates of the user
-  useEffect(() => {
-      getCurrentLocation().then(position => {
-          if (position) {
-              setStates({
-                  region: {
-                      latitude: position.coords.latitude,
-                      longitude: position.coords.longitude,
-                      latitudeDelta: LATITUDE_DELTA,
-                      longitudeDelta: LONGITUDE_DELTA
-                  },
-              });
-          }
-      });
-  }, []);
-
-    //Description of the function useState:
-
-    // @pre The Home screen is accessed
-
-    // @post If user rejects location services a default region is given
-const [states, setStates] = useState({
-  region: {
+  const [region, setRegion] = useState({
     latitude: 39,
     longitude: -98,
     latitudeDelta: LATITUDE_DELTA,
     longitudeDelta: LONGITUDE_DELTA,
-  },
-});
-     
-    //const { userAuth, loginError } = useContext(Context)
+  });
+
+  useEffect(() => {
+    console.log(coords);
+    // update region state every time the global context has new coords
+    setRegion({
+      latitude: coords.latitude || region.latitude,
+      longitude: coords.longitude || region.longitude,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA
+    });
+  }, [coords.latitude === null]);
+
+  //const { userAuth, loginError } = useContext(Context)
   return (
-    <MapView style={[styles.map, props.style]} region={states.region}/>
+    <MapView style={[styles.map, props.style]} region={region} showsUserLocation={true}>
+      <Marker coordinate={region} />
+    </MapView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: StatusBar.currentHeight, // for Android. If this looks weird in iOS tell Reed.
-    backgroundColor: '#FFF'
+    backgroundColor: '#FFF',
   },
-
   map: {
     ...StyleSheet.absoluteFillObject,
   },
