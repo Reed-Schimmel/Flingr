@@ -4,7 +4,7 @@ import createDataContext from './createDataContext';
 
 // default initial state
 const INITIAL_STATE = { // actions (functions to be used to update global state)
-  userAuth: {},
+  userAuth: undefined,
   userData: {},
   loginError: '',
   renderedBases: [],
