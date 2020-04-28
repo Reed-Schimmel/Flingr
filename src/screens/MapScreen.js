@@ -37,7 +37,7 @@ const MapScreen = (props) => { // TODO: very slow buttons bug
         <FloatingButton title = {state.userData.username} style = {styles.marker}/> 
         <View style = {styles.stick}></View>
       </Marker> : null}
-  </MapView>
+    </MapView>
 
   );
 };
