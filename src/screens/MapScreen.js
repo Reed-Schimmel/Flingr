@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center',
-    shadowColor: "#000",
+    shadowColor: '#000',
   },
   stick: {
     position: 'relative',
@@ -69,7 +69,6 @@ const styles = StyleSheet.create({
     width: 5,
     height: 50,
   },
-
 });
 
 export default MapScreen;
