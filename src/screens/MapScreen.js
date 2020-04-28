@@ -46,6 +46,29 @@ const styles = StyleSheet.create({
   map: {
     ...StyleSheet.absoluteFillObject,
   },
+  marker: {
+    position: 'relative',
+    right: 0,
+    bottom: 0,
+    height: 50,
+    width: 100,
+    top: -25,
+    borderRadius: 50,
+    zIndex: 0,
+    backgroundColor: 'lightblue',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    shadowColor: '#000',
+  },
+  stick: {
+    position: 'relative',
+    top: -35,
+    left: 45,
+    backgroundColor: 'lightblue',
+    width: 5,
+    height: 50,
+  },
 });
 
 export default MapScreen;
