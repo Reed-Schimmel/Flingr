@@ -44,8 +44,8 @@ const MapScreen = (props) => {
 
   return (
     <MapView style={[styles.map, props.style]} region={region} showsUserLocation={true}>
-    <Marker coordinate={region} />
-  </MapView>
+      <Marker coordinate={region} />
+    </MapView>
     // <MapView style={[styles.map, props.style]} region={states.region} showsUserLocation={props.userBaseLocation === false ? true : false}>
     //   {props.userBaseLocation === true 
     //     ? <Marker coordinate={states.region}> 
