@@ -35,7 +35,7 @@ const MapScreen = (props) => { // TODO: very slow buttons bug
       longitudeDelta: LONGITUDE_DELTA
     });
   }, [coords.latitude === null]);
-
+  //props.userBaseLocation === false ? true : false
   //const { userAuth, loginError } = useContext(Context)
   return (
     <MapView style={[styles.map, props.style]} region={region} showsUserLocation={true}>
