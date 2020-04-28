@@ -16,7 +16,7 @@ const getCurrentLocation = () => {
 
 const MapScreen = (props) => { // TODO: very slow buttons bug
   const { /*queryNewBaseLocations,*/ state } = useContext(Context);
-  const { /*renderedBases, queryBasesError,*/ coords } = state;
+  //const { /*renderedBases, queryBasesError,*/ coords } = state;
 
   const [states, setState] = useState({
     region: {
