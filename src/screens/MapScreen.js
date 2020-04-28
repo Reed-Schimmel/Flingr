@@ -10,13 +10,7 @@ const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 const getCurrentLocation = () => {
-  return new Promise (
-    (resolve, reject) => {
-      navigator.geolocation.getCurrentPosition (
-        position => resolve(position), e => reject(e)
-        );
-      }
-  );
+  return new Promise ( (resolve, reject) => {navigator.geolocation.getCurrentPosition (position => resolve(position), e => reject(e))});
 };
 
 const MapScreen = (props) => { // TODO: very slow buttons bug
