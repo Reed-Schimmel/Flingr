@@ -32,9 +32,15 @@ const MapScreen = (props) => { // TODO: very slow buttons bug
 
   //const { userAuth, loginError } = useContext(Context)
   return (
-    <MapView style={[styles.map, props.style]} region={region} showsUserLocation={true}>
-      <Marker coordinate={region} />
-    </MapView>
+    <MapView style={[styles.map, props.style]} region={states.region} 
+    showsUserLocation={props.userBaseLocation === false ? true : false}>
+      {props.userBaseLocation === true ? 
+      <Marker coordinate={states.region}> 
+        <FloatingButton title = {state.userData.username} style = {styles.marker}/> 
+        <View style = {styles.stick}></View>
+      </Marker> : null}
+  </MapView>
+
   );
 };
 
