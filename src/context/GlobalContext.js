@@ -3,11 +3,18 @@ import 'firebase/firestore';
 import createDataContext from './createDataContext';
 
 // default initial state
-const INITIAL_STATE = {
+const INITIAL_STATE = { // actions (functions to be used to update global state)
   userAuth: undefined,
   userData: {},
   loginError: '',
   renderedBases: [],
+  coords: {
+    longitude: null,
+    latitude: null,
+    altitude: null,
+    accuracy: null,
+    altitudeAccuracy: null,
+  },
 };
 
 // these are just to ensure string consistency
@@ -181,19 +188,6 @@ export const { Context, Provider } = createDataContext(
     setCoords,
   }, // actions (functions to be used to update global state)
   INITIAL_STATE, // initial state
-  { // actions (functions to be used to update global state)
-    userAuth: undefined,
-    userData: {},
-    loginError: '',
-    renderedBases: [],
-    coords: {
-      longitude: null,
-      latitude: null,
-      altitude: null,
-      accuracy: null,
-      altitudeAccuracy: null,
-    },
-  }, // initial state
 );
 
 // if you need to update the global state somehow, and there doesn't
