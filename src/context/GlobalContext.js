@@ -4,16 +4,16 @@ import createDataContext from './createDataContext';
 
 // default initial state
 const INITIAL_STATE = { // actions (functions to be used to update global state)
-  userAuth: undefined,
+  userAuth: {},
   userData: {},
   loginError: '',
   renderedBases: [],
   coords: {
-    longitude: null,
-    latitude: null,
-    altitude: null,
-    accuracy: null,
-    altitudeAccuracy: null,
+    longitude: 0,
+    latitude: 0,
+    altitude: 0,
+    accuracy: 0,
+    altitudeAccuracy: 0,
   },
 };
 
@@ -123,7 +123,7 @@ const emailPasswordCreateAccount = (dispatch) => (email, password, username) => 
       const userData = {
         ...DEFAULT_USER_DOC,
         email: user.email,
-        username
+        username,
       };
       dispatch({ type: LOGIN_SUCCESS, payload: user });
       dispatch({ type: LOAD_USER_DATA, payload: userData });
