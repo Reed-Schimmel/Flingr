@@ -25,13 +25,7 @@ const getCurrentLocation = () => {
 
 const MapScreen = (props) => {
   const { /*queryNewBaseLocations,*/ state } = useContext(Context);
-  const { userAuth } = state;
 
-  const [name, setName] = useState({username: ''});
-
-  const setUsername = () => {
-    setName({username: state.userData.username});
-  }
     //Description of the function useEffect:
 
     // @pre The location of the user is found
@@ -68,14 +62,7 @@ const [states, setStates] = useState({
      
     //const { userAuth, loginError } = useContext(Context)
   return (
-    <MapView style={[styles.map, props.style]} region={states.region} 
-      showsUserLocation={props.userBaseLocation == false ? true : false}>
-        {props.userBaseLocation === true ? 
-        <Marker coordinate={states.region}> 
-          <FloatingButton title = {state.userData.username} style = {styles.marker}/> 
-          <View style = {styles.stick}></View>
-        </Marker> : null}
-    </MapView>
+    <MapView style={[styles.map, props.style]} region={states.region}/>
   );
 }
 
