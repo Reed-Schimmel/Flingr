@@ -39,7 +39,7 @@ const MapScreen = (props) => {
           },
         });
       }
-    })
+    });
   }, []);
 
   return (
