@@ -11,6 +11,8 @@ const HomeScreen = () => {
   const { wipeContext, /*setBaseLocation*/ state, setCoords } = useContext(Context);
   const { /*setBaseError*/ userAuth } = state;
 
+  console.log(state, state.userData);
+
   let accuracy = 5; // meters of gps accuracy
 
   useEffect(() => {

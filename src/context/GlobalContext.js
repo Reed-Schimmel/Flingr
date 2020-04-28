@@ -40,6 +40,7 @@ const reducer = (state, action) => {
     };
 
   case LOAD_USER_DATA:
+    console.log('loading user data...', action.payload);
     return {
       ...state,
       userData: action.payload,
@@ -100,27 +101,27 @@ const reducer = (state, action) => {
 
 const emailPasswordLogin = (dispatch) => (email, password) => {
   firebase.auth().signInWithEmailAndPassword(email, password)
-    .then((userCredentials) => {
-      dispatch({ type: LOGIN_SUCCESS, payload: userCredentials });
-      const userDoc = firebase.firestore().collection('users').doc(userCredentials.uid);
+    .then(({ user }) => {
+      dispatch({ type: LOGIN_SUCCESS, payload: user });
+      const userDoc = firebase.firestore().collection('users').doc(user.uid);
       userDoc.get()
-        .then((user) => dispatch({ type: LOAD_USER_DATA, payload: user.data() }));
+        .then((userSnapshot) => dispatch({ type: LOAD_USER_DATA, payload: userSnapshot.data() }));
     })
     .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e.message }));
 };
 
 const emailPasswordCreateAccount = (dispatch) => (email, password, username) => {
   firebase.auth().createUserWithEmailAndPassword(email, password)
-    .then(async ({ userAuth }) => {
+    .then(async ({ user }) => {
       const userData = {
         ...DEFAULT_USER_DOC,
-        email: userAuth.email,
+        email: user.email,
         username
       };
-      dispatch({ type: LOGIN_SUCCESS, payload: userAuth });
+      dispatch({ type: LOGIN_SUCCESS, payload: user });
       dispatch({ type: LOAD_USER_DATA, payload: userData });
-      await firebase.firestore().collection('users').doc(`${userAuth.uid}`).set(userData)
-        .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: `error setting data: ${e.message} ${userAuth}` }));
+      await firebase.firestore().collection('users').doc(`${user.uid}`).set(userData)
+        .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: `error setting data: ${e.message} ${user}` }));
     })
     .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e.message }));
 };
