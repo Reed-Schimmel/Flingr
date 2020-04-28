@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { StyleSheet, Dimensions } from 'react-native'; //Animate
+import { View, StyleSheet, Dimensions } from 'react-native'; //Animate
 import MapView, { Marker } from 'react-native-maps';
 import { Context } from '../context/GlobalContext';
+import FloatingButton from '../components/FloatingButton';
 
 const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
@@ -39,9 +40,11 @@ const MapScreen = (props) => { // TODO: very slow buttons bug
   //const { userAuth, loginError } = useContext(Context)
   return (
     <MapView style={[styles.map, props.style]} region={region} showsUserLocation={props.userBaseLocation === false ? true : false}>
-      {props.userBaseLocation === true 
+      {
+        props.userBaseLocation === true 
         ? <Marker coordinate={region}><FloatingButton title = {state.userData.username} style = {styles.marker}/><View style = {styles.stick}></View></Marker> 
-        : null}
+        : null
+      }
     </MapView>
   );
 };
