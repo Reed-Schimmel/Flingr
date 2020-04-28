@@ -5,7 +5,7 @@ import { Context as GlobalContext } from '../context/GlobalContext';
 
 const LoginScreen = (props) => {
   const [textFields, setTextFields] = useState({
-    username: '',
+    email: '',
     password: '',
   });
 
@@ -13,7 +13,7 @@ const LoginScreen = (props) => {
 
   const onLoginPress = () => {
     // check for validity
-    emailPasswordLogin(textFields.username, textFields.password);
+    emailPasswordLogin(textFields.email, textFields.password);
   };
 
   return (
@@ -25,9 +25,9 @@ const LoginScreen = (props) => {
         <TextInput 
           style ={styles.textinput}
           underlineColorAndroid = 'transparent'
-          placeholder ="Username"
+          placeholder ="Email"
           placeholderTextColor= "#ffffff"
-          onChangeText ={(username) => setTextFields({ ...textFields, username })}
+          onChangeText ={(email) => setTextFields({ ...textFields, email })}
         />
       </View>
 

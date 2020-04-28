@@ -3,22 +3,30 @@ import 'firebase/firestore';
 import createDataContext from './createDataContext';
 
 // default initial state
-const INITIAL_STATE = {
+const INITIAL_STATE = { // actions (functions to be used to update global state)
   userAuth: undefined,
   userData: {},
   loginError: '',
   renderedBases: [],
+  coords: {
+    longitude: 0,
+    latitude: 0,
+    altitude: 0,
+    accuracy: 0,
+    altitudeAccuracy: 0,
+  },
 };
 
 // these are just to ensure string consistency
-const LOGIN_SUCCESS         = 'login_success';
-const LOGIN_FAILURE         = 'login_failure';
-const UPDATE_BASE_LOCATIONS = 'update_base_locations';
-const SET_USER_BASE         = 'set_user_base';
-const SET_BASE_ERROR        = 'set_base_error';
-const QUERY_BASES_ERROR     = 'query_bases_error';
-const WIPE_CONTEXT          = 'wipe_context';
-const SET_COORDS            = 'set_coords';
+const LOGIN_SUCCESS          = 'login_success';
+const LOGIN_FAILURE          = 'login_failure';
+const UPDATE_BASE_LOCATIONS  = 'update_base_locations';
+const SET_USER_BASE          = 'set_user_base';
+const SET_BASE_ERROR         = 'set_base_error';
+const QUERY_BASES_ERROR      = 'query_bases_error';
+const WIPE_CONTEXT           = 'wipe_context';
+const SET_COORDS             = 'set_coords';
+const LOAD_USER_DATA         = 'load_user_data';
 
 // default user document fields when a new user is generated
 const DEFAULT_USER_DOC = {
@@ -36,6 +44,13 @@ const reducer = (state, action) => {
     return {
       ...state,
       userAuth: action.payload,
+    };
+
+  case LOAD_USER_DATA:
+    console.log('loading user data...', action.payload);
+    return {
+      ...state,
+      userData: action.payload,
     };
 
   case LOGIN_FAILURE:
@@ -93,19 +108,26 @@ const reducer = (state, action) => {
 
 const emailPasswordLogin = (dispatch) => (email, password) => {
   firebase.auth().signInWithEmailAndPassword(email, password)
-    .then((userCredentials) => dispatch({ type: LOGIN_SUCCESS, payload: userCredentials }))
+    .then(({ user }) => {
+      dispatch({ type: LOGIN_SUCCESS, payload: user });
+      const userDoc = firebase.firestore().collection('users').doc(user.uid);
+      userDoc.get()
+        .then((userSnapshot) => dispatch({ type: LOAD_USER_DATA, payload: userSnapshot.data() }));
+    })
     .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e.message }));
 };
 
 const emailPasswordCreateAccount = (dispatch) => (email, password, username) => {
   firebase.auth().createUserWithEmailAndPassword(email, password)
     .then(async ({ user }) => {
-      dispatch({ type: LOGIN_SUCCESS, payload: user });
-      await firebase.firestore().collection('users').doc(`${user.uid}`).set({
+      const userData = {
         ...DEFAULT_USER_DOC,
         email: user.email,
         username,
-      })
+      };
+      dispatch({ type: LOGIN_SUCCESS, payload: user });
+      dispatch({ type: LOAD_USER_DATA, payload: userData });
+      await firebase.firestore().collection('users').doc(`${user.uid}`).set(userData)
         .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: `error setting data: ${e.message} ${user}` }));
     })
     .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e.message }));
@@ -166,19 +188,6 @@ export const { Context, Provider } = createDataContext(
     setCoords,
   }, // actions (functions to be used to update global state)
   INITIAL_STATE, // initial state
-  { // actions (functions to be used to update global state)
-    userAuth: undefined,
-    userData: {},
-    loginError: '',
-    renderedBases: [],
-    coords: {
-      longitude: null,
-      latitude: null,
-      altitude: null,
-      accuracy: null,
-      altitudeAccuracy: null,
-    },
-  }, // initial state
 );
 
 // if you need to update the global state somehow, and there doesn't

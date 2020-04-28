@@ -27,7 +27,7 @@ const RegisterScreen = (props) => {
           style ={styles.textinput}
           underlineColorAndroid = 'transparent'
           placeholder ="Email"
-          placeholderTextColor= "#ffffff"
+          // placeholderTextColor= "#ffffff"
           value={textFields.email}
           onChangeText ={(email) => setTextFields ({ ...textFields, email })}
         />
@@ -37,7 +37,9 @@ const RegisterScreen = (props) => {
         <TextInput 
           style ={styles.textinput}
           underlineColorAndroid = 'transparent'
-          placeholder ="Username"props
+          placeholder ="Username"
+          value={textFields.username}
+          onChangeText={(username) => setTextFields({ ...textFields, username })}
         />
       </View>
 
@@ -48,7 +50,7 @@ const RegisterScreen = (props) => {
           style={styles.textinput}
           underlineColorAndroid = 'transparent'
           placeholder ="Password"
-          placeholderTextColor= "#ffffff"
+          // placeholderTextColor= "#ffffff"
           value={textFields.password}
           onChangeText ={(password) => setTextFields ({ ...textFields, password })}
         />
