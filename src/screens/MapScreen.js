@@ -9,11 +9,11 @@ const ASPECT_RATIO = screen.width / screen.height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-// const getCurrentLocation = () => {
-//   return new Promise((resolve, reject) => {
-//     navigator.geolocation.getCurrentPosition(position => resolve(position), e => reject(e));
-//   });
-// };
+const getCurrentLocation = () => {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(position => resolve(position), e => reject(e));
+  });
+};
 
 const MapScreen = (props) => { // TODO: very slow buttons bug
   const { /*queryNewBaseLocations,*/ state } = useContext(Context);
@@ -27,13 +27,15 @@ const MapScreen = (props) => { // TODO: very slow buttons bug
   });
 
   useEffect(() => {
-    console.log(coords);
-    // update region state every time the global context has new coords
-    setRegion({
-      latitude: coords.latitude || region.latitude,
-      longitude: coords.longitude || region.longitude,
-      latitudeDelta: LATITUDE_DELTA,
-      longitudeDelta: LONGITUDE_DELTA
+    getCurrentLocation().then(position => {
+      if (position) {
+        setRegion({
+          latitude: position.coords.latitude || region.latitude,
+          longitude: position.coords.longitude || region.longitude,
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta: LONGITUDE_DELTA
+        });
+      }
     });
   }, [coords.latitude === null]);
 
