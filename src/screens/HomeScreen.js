@@ -5,9 +5,9 @@ import FloatingButton from '../components/FloatingButton';
 //import AREntery from '../ar/AREntery'
 import { Context } from '../context/GlobalContext';
 import AuthenticationModal from '../components/AuthenticationModal';
+
 const HomeScreen = () => {
   const [base, setBases] = useState({isPin: false});
-
   const { wipeContext, /*setBaseLocation*/ state, setCoords } = useContext(Context);
   const { /*setBaseError*/ userAuth } = state;
 
