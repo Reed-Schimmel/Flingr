@@ -29,11 +29,11 @@ const MapScreen = (props) => { // TODO: very slow buttons bug
       longitudeDelta: LONGITUDE_DELTA
     });
   }, [coords.latitude === null]);
-console.log(state.userData)
+
   //const { userAuth, loginError } = useContext(Context)
   return (
-    <MapView style={[styles.map, props.style]} region={region} showsUserLocation={false}>
-      <Marker title = {state.userData.username} coordinate={region} />
+    <MapView style={[styles.map, props.style]} region={region} showsUserLocation={true}>
+      <Marker coordinate={region} />
     </MapView>
   );
 };
@@ -49,4 +49,3 @@ const styles = StyleSheet.create({
 });
 
 export default MapScreen;
-
