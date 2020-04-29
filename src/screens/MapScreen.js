@@ -10,7 +10,7 @@ const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 const MapScreen = (props) => { // TODO: very slow buttons bug
-  const { queryNewBaseLocations, state } = useContext(Context);
+  const { /*queryNewBaseLocations,*/ state } = useContext(Context);
   const { /*renderedBases, queryBasesError,*/ coords } = state;
   
   const [region, setRegion] = useState({
@@ -34,13 +34,13 @@ const MapScreen = (props) => { // TODO: very slow buttons bug
 
   return (
     <MapView style={[styles.map, props.style]} region={region} 
-             showsUserLocation={props.userBaseLocation === true ? false : true}>
+      showsUserLocation={props.userBaseLocation === true ? false : true}>
       {
         props.userBaseLocation === true 
-        ? <Marker coordinate={region} title = {state.userData.username}>
+          ? <Marker coordinate={region} title = {state.userData.username}>
             <FloatingButton style = {styles.marker}/>
             <View style = {styles.stick}/></Marker> 
-        : null
+          : null
       }
     </MapView>
   );

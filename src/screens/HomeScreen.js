@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { StyleSheet, Modal, Text, View, Alert } from 'react-native'; //Animate
+import { StyleSheet, Modal, Alert } from 'react-native'; //Animate
 import MapScreen from './MapScreen';
 import FloatingButton from '../components/FloatingButton';
 //import AREntery from '../ar/AREntery'
@@ -9,7 +9,7 @@ import AuthenticationModal from '../components/AuthenticationModal';
 const HomeScreen = () => {
   const [base, setBases] = useState({isPin: false});
   const { wipeContext, setBaseLocation, state, setCoords } = useContext(Context);
-  const { setBaseError, userAuth, coords } = state;
+  const { /*setBaseError,*/ userAuth, coords } = state;
 
   let accuracy = 5; // meters of gps accuracy
 
@@ -21,7 +21,7 @@ const HomeScreen = () => {
       
       setCoords(position);
     }, (e) => {
-      //console.log('GPS error', e);
+      console.log('GPS error', e);
       // if (e.PERMISSION_DENIED) navigator.geolocation.requestAuthorization();
     }, {
       enableHighAccuracy: true,
@@ -32,8 +32,7 @@ const HomeScreen = () => {
     return () => navigator.geolocation.stopObserving(); // eslint-disable-line no-undef
   }, []);
 
-  const setBase = () => {
-   
+  const setBase = () => {   
     if(state.userData.homeLatitude === 0)
     {
  
@@ -54,19 +53,6 @@ const HomeScreen = () => {
       //<AREntery/>
     }
   };
-
-
-
-  // useEffect(() => {
-  //  if(state.userData.baseLatitude === 0)
-  //  {
-  //    setBases({isPin: false})
-
-  //  }
-  //  else
-  //   setBases({isPin: true})
-  // }, []);
-
 
   const logout = () => {
     wipeContext();
