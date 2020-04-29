@@ -8,8 +8,8 @@ import AuthenticationModal from '../components/AuthenticationModal';
 
 const HomeScreen = () => {
   const [base, setBases] = useState({isPin: false});
-  const { wipeContext, /*setBaseLocation*/ state, setCoords } = useContext(Context);
-  const { /*setBaseError*/ userAuth } = state;
+  const { wipeContext, setBaseLocation, state, setCoords } = useContext(Context);
+  const { setBaseError, userAuth, coords } = state;
 
   let accuracy = 5; // meters of gps accuracy
 
@@ -18,9 +18,10 @@ const HomeScreen = () => {
     // Set GPS watching and update context https://reactnative.dev/docs/geolocation.html#watchposition
     navigator.geolocation.watchPosition((position) => { // eslint-disable-line no-undef
       accuracy = position.coords.accuracy;
+      
       setCoords(position);
     }, (e) => {
-      console.log('GPS error', e);
+      //console.log('GPS error', e);
       // if (e.PERMISSION_DENIED) navigator.geolocation.requestAuthorization();
     }, {
       enableHighAccuracy: true,
@@ -32,19 +33,40 @@ const HomeScreen = () => {
   }, []);
 
   const setBase = () => {
-    if(base.isPin == false)
+   
+    if(state.userData.homeLatitude === 0)
     {
+ 
+      state.userData.homeLatitude = coords.latitude;
+      setBaseLocation(coords.latitude, coords.longitude, state.userAuth.uid);
+
       Alert.alert('Important', 'Are you sure you would like to set your base at your current location?',
         [
           {text: 'Yes', onPress: () => {setBases({isPin: true});}, style: 'OK'},
           {text: 'No', onPress: () => {setBases({isPin: false});}, style: 'cancel'}
         ]);
     }
-    else{
+    else if(base.isPin === false && state.userData.baseLatitude === 0){
+      setBases({isPin: true});
+    }
+    else
+    {
       //<AREntery/>
-      return(<View><Text>ar screen</Text></View>);
     }
   };
+
+
+
+  // useEffect(() => {
+  //  if(state.userData.baseLatitude === 0)
+  //  {
+  //    setBases({isPin: false})
+
+  //  }
+  //  else
+  //   setBases({isPin: true})
+  // }, []);
+
 
   const logout = () => {
     wipeContext();
@@ -59,7 +81,7 @@ const HomeScreen = () => {
           
       <MapScreen userBaseLocation = {base.isPin}/>
       
-      {showAuthModal ? null : <FloatingButton title={[base.isPin == true ? 'Fire' : 'Set Base']} 
+      {showAuthModal ? null : <FloatingButton title={[state.userData.homeLatitude === 0 ? 'Set Base' : 'Fire']} //[base.isPin == true ? 'Fire' : 'Set Base']
         onPress={setBase}/>}
 
       <Modal 

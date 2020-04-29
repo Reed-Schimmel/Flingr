@@ -9,40 +9,40 @@ const ASPECT_RATIO = screen.width / screen.height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-const getCurrentLocation = () => {
-  return new Promise((resolve, reject) => {
-    navigator.geolocation.getCurrentPosition(position => resolve(position), e => reject(e));// eslint-disable-line no-undef
-  });
-};
-
 const MapScreen = (props) => { // TODO: very slow buttons bug
-  const { /*queryNewBaseLocations,*/ state } = useContext(Context);
+  const { queryNewBaseLocations, state } = useContext(Context);
   const { /*renderedBases, queryBasesError,*/ coords } = state;
-
+  
   const [region, setRegion] = useState({
-    latitude: 39,
-    longitude: -98,
+    latitude: coords.latitude || 39,
+    longitude: coords.longitude || -98,
     latitudeDelta: LATITUDE_DELTA,
     longitudeDelta: LONGITUDE_DELTA,
   });
 
   useEffect(() => {
-    getCurrentLocation().then(position => {
-      if (position) {
-        setRegion({
-          latitude: position.coords.latitude || region.latitude,
-          longitude: position.coords.longitude || region.longitude,
-          latitudeDelta: LATITUDE_DELTA,
-          longitudeDelta: LONGITUDE_DELTA
-        });
-      }
+    //queryNewBaseLocations(region);
+    //console.log(state.userData)
+    // update region state every time the global context has new coords
+    setRegion({
+      latitude: coords.latitude || region.latitude,
+      longitude: coords.longitude || region.longitude,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA
     });
-  }, [coords.latitude === null]);
+  }, [coords.latitude === 0]);
 
-  //const { userAuth, loginError } = useContext(Context)
   return (
-    <MapView style={[styles.map, props.style]} region={region} showsUserLocation={props.userBaseLocation === false ? true : false}>
-      {props.userBaseLocation === true ? <Marker coordinate={region}><FloatingButton title = {state.userData.username} style = {styles.marker}/><View style = {styles.stick}/></Marker> : null}</MapView>
+    <MapView style={[styles.map, props.style]} region={region} 
+             showsUserLocation={props.userBaseLocation === true ? false : true}>
+      {
+        props.userBaseLocation === true 
+        ? <Marker coordinate={region} title = {state.userData.username}>
+            <FloatingButton style = {styles.marker}/>
+            <View style = {styles.stick}/></Marker> 
+        : null
+      }
+    </MapView>
   );
 };
 
