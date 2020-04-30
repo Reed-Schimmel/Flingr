@@ -30,7 +30,7 @@ const MapScreen = (props) => { // TODO: very slow buttons bug
       latitudeDelta: LATITUDE_DELTA,
       longitudeDelta: LONGITUDE_DELTA
     });
-  }, [coords.latitude === 0]);
+  }, [coords.latitude === null]);
 
   return (
     <MapView style={[styles.map, props.style]} region={region} 
