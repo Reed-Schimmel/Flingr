@@ -1,3 +1,5 @@
+//Description: Registration screen for app
+//Author: Jamima Abdul Hakkeem
 import React, { useContext, useState } from 'react';
 import { StyleSheet, TextInput, View, Text, TouchableOpacity } from 'react-native';
 import { Context as GlobalContext } from '../context/GlobalContext';
@@ -10,11 +12,40 @@ const RegisterScreen = (props) => {
     password: '',
   });
 
+    //Function that sets email, username and password
   const { emailPasswordCreateAccount, state: { loginError } } = useContext(GlobalContext);
 
+    // checks validity when register button is pressed
   const onRegisterPress = () => {
-    // check for validity
-    emailPasswordCreateAccount(textFields.email, textFields.password, textFields.username);
+   
+
+    if (textFields.email.length===0 && textFields.username.length===0 && textFields.password.length===0)
+    {
+        alert ("Please enter the text fields to continue!");
+    }
+    else if (textFields.email.length===0)
+    {
+      alert ("Please enter an email to continue!");
+    }
+
+    else if (textFields.username.length===0)
+    {
+      alert ("Please enter a username to continue!");
+    }
+
+    else if (textFields.password.length===0)
+    {
+      alert ("Please enter a password to continue!");
+    }
+
+    else if (textFields.email.length>0 && textFields.username.length>0  && textFields.password.length>0 )
+    {
+      emailPasswordCreateAccount(textFields.email, textFields.password, textFields.username);
+    }
+
+
+
+
   };
 
   return (
@@ -23,7 +54,7 @@ const RegisterScreen = (props) => {
       <Text>{loginError}</Text>
 
       <View style ={styles.inputView}>
-        <TextInput 
+        <TextInput
           style ={styles.textinput}
           underlineColorAndroid = 'transparent'
           placeholder ="Email"
@@ -34,7 +65,7 @@ const RegisterScreen = (props) => {
       </View>
 
       <View style ={styles.inputView}>
-        <TextInput 
+        <TextInput
           style ={styles.textinput}
           underlineColorAndroid = 'transparent'
           placeholder ="Username"

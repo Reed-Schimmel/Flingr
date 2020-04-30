@@ -1,7 +1,11 @@
+//Description: Login screen for app
+//Author: Jamima Abdul Hakkeem
+
 /* eslint-disable react/no-unescaped-entities */
 import React, { useState, useContext } from 'react';
 import { StyleSheet, TextInput, View, TouchableOpacity, Text } from 'react-native';
 import { Context as GlobalContext } from '../context/GlobalContext';
+
 
 const LoginScreen = (props) => {
   const [textFields, setTextFields] = useState({
@@ -9,11 +13,33 @@ const LoginScreen = (props) => {
     password: '',
   });
 
+  //Function that sets username and password
   const { emailPasswordLogin, state: { loginError } } = useContext(GlobalContext);
 
+    // checks validity when login button is pressed
   const onLoginPress = () => {
-    // check for validity
+
+
+    if (textFields.email.length===0 && textFields.password.length===0)
+      {
+        alert ("Please enter a username and password to continue!");
+      }
+
+    else if (textFields.email.length===0)
+    {
+      alert ("Please enter a username to continue!");
+    }
+
+    else if (textFields.password.length===0)
+    {
+      alert ("Please enter a password to continue!");
+    }
+
+  else if (textFields.email.length> 0 && textFields.password.length>0 )
+    {
+
     emailPasswordLogin(textFields.email, textFields.password);
+    }
   };
 
   return (
@@ -22,10 +48,10 @@ const LoginScreen = (props) => {
       <Text>{loginError}</Text>
 
       <View style ={styles.inputView}>
-        <TextInput 
+        <TextInput
           style ={styles.textinput}
           underlineColorAndroid = 'transparent'
-          placeholder ="Email"
+          placeholder ="Username"
           placeholderTextColor= "#ffffff"
           onChangeText ={(email) => setTextFields({ ...textFields, email })}
         />
