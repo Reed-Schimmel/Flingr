@@ -1,7 +1,7 @@
 //Description: Registration screen for app
 //Author: Jamima Abdul Hakkeem
 import React, { useContext, useState } from 'react';
-import { StyleSheet, TextInput, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, TextInput, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Context as GlobalContext } from '../context/GlobalContext';
 
 const RegisterScreen = (props) => {
@@ -12,34 +12,29 @@ const RegisterScreen = (props) => {
     password: '',
   });
 
-    //Function that sets email, username and password
+  //Function that sets email, username and password
   const { emailPasswordCreateAccount, state: { loginError } } = useContext(GlobalContext);
 
-    // checks validity when register button is pressed
+  // checks validity when register button is pressed
   const onRegisterPress = () => {
-   
 
-    if (textFields.email.length===0 && textFields.username.length===0 && textFields.password.length===0)
-    {
-        alert ("Please enter the text fields to continue!");
+
+    if (textFields.email.length === 0 && textFields.username.length === 0 && textFields.password.length === 0) {
+      Alert.alert('Please enter the text fields to continue!');
     }
-    else if (textFields.email.length===0)
-    {
-      alert ("Please enter an email to continue!");
+    else if (textFields.email.length === 0) {
+      Alert.alert('Please enter an email to continue!');
     }
 
-    else if (textFields.username.length===0)
-    {
-      alert ("Please enter a username to continue!");
+    else if (textFields.username.length === 0) {
+      Alert.alert('Please enter a username to continue!');
     }
 
-    else if (textFields.password.length===0)
-    {
-      alert ("Please enter a password to continue!");
+    else if (textFields.password.length === 0) {
+      Alert.alert('Please enter a password to continue!');
     }
 
-    else if (textFields.email.length>0 && textFields.username.length>0  && textFields.password.length>0 )
-    {
+    else if (textFields.email.length > 0 && textFields.username.length > 0 && textFields.password.length > 0) {
       emailPasswordCreateAccount(textFields.email, textFields.password, textFields.username);
     }
 
@@ -49,26 +44,26 @@ const RegisterScreen = (props) => {
   };
 
   return (
-    <View style ={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.mainheader}>Flingr</Text>
       <Text>{loginError}</Text>
 
-      <View style ={styles.inputView}>
+      <View style={styles.inputView}>
         <TextInput
-          style ={styles.textinput}
-          underlineColorAndroid = 'transparent'
-          placeholder ="Email"
-          // placeholderTextColor= "#ffffff"
+          style={styles.textinput}
+          underlineColorAndroid='transparent'
+          placeholder='Email'
+          // placeholderTextColor= '#ffffff'
           value={textFields.email}
-          onChangeText ={(email) => setTextFields ({ ...textFields, email })}
+          onChangeText={(email) => setTextFields({ ...textFields, email })}
         />
       </View>
 
-      <View style ={styles.inputView}>
+      <View style={styles.inputView}>
         <TextInput
-          style ={styles.textinput}
-          underlineColorAndroid = 'transparent'
-          placeholder ="Username"
+          style={styles.textinput}
+          underlineColorAndroid='transparent'
+          placeholder='Username'
           value={textFields.username}
           onChangeText={(username) => setTextFields({ ...textFields, username })}
         />
@@ -79,20 +74,20 @@ const RegisterScreen = (props) => {
         <TextInput
           secureTextEntry
           style={styles.textinput}
-          underlineColorAndroid = 'transparent'
-          placeholder ="Password"
-          // placeholderTextColor= "#ffffff"
+          underlineColorAndroid='transparent'
+          placeholder='Password'
+          // placeholderTextColor= '#ffffff'
           value={textFields.password}
-          onChangeText ={(password) => setTextFields ({ ...textFields, password })}
+          onChangeText={(password) => setTextFields({ ...textFields, password })}
         />
       </View>
 
-      <TouchableOpacity style = {styles.button} onPress={onRegisterPress}>
-        <Text style ={styles.buttontext}>Register</Text>
+      <TouchableOpacity style={styles.button} onPress={onRegisterPress}>
+        <Text style={styles.buttontext}>Register</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => props.navigateLogin()} style = {styles.button}>
-        <Text style ={styles.buttontext}>Already have an account? Login here!</Text>
+      <TouchableOpacity onPress={() => props.navigateLogin()} style={styles.button}>
+        <Text style={styles.buttontext}>Already have an account? Login here!</Text>
       </TouchableOpacity>
 
     </View>
@@ -130,7 +125,7 @@ const styles = StyleSheet.create({
     marginVertical: 10
   },
 
-  mainheader:{
+  mainheader: {
     fontFamily: 'System',
     fontWeight: 'bold',
     color: '#f5f5f5',
