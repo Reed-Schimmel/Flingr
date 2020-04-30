@@ -1,17 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { StyleSheet, Modal, Text, View, Alert } from 'react-native'; //Animate
-// import MapScreen from './MapScreen';
+import { StyleSheet, Modal, Alert } from 'react-native'; //Animate
+import MapScreen from './MapScreen';
 import FloatingButton from '../components/FloatingButton';
 //import AREntery from '../ar/AREntery'
 import { Context } from '../context/GlobalContext';
 import AuthenticationModal from '../components/AuthenticationModal';
+
 const HomeScreen = () => {
   const [base, setBases] = useState({isPin: false});
-
-  const { wipeContext, /*setBaseLocation*/ state, setCoords } = useContext(Context);
-  const { /*setBaseError*/ userAuth } = state;
-
-  console.log(state, state.userData);
+  const { wipeContext, setBaseLocation, state, setCoords } = useContext(Context);
+  const { /*setBaseError,*/ userAuth, coords } = state;
 
   let accuracy = 5; // meters of gps accuracy
 
@@ -20,6 +18,7 @@ const HomeScreen = () => {
     // Set GPS watching and update context https://reactnative.dev/docs/geolocation.html#watchposition
     navigator.geolocation.watchPosition((position) => { // eslint-disable-line no-undef
       accuracy = position.coords.accuracy;
+      
       setCoords(position);
     }, (e) => {
       console.log('GPS error', e);
@@ -33,18 +32,25 @@ const HomeScreen = () => {
     return () => navigator.geolocation.stopObserving(); // eslint-disable-line no-undef
   }, []);
 
-  const setBase = () => {
-    if(base.isPin == false)
+  const setBase = () => {   
+    if(state.userData.homeLatitude === 0)
     {
+ 
+      state.userData.homeLatitude = coords.latitude;
+      setBaseLocation(coords.latitude, coords.longitude, state.userAuth.uid);
+
       Alert.alert('Important', 'Are you sure you would like to set your base at your current location?',
         [
           {text: 'Yes', onPress: () => {setBases({isPin: true});}, style: 'OK'},
           {text: 'No', onPress: () => {setBases({isPin: false});}, style: 'cancel'}
         ]);
     }
-    else{
+    else if(base.isPin === false && state.userData.baseLatitude === 0){
+      setBases({isPin: true});
+    }
+    else
+    {
       //<AREntery/>
-      return(<View><Text>ar screen</Text></View>);
     }
   };
 
@@ -59,9 +65,9 @@ const HomeScreen = () => {
     <>
       {showAuthModal ? null : <FloatingButton title="Log Out" onPress={logout} style = {styles.FloatingButton}/>}
           
-      {/* <MapScreen/>  */}
+      <MapScreen userBaseLocation = {base.isPin}/>
       
-      {showAuthModal ? null : <FloatingButton title={[base.isPin == true ? 'Fire' : 'Set Base']} 
+      {showAuthModal ? null : <FloatingButton title={[state.userData.homeLatitude === 0 ? 'Set Base' : 'Fire']} //[base.isPin == true ? 'Fire' : 'Set Base']
         onPress={setBase}/>}
 
       <Modal 
@@ -103,3 +109,4 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
+

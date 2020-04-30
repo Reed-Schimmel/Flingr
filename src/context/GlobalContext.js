@@ -9,11 +9,11 @@ const INITIAL_STATE = { // actions (functions to be used to update global state)
   loginError: '',
   renderedBases: [],
   coords: {
-    longitude: 0,
-    latitude: 0,
-    altitude: 0,
-    accuracy: 0,
-    altitudeAccuracy: 0,
+    longitude: null,
+    latitude: null,
+    altitude: null,
+    accuracy: null,
+    altitudeAccuracy: null,
   },
 };
 
