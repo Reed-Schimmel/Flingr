@@ -28,43 +28,31 @@ import ViewBaseScene from './ViewBaseScene';
 // 3. launching animation
 // 4. record & upload launch
 
-const AREntry = () => {
+const AREntry = ({ setBase = false, viewBase = false, launch = false }) => {
   const { state, launchFling, uploadJSONblob } = useContext(Context);
   const { userData, userAuth: { uid } } = state;
-  const { homeLatitude, homeLongitude, baseJsonBlob } = userData;
+  const { baseLatitude, baseLongitude, baseJsonBlob } = userData;
 
-  // const [base, setBase] = useState(undefined);
   const [inPosition, setInPosition] = useState(false);
 
-  // useEffect(() => {
-  //   AsyncStorage.getItem('base').then(data => {
-  //     setBase(JSON.parse(data));
-  //     Alert.alert(data);
-  //   }).catch(e => console.log(e));
-  // }, []);
-
-  // return <ViroARSceneNavigator {...sharedProps} initialScene={{ scene: GeopositionScene }} />;
-
-  const baseCoords = (homeLatitude === 0 && homeLongitude === 0)
-    ? undefined : { latitude: homeLatitude, longitude: homeLongitude };
+  const baseCoords = (baseLatitude === 0 && baseLongitude === 0)
+    ? undefined : { latitude: baseLatitude, longitude: baseLongitude };
 
   if (!inPosition) return (
     <SceneAligner setInPosition={setInPosition} alignHeading={0} alignCoords={baseCoords} />
-    // <SceneAligner setInPosition={setInPosition} alignHeading={0} alignCoords={{ latitude: 38.942431, longitude: -94.63794 }} />
   );
 
-  // if (base === undefined) return <View style={{ flex: 1, justifyContent: 'center' }}><Text>Loading</Text></View>; // TODO remove or change when loading from firebase
-  else if (baseCoords === undefined) return (
+  else if (setBase) return (
     <ViroARSceneNavigator
       initialScene={{ scene: SetBaseScene, passProps: { saveBase: (jsonStr) => uploadJSONblob(jsonStr, uid) } }}
     />
   );
-  else if (baseCoords !== undefined) return (
+  else if (viewBase) return (
     <ViroARSceneNavigator
       initialScene={{ scene: ViewBaseScene, passProps: { base: JSON.parse(baseJsonBlob) } }}
     />
   );
-  else if (/*FIRE!*/ false) return ( //eslint-disable-line
+  else if (launch) return (
     <ViroARSceneNavigator
       initialScene={{ scene: ViewBaseScene, passProps: { saveLaunch: (coords) => launchFling({ coords }, uid) } }}
     />

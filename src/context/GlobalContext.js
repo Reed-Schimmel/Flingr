@@ -35,8 +35,8 @@ const UPLOAD_ERROR           = 'upload_error';
 const DEFAULT_USER_DOC = {
   outgoingFlings: [],
   incomingFlings: [],
-  homeLatitude: 0,
-  homeLongitude: 0,
+  baseLatitude: 0,
+  baseLongitude: 0,
 };
 
 // REDUCER
