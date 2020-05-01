@@ -90,15 +90,25 @@ How to use Firebase for this JavaScript Project:
 3. Enter a nickname and click "Register App" (keep Firebase Hosting unchecked)
 4. IMPORTANT: copy the object called firebaseConfig in the code snipped it shows, and save it to a JSON file called "firebaseConfig.json"
 5. Your firebaseConfig.json should look something like this:
+
 {
+
   "apiKey": "YOUR-API-KEY",
+
   "authDomain": "your-app.firebaseapp.com",
+
   "databaseURL": "https://your-app.firebaseio.com",
+
   "projectId": "your-app",
+
   "storageBucket": "your-app.appspot.com",
+
   "messagingSenderId": "YOUR-MESSAGING-SENDER-ID",
+  
   "appId": "YOUR-APP-ID"
+
 }
+
 6. Add firebaseConfig.json to your .gitignore because it contains private key information
 7. Make sure firebaseConfig.json is in the root of the directory. 
 
