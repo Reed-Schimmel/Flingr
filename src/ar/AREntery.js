@@ -1,4 +1,4 @@
-import React, { useState, /*useContext,*/ useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { View, Text, AsyncStorage } from 'react-native';
 import { ViroARSceneNavigator } from 'react-viro';
 import CompassHeading from 'react-native-compass-heading';
@@ -35,7 +35,7 @@ import ViewBaseScene from './ViewBaseScene';
 // const VIEW_BASE = 'view_base';
 
 const AREntry = () => {
-  // const { state, actions } = useContext(Context);
+  const { state, launchFling, uploadJSONblob } = useContext(Context);
   // const { userData } = state;
 
   // const [scene, setScene] = useState(SET_BASE);
@@ -56,6 +56,16 @@ const AREntry = () => {
     });
     return () => CompassHeading.stop();
   }, []);
+
+
+  const fireProjectile = (coordinateData) => {
+    launchFling(coordinateData, state.userAuth.uid);
+  };
+
+  const uploadJSON = (JSONblob) => {
+    uploadJSONblob(JSONblob, state.userAuth.uid);
+  };
+
 
   // return <ViroARSceneNavigator {...sharedProps} initialScene={{ scene: GeopositionScene }} />;
 
