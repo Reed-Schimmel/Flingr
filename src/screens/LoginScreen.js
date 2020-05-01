@@ -3,7 +3,7 @@
 
 /* eslint-disable react/no-unescaped-entities */
 import React, { useState, useContext } from 'react';
-import { StyleSheet, TextInput, View, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, TextInput, View, TouchableOpacity, Text, Alert } from 'react-native';
 import { Context as GlobalContext } from '../context/GlobalContext';
 
 
@@ -16,29 +16,25 @@ const LoginScreen = (props) => {
   //Function that sets username and password
   const { emailPasswordLogin, state: { loginError } } = useContext(GlobalContext);
 
-    // checks validity when login button is pressed
+  // checks validity when login button is pressed
   const onLoginPress = () => {
 
 
-    if (textFields.email.length===0 && textFields.password.length===0)
-      {
-        alert ("Please enter a username and password to continue!");
-      }
-
-    else if (textFields.email.length===0)
-    {
-      alert ("Please enter a username to continue!");
+    if (textFields.email.length === 0 && textFields.password.length === 0) {
+      Alert.alert('Please enter a username and password to continue!');
     }
 
-    else if (textFields.password.length===0)
-    {
-      alert ("Please enter a password to continue!");
+    else if (textFields.email.length === 0) {
+      Alert.alert('Please enter a username to continue!');
     }
 
-  else if (textFields.email.length> 0 && textFields.password.length>0 )
-    {
+    else if (textFields.password.length === 0) {
+      Alert.alert('Please enter a password to continue!');
+    }
 
-    emailPasswordLogin(textFields.email, textFields.password);
+    else if (textFields.email.length > 0 && textFields.password.length > 0) {
+
+      emailPasswordLogin(textFields.email, textFields.password);
     }
   };
 
@@ -47,13 +43,13 @@ const LoginScreen = (props) => {
       <Text style={styles.mainheader}>Flingr</Text>
       <Text>{loginError}</Text>
 
-      <View style ={styles.inputView}>
+      <View style={styles.inputView}>
         <TextInput
-          style ={styles.textinput}
-          underlineColorAndroid = 'transparent'
-          placeholder ="Username"
-          placeholderTextColor= "#ffffff"
-          onChangeText ={(email) => setTextFields({ ...textFields, email })}
+          style={styles.textinput}
+          underlineColorAndroid='transparent'
+          placeholder='Username'
+          placeholderTextColor='#ffffff'
+          onChangeText={(email) => setTextFields({ ...textFields, email })}
         />
       </View>
 
@@ -62,10 +58,10 @@ const LoginScreen = (props) => {
         <TextInput
           secureTextEntry
           style={styles.textinput}
-          underlineColorAndroid = 'transparent'
-          placeholder ="Password"
-          placeholderTextColor= "#ffffff"
-          onChangeText ={(password) => setTextFields({ ...textFields, password })}
+          underlineColorAndroid='transparent'
+          placeholder='Password'
+          placeholderTextColor='#ffffff'
+          onChangeText={(password) => setTextFields({ ...textFields, password })}
         />
       </View>
 
