@@ -84,14 +84,34 @@ Refer to the documentation folder to take a look at the code documentation of th
 
 ### About Firebase
 
-How to add Firebase to your JavaScript Project:
+How to setup Firebase for this JavaScript Project:
 1. To create a Firebase project, click [Create Firebase](https://console.firebase.google.com/?pli=1).
-2. After you have a Firebase project, add your web app to it.
-3. When you've already added an app to your Firebase project, click Add app to display the platform options.
-4. Enter your app's nickname.
-5. Click "Register App".
-6. Add any supported Firebase products to your app.
-7. You can now access Firebase in your app.
+2. After you have created a Firebase project, under "Get started by adding Firebase to your app", click the Web option
+3. Enter a nickname and click "Register App" (keep Firebase Hosting unchecked)
+4. IMPORTANT: copy the object called firebaseConfig in the code snipped it shows, and save it to a JSON file called "firebaseConfig.json"
+5. Your firebaseConfig.json should look something like this:
+
+{
+
+  "apiKey": "YOUR-API-KEY",
+
+  "authDomain": "your-app.firebaseapp.com",
+
+  "databaseURL": "https://your-app.firebaseio.com",
+
+  "projectId": "your-app",
+
+  "storageBucket": "your-app.appspot.com",
+
+  "messagingSenderId": "YOUR-MESSAGING-SENDER-ID",
+  
+  "appId": "YOUR-APP-ID"
+
+}
+
+6. Add firebaseConfig.json to your .gitignore because it contains private key information
+7. Make sure firebaseConfig.json is in the root of the directory. 
+
 
 Additional information about the Firebase setup can be found at: [Firebase Setup](https://firebase.google.com/docs/web/setup)
 
