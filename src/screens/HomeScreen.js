@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { StyleSheet, Modal, Alert, Platform, PermissionsAndroid, Text } from 'react-native'; //Animate
-// import MapScreen from './MapScreen';
+import { StyleSheet, Modal, Alert, Platform, PermissionsAndroid, Text } from 'react-native';
+import MapScreen from './MapScreen';
 import FloatingButton from '../components/FloatingButton';
 import AuthenticationModal from '../components/AuthenticationModal';
-// import AREntry from '../ar/AREntery';
+import AREntry from '../ar/AREntery';
 import { Context } from '../context/GlobalContext';
 
 const requestLocationPermission = async () => {
@@ -27,11 +27,11 @@ const requestLocationPermission = async () => {
     console.warn(err);
   }
 };
-
+// g@g.com, password
 const HomeScreen = () => {
   const [base, setBases] = useState({ isPin: false });
-  const { wipeContext, setBaseLocation, state, setCoords } = useContext(Context);
-  const { /*setBaseError,*/ userAuth, coords, uploadError, fireError } = state;
+  const { wipeContext, setBaseLocation, state, setCoords, setARscreen } = useContext(Context);
+  const { setBaseError, userAuth, coords, uploadError, fireError, loginError, ARscreen } = state;
 
   let accuracy = 5; // meters of gps accuracy
 
@@ -58,25 +58,25 @@ const HomeScreen = () => {
       }
     }, gpsOptions);
     return () => navigator.geolocation.stopObserving(); // eslint-disable-line no-undef
-  }, [userAuth]);
+  }, []);
 
   const setBase = () => {
-    if (state.userData.homeLatitude === 0) {
+    if (state.userData.baseLatitude === 0) {
 
-      state.userData.homeLatitude = coords.latitude;
+      state.userData.baseLatitude = coords.latitude;
       setBaseLocation(coords.latitude, coords.longitude, state.userAuth.uid);
 
       Alert.alert('Important', 'Are you sure you would like to set your base at your current location?',
         [
-          { text: 'Yes', onPress: () => { setBases({ isPin: true }); }, style: 'OK' },
+          { text: 'Yes', onPress: () => {
+            setBases({ isPin: true });
+            setARscreen('setBase');
+          }, style: 'OK' },
           { text: 'No', onPress: () => { setBases({ isPin: false }); }, style: 'cancel' }
         ]);
     }
     else if (base.isPin === false && state.userData.baseLatitude === 0) {
       setBases({ isPin: true });
-    }
-    else {
-      //<AREntery/>
     }
   };
 
@@ -85,17 +85,32 @@ const HomeScreen = () => {
   };
 
   const showAuthModal = !userAuth;
-  // return <AREntry />;
+  if (ARscreen) {
+    return (
+      <AREntry
+        setBase={ARscreen === 'setBase'}
+        launch={ARscreen === 'launch'}
+        viewBase={ARscreen === 'viewBase'}
+      />);
+  }
+
   return (
     //login popup, ar button, map screen, mini map style
     <>
       {showAuthModal ? null : <FloatingButton title="Log Out" onPress={logout} style = {styles.FloatingButton}/>}
           
-      {/* <MapScreen userBaseLocation = {base.isPin}/> */}
-      <Text>{fireError + uploadError}</Text>
+      <MapScreen userBaseLocation = {base.isPin}/>
+      <Text>{fireError + uploadError + loginError + setBaseError}</Text>
       
-      {showAuthModal ? null : <FloatingButton title={[state.userData.homeLatitude === 0 ? 'Set Base' : 'Fire']} //[base.isPin == true ? 'Fire' : 'Set Base']
-        onPress={setBase} />}
+      {showAuthModal ? null : <FloatingButton title={[state.userData.baseLatitude === 0 ? 'Set Base' : 'Fire']}
+        onPress={state.userData.baseLatitude === 0 ? setBase : (() => setARscreen('launch'))} />}
+
+      {(!showAuthModal && state.userData.baseLatitude !== 0) ? (
+        <FloatingButton
+          title="View Base"
+          onPress={() => setARscreen('viewBase')}
+          style={{ left: 30, right: undefined }}
+        />) : null}
 
       <Modal
         animationType="fade"
