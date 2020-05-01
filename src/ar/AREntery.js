@@ -29,7 +29,7 @@ import ViewBaseScene from './ViewBaseScene';
 // 4. record & upload launch
 
 const AREntry = ({ setBase = false, viewBase = false, launch = false }) => {
-  const { state, launchFling, uploadJSONblob } = useContext(Context);
+  const { state, launchFling, uploadJSONblob, goBackHome } = useContext(Context);
   const { userData, userAuth: { uid } } = state;
   const { baseLatitude, baseLongitude, baseJsonBlob } = userData;
 
@@ -44,17 +44,17 @@ const AREntry = ({ setBase = false, viewBase = false, launch = false }) => {
 
   else if (setBase) return (
     <ViroARSceneNavigator
-      initialScene={{ scene: SetBaseScene, passProps: { saveBase: (jsonStr) => uploadJSONblob(jsonStr, uid) } }}
+      initialScene={{ scene: SetBaseScene, passProps: { saveBase: (jsonStr) => uploadJSONblob(jsonStr, uid) }, goBackHome }}
     />
   );
   else if (viewBase) return (
     <ViroARSceneNavigator
-      initialScene={{ scene: ViewBaseScene, passProps: { base: JSON.parse(baseJsonBlob) } }}
+      initialScene={{ scene: ViewBaseScene, passProps: { base: JSON.parse(baseJsonBlob) }, goBackHome }}
     />
   );
   else if (launch) return (
     <ViroARSceneNavigator
-      initialScene={{ scene: ViewBaseScene, passProps: { saveLaunch: (coords) => launchFling({ coords }, uid) } }} // TODO: set scene to launch scene
+      initialScene={{ scene: ViewBaseScene, passProps: { saveLaunch: (coords) => launchFling({ coords }, uid) }, goBackHome }} // TODO: set scene to launch scene
     />
   );
 };
