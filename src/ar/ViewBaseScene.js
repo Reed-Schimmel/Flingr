@@ -1,12 +1,13 @@
 'use strict';
 import React, { Component } from 'react';
-// import { AsyncStorage } from 'react-native';
+import { /*AsyncStorage,*/ Alert } from 'react-native';
 import {
   ViroBox,
   ViroARPlane,
   ViroAmbientLight,
   ViroARScene,
   ViroQuad,
+  ViroConstants,
 } from 'react-viro';
 
 const compareAnchors = (anc1, anc2) => {
@@ -48,9 +49,11 @@ export default class ViewBaseScene extends Component {
     this.state = {
       foundAnchor: { anchorId: undefined },
       base: undefined,
+      tracking: undefined,
     };
 
     this._onAnchorFound = this._onAnchorFound.bind(this);
+    this._onInitialized = this._onInitialized.bind(this);
   }
 
   componentDidMount() {
@@ -90,6 +93,15 @@ export default class ViewBaseScene extends Component {
     );
   }
 
+  _onInitialized(state) {
+    if (state == ViroConstants.TRACKING_NORMAL) {
+      this.setState({ tracking: state });
+    } else if (state == ViroConstants.TRACKING_NONE) {
+      Alert.alert('Lost tracking!');
+      this.setState({ tracking: state });
+    }
+  }
+
   _onAnchorFound(foundAnchor) {
     if (foundAnchor.type != 'plane'
       || this.state.foundAnchor.anchorId !== undefined) {
@@ -98,11 +110,7 @@ export default class ViewBaseScene extends Component {
 
     // conditions to match foundAnchor to the base's anchor
     if (compareAnchors(foundAnchor, this.state.base)) this.setState({ foundAnchor });
-
-    // console.log(foundAnchor, this.props.base);
-    // this.plane.setNativeProps({ 'pauseUpdates': true });
   }
-
 }
 
 module.exports = ViewBaseScene;

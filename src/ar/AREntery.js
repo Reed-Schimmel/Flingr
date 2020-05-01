@@ -1,8 +1,7 @@
 import React, { useState, /*useContext,*/ useEffect } from 'react';
 import { View, Text, AsyncStorage } from 'react-native';
 import { ViroARSceneNavigator } from 'react-viro';
-import CompassHeading from 'react-native-compass-heading';
-
+import SceneAligner from '../components/SceneAligner';
 // import { Context } from '../context/GlobalContext';
 
 // import GeopositionScene from './GeopositionScene';
@@ -29,11 +28,6 @@ import ViewBaseScene from './ViewBaseScene';
 // 3. launching animation
 // 4. record & upload launch
 
-
-
-// const SET_BASE = 'set_base';
-// const VIEW_BASE = 'view_base';
-
 const AREntry = () => {
   // REED: UNCOMMENT THIS TO USE THE NEW ACTION FUNCTIONS
   // const { state, launchFling, uploadJSONblob } = useContext(Context);
@@ -41,62 +35,30 @@ const AREntry = () => {
   
   // REED: state.userData.baseJsonBlob is where your json blob is stored in state
 
-  // const [scene, setScene] = useState(SET_BASE);
   const [base, setBase] = useState(undefined);
-  const [heading, setHeading] = useState(null);
-  const [inPosition, /*setInPosition*/] = useState(false);
+  const [inPosition, setInPosition] = useState(false);
 
   useEffect(() => {
     AsyncStorage.getItem('base').then(data => {
       setBase(JSON.parse(data));
-      // console.log(data);
     }).catch(e => console.log(e));
   }, []);
-
-  useEffect(() => {
-    CompassHeading.start(3, heading => {
-      setHeading(heading);
-    });
-    return () => CompassHeading.stop();
-  }, []);
-
-  // REED: CALL THIS FUNCTION WHEN YOU LAUNCH A NEW PROJECTILE 
-
-  // const fireProjectile = (coordinateData) => {
-  //   launchFling(coordinateData, state.userAuth.uid);
-  // };
-
-  // REED: CALL THIS ONE WHEN YOU WANT TO STORE THE JSON BLOB STUFF
-
-  // const uploadJSON = (JSONblob) => {
-  //   uploadJSONblob(JSONblob, state.userAuth.uid);
-  // };
-
 
   // return <ViroARSceneNavigator {...sharedProps} initialScene={{ scene: GeopositionScene }} />;
 
   if (!inPosition) return (
-    <View style={{ flex: 1, justifyContent: 'center' }}>
-      <Text style={{ fontSize: 32, textAlign: 'center' }}>Hold phone portrait style in hand, please aim the camera north</Text>
-      <Text style={{ fontSize: 32, textAlign: 'center', margin: 20 }}>Heading: {heading}</Text>
-      <Text style={{ fontSize: 26, textAlign: 'center' }}>North is 0</Text>
-      {/* (heading === 0) && <Button to to set inPosition trye/> */}
-    </View>
-    // when just about 0 have user click button and then when scene inits succ tell user it's okay to move.
+    <SceneAligner setInPosition={setInPosition} alignHeading={0} alignCoords={{ latitude: 38.942431, longitude: -94.63794 }} />
   );
 
   if (base === undefined) return <View style={{ flex: 1, justifyContent: 'center' }}><Text>Loading</Text></View>;
   else if (base === null) return (
     <ViroARSceneNavigator
-      initialScene={{ scene: SetBaseScene }}
-    // initialScene={{ scene: GeopositionScene }}
-    // worldAlignment='Camera'  
-    // worldAlignment='GravityAndHeading'
+      initialScene={{ scene: SetBaseScene, passProps: { base } }}
     />
   );
   else return (
     <ViroARSceneNavigator
-      initialScene={{ scene: ViewBaseScene, passProps: { base } }}
+      initialScene={{ scene: ViewBaseScene/*, passProps: { base }*/ }}
     />
   );
 };
