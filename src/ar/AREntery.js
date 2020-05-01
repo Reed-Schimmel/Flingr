@@ -1,9 +1,9 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, /*useContext,*/ useEffect } from 'react';
 import { View, Text, AsyncStorage } from 'react-native';
 import { ViroARSceneNavigator } from 'react-viro';
 import CompassHeading from 'react-native-compass-heading';
 
-import { Context } from '../context/GlobalContext';
+// import { Context } from '../context/GlobalContext';
 
 // import GeopositionScene from './GeopositionScene';
 // import InitialARScene from './HelloWorldSceneAR';
