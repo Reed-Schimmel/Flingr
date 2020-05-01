@@ -108,6 +108,13 @@ const HomeScreen = () => {
       {showAuthModal ? null : <FloatingButton title={[state.userData.baseLatitude === 0 ? 'Set Base' : 'Fire']} //[base.isPin == true ? 'Fire' : 'Set Base']
         onPress={state.userData.baseLatitude === 0 ? setBase : (() => setARscreen('launch'))} />}
 
+      {(!showAuthModal && state.userData.baseLatitude !== 0) ? (
+        <FloatingButton
+          title="View Base"
+          onPress={() => setARscreen('viewBase')}
+          style={{ left: 10, right: undefined }}
+        />) : null}
+
       <Modal
         animationType="fade"
         transparent={true}
