@@ -8,6 +8,7 @@ const INITIAL_STATE = { // actions (functions to be used to update global state)
   userData: {},
   loginError: '',
   renderedBases: [],
+  ARscreen: '',
   coords: {
     longitude: null,
     latitude: null,
@@ -30,6 +31,7 @@ const LOAD_USER_DATA         = 'load_user_data';
 const FIRE_ERROR             = 'fire_error';
 const STORE_JSON_BLOB        = 'store_json_blob';
 const UPLOAD_ERROR           = 'upload_error';
+const GO_BACK_HOME           = 'go_back_home';
 
 // default user document fields when a new user is generated
 const DEFAULT_USER_DOC = {
@@ -117,6 +119,12 @@ const reducer = (state, action) => {
         ...state.userData,
         baseJsonData: action.payload,
       }
+    };
+
+  case GO_BACK_HOME:
+    return {
+      ...state,
+      ARscreen: '',
     };
 
   default:
@@ -240,6 +248,10 @@ const wipeContext = (dispatch) => () => {
   dispatch({ type: WIPE_CONTEXT });
 };
 
+const goBackHome = (dispatch) => () => {
+  dispatch({ type: GO_BACK_HOME });
+};
+
 // export the newly created context
 export const { Context, Provider } = createDataContext(
   reducer,
@@ -252,6 +264,7 @@ export const { Context, Provider } = createDataContext(
     setCoords,
     launchFling,
     uploadJSONblob,
+    goBackHome,
   }, // actions (functions to be used to update global state)
   INITIAL_STATE, // initial state
 );
