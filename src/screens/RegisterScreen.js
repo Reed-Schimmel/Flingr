@@ -53,7 +53,7 @@ const RegisterScreen = (props) => {
           style={styles.textinput}
           underlineColorAndroid='transparent'
           placeholder='Email'
-          // placeholderTextColor= '#ffffff'
+          placeholderTextColor= '#ffffff'
           value={textFields.email}
           onChangeText={(email) => setTextFields({ ...textFields, email })}
         />
@@ -64,6 +64,7 @@ const RegisterScreen = (props) => {
           style={styles.textinput}
           underlineColorAndroid='transparent'
           placeholder='Username'
+          placeholderTextColor= '#ffffff'
           value={textFields.username}
           onChangeText={(username) => setTextFields({ ...textFields, username })}
         />
@@ -76,7 +77,7 @@ const RegisterScreen = (props) => {
           style={styles.textinput}
           underlineColorAndroid='transparent'
           placeholder='Password'
-          // placeholderTextColor= '#ffffff'
+          placeholderTextColor= '#ffffff'
           value={textFields.password}
           onChangeText={(password) => setTextFields({ ...textFields, password })}
         />
@@ -115,14 +116,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20
   },
-  textInput: {
+  textinput: {
     width: 300,
-    backgroundColor: 'rgba(255,255,255,0.3)',
+    //backgroundColor: 'rgba(255,255,255,0.3)',
     borderRadius: 25,
     paddingHorizontal: 16,
     fontSize: 16,
     color: '#ffffff',
-    marginVertical: 10
+    marginVertical: 10,
+    height: 40,
+    //lineHeight: 16 if issue persists uncomment
+
   },
 
   mainheader: {

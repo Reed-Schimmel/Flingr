@@ -47,7 +47,7 @@ const LoginScreen = (props) => {
         <TextInput
           style={styles.textinput}
           underlineColorAndroid='transparent'
-          placeholder='Username'
+          placeholder='Email'
           placeholderTextColor='#ffffff'
           onChangeText={(email) => setTextFields({ ...textFields, email })}
         />
@@ -108,14 +108,15 @@ const styles = StyleSheet.create({
     padding: 20
   },
 
-  textInput: {
+  textinput: {
     width: 300,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    //backgroundColor: 'rgba(255, 255, 255, 0.3)',
     borderRadius: 25,
     paddingHorizontal: 16,
     fontSize: 16,
-    color: '#ffffff',
-    marginVertical: 10
+    height: 40,
+    marginVertical: 10,
+    //lineHeight: 16 if issue persists uncomment
 
   },
 
