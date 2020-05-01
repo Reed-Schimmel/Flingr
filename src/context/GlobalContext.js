@@ -27,6 +27,7 @@ const QUERY_BASES_ERROR      = 'query_bases_error';
 const WIPE_CONTEXT           = 'wipe_context';
 const SET_COORDS             = 'set_coords';
 const LOAD_USER_DATA         = 'load_user_data';
+const FIRE_ERROR             = 'fire_error';
 
 // default user document fields when a new user is generated
 const DEFAULT_USER_DOC = {
@@ -170,6 +171,21 @@ const setBaseLocation = (dispatch) => async (latitude, longitude, uid) => {
 
 const setCoords = (dispatch) => ({ coords }) => {
   dispatch({ type: SET_COORDS, payload: coords });
+};
+
+// called when a user launches a new fling
+const launchFling = (dispatch) => ({ coords }, uid) => {
+  const userRef = firebase.firestore().collection('users').doc(uid);
+  // create new outgoing fling
+  firebase.firestore().collection('flings').add({
+    landingLocation: coords,
+    sender: userRef,
+  })
+    .then((flingRef) => {
+      // Add new fling to outgoing flings of current user
+      userRef.update({ outgoingFlings: firebase.firestore.FieldValue.arrayUnion(flingRef) });
+    })
+    .catch((e) => dispatch({ type: FIRE_ERROR, payload: e.message }));
 };
 
 const wipeContext = (dispatch) => () => {
