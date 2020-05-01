@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>GlobalContext.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>GlobalContext.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>Description: Actions to be used globally across the app</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Author: Kam Bielawski</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> firebase <span class="hljs-keyword">from</span> <span class="hljs-string">'firebase'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'firebase/firestore'</span>;
+<span class="hljs-keyword">import</span> createDataContext <span class="hljs-keyword">from</span> <span class="hljs-string">'./createDataContext'</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>default initial state</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>actions (functions to be used to update global state)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> INITIAL_STATE = { 
+  <span class="hljs-attr">userAuth</span>: <span class="hljs-literal">undefined</span>,
+  <span class="hljs-attr">userData</span>: {},
+  <span class="hljs-attr">loginError</span>: <span class="hljs-string">''</span>,
+  <span class="hljs-attr">renderedBases</span>: [],
+  <span class="hljs-attr">ARscreen</span>: <span class="hljs-string">''</span>,
+  <span class="hljs-attr">coords</span>: {
+    <span class="hljs-attr">longitude</span>: <span class="hljs-literal">null</span>,
+    <span class="hljs-attr">latitude</span>: <span class="hljs-literal">null</span>,
+    <span class="hljs-attr">altitude</span>: <span class="hljs-literal">null</span>,
+    <span class="hljs-attr">accuracy</span>: <span class="hljs-literal">null</span>,
+    <span class="hljs-attr">altitudeAccuracy</span>: <span class="hljs-literal">null</span>,
+  },
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>these are just to ensure string consistency</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> LOGIN_SUCCESS          = <span class="hljs-string">'login_success'</span>;
+<span class="hljs-keyword">const</span> LOGIN_FAILURE          = <span class="hljs-string">'login_failure'</span>;
+<span class="hljs-keyword">const</span> UPDATE_BASE_LOCATIONS  = <span class="hljs-string">'update_base_locations'</span>;
+<span class="hljs-keyword">const</span> SET_USER_BASE          = <span class="hljs-string">'set_user_base'</span>;
+<span class="hljs-keyword">const</span> SET_BASE_ERROR         = <span class="hljs-string">'set_base_error'</span>;
+<span class="hljs-keyword">const</span> QUERY_BASES_ERROR      = <span class="hljs-string">'query_bases_error'</span>;
+<span class="hljs-keyword">const</span> WIPE_CONTEXT           = <span class="hljs-string">'wipe_context'</span>;
+<span class="hljs-keyword">const</span> SET_COORDS             = <span class="hljs-string">'set_coords'</span>;
+<span class="hljs-keyword">const</span> LOAD_USER_DATA         = <span class="hljs-string">'load_user_data'</span>;
+<span class="hljs-keyword">const</span> FIRE_ERROR             = <span class="hljs-string">'fire_error'</span>;
+<span class="hljs-keyword">const</span> STORE_JSON_BLOB        = <span class="hljs-string">'store_json_blob'</span>;
+<span class="hljs-keyword">const</span> UPLOAD_ERROR           = <span class="hljs-string">'upload_error'</span>;
+<span class="hljs-keyword">const</span> GO_BACK_HOME           = <span class="hljs-string">'go_back_home'</span>;
+<span class="hljs-keyword">const</span> SET_AR_SCREEN          = <span class="hljs-string">'set_ar_screen'</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>default user document fields when a new user is generated</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> DEFAULT_USER_DOC = {
+  <span class="hljs-attr">outgoingFlings</span>: [],
+  <span class="hljs-attr">incomingFlings</span>: [],
+  <span class="hljs-attr">baseLatitude</span>: <span class="hljs-number">0</span>,
+  <span class="hljs-attr">baseLongitude</span>: <span class="hljs-number">0</span>,
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>REDUCER</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>a reducer processes actions and updates the state</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> reducer = <span class="hljs-function">(<span class="hljs-params">state, action</span>) =&gt;</span> {
+  <span class="hljs-keyword">switch</span>(action.type) {
+  <span class="hljs-keyword">case</span> LOGIN_SUCCESS:
+    <span class="hljs-keyword">return</span> {
+      ...state,
+      <span class="hljs-attr">userAuth</span>: action.payload,
+    };
+
+  <span class="hljs-keyword">case</span> LOAD_USER_DATA:
+    <span class="hljs-keyword">return</span> {
+      ...state,
+      <span class="hljs-attr">userData</span>: action.payload,
+    };
+
+  <span class="hljs-keyword">case</span> LOGIN_FAILURE:
+    <span class="hljs-keyword">return</span> {
+      ...state,
+      <span class="hljs-attr">loginError</span>: action.payload,
+    };
+
+  <span class="hljs-keyword">case</span> UPDATE_BASE_LOCATIONS:
+    <span class="hljs-keyword">return</span> {
+      ...state,
+      <span class="hljs-attr">renderedBases</span>: action.payload,
+    };
+
+  <span class="hljs-keyword">case</span> SET_USER_BASE:
+    <span class="hljs-keyword">return</span> {
+      ...state,
+      <span class="hljs-attr">userData</span>: {
+        ...state.userData, 
+        <span class="hljs-attr">baseLatitude</span>: action.payload.latitude,
+        <span class="hljs-attr">baseLongitude</span>: action.payload.longitude,
+      },
+    };
+
+  <span class="hljs-keyword">case</span> SET_BASE_ERROR:
+    <span class="hljs-keyword">return</span> {
+      ...state,
+      <span class="hljs-attr">setBaseError</span>: action.payload,
+    };
+
+  <span class="hljs-keyword">case</span> QUERY_BASES_ERROR:
+    <span class="hljs-keyword">return</span> {
+      ...state,
+      <span class="hljs-attr">queryBasesError</span>: action.payload,
+    };
+
+  <span class="hljs-keyword">case</span> WIPE_CONTEXT:
+    <span class="hljs-keyword">return</span> INITIAL_STATE;
+
+  <span class="hljs-keyword">case</span> SET_COORDS:
+    <span class="hljs-keyword">return</span> {
+      ...state,
+      <span class="hljs-attr">coords</span>: action.payload,
+    };
+
+  <span class="hljs-keyword">case</span> FIRE_ERROR:
+    <span class="hljs-keyword">return</span> {
+      ...state,
+      <span class="hljs-attr">launchFlingError</span>: action.payload,
+    };
+
+  <span class="hljs-keyword">case</span> UPLOAD_ERROR:
+    <span class="hljs-keyword">return</span> {
+      ...state,
+      <span class="hljs-attr">uploadError</span>: action.payload,
+    };
+
+  <span class="hljs-keyword">case</span> STORE_JSON_BLOB:
+    <span class="hljs-keyword">return</span> {
+      ...state,
+      <span class="hljs-attr">userData</span>: {
+        ...state.userData,
+        <span class="hljs-attr">baseJsonData</span>: action.payload,
+      }
+    };
+
+  <span class="hljs-keyword">case</span> SET_AR_SCREEN:
+    <span class="hljs-keyword">return</span> {
+      ...state,
+      <span class="hljs-attr">ARscreen</span>: action.payload,
+    };
+
+  <span class="hljs-keyword">case</span> GO_BACK_HOME:
+    <span class="hljs-keyword">return</span> {
+      ...state,
+      <span class="hljs-attr">ARscreen</span>: <span class="hljs-string">''</span>,
+    };
+
+  <span class="hljs-keyword">default</span>:
+    <span class="hljs-keyword">return</span> state;
+  }
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>ACTIONS</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>actions take the form of an object with 2 key/value pairs:</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>{ type, payload }</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>type is a string, which specifies which action we are dispatching to the reducer</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>payload is the data associated with the action, usually used to update state</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>@pre: The user logs into their account</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>@post: The fucntion returns whether the user is in the data base or not</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> emailPasswordLogin = <span class="hljs-function">(<span class="hljs-params">dispatch</span>) =&gt;</span> <span class="hljs-function">(<span class="hljs-params">email, password</span>) =&gt;</span> {
+  firebase.auth().signInWithEmailAndPassword(email, password)
+    .then(<span class="hljs-function">(<span class="hljs-params">{ user }</span>) =&gt;</span> {
+      dispatch({ <span class="hljs-attr">type</span>: LOGIN_SUCCESS, <span class="hljs-attr">payload</span>: user });
+      <span class="hljs-keyword">const</span> userDoc = firebase.firestore().collection(<span class="hljs-string">'users'</span>).doc(user.uid);
+      userDoc.get()
+        .then(<span class="hljs-function">(<span class="hljs-params">userSnapshot</span>) =&gt;</span> dispatch({ <span class="hljs-attr">type</span>: LOAD_USER_DATA, <span class="hljs-attr">payload</span>: userSnapshot.data() }));
+    })
+    .catch(<span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> dispatch({ <span class="hljs-attr">type</span>: LOGIN_FAILURE, <span class="hljs-attr">payload</span>: e.message }));
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>@pre: The user creates an account</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>@post: The information is stored in the data base</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> emailPasswordCreateAccount = <span class="hljs-function">(<span class="hljs-params">dispatch</span>) =&gt;</span> <span class="hljs-function">(<span class="hljs-params">email, password, username</span>) =&gt;</span> {
+  firebase.auth().createUserWithEmailAndPassword(email, password)
+    .then(<span class="hljs-keyword">async</span> ({ user }) =&gt; {
+      <span class="hljs-keyword">const</span> userData = {
+        ...DEFAULT_USER_DOC,
+        <span class="hljs-attr">email</span>: user.email,
+        username,
+      };
+      dispatch({ <span class="hljs-attr">type</span>: LOGIN_SUCCESS, <span class="hljs-attr">payload</span>: user });
+      dispatch({ <span class="hljs-attr">type</span>: LOAD_USER_DATA, <span class="hljs-attr">payload</span>: userData });
+      <span class="hljs-keyword">await</span> firebase.firestore().collection(<span class="hljs-string">'users'</span>).doc(<span class="hljs-string">`<span class="hljs-subst">${user.uid}</span>`</span>).set(userData)
+        .catch(<span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> dispatch({ <span class="hljs-attr">type</span>: LOGIN_FAILURE, <span class="hljs-attr">payload</span>: <span class="hljs-string">`error setting data: <span class="hljs-subst">${e.message}</span> <span class="hljs-subst">${user}</span>`</span> }));
+    })
+    .catch(<span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> dispatch({ <span class="hljs-attr">type</span>: LOGIN_FAILURE, <span class="hljs-attr">payload</span>: e.message }));
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>@pre: THe map screen is loaded</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>@post: Only the bases within the given constraints are displayed on the map</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> queryNewBaseLocations = <span class="hljs-function">(<span class="hljs-params">dispatch</span>) =&gt;</span> <span class="hljs-function">(<span class="hljs-params">region</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> { latitude, longitude, latitudeDelta, longitudeDelta } = region;
+  <span class="hljs-keyword">const</span> left = longitude - longitudeDelta;
+  <span class="hljs-keyword">const</span> right = longitude + longitudeDelta;
+  <span class="hljs-keyword">const</span> bottom = latitude - latitudeDelta;
+  <span class="hljs-keyword">const</span> top = latitude + latitudeDelta;
+
+  <span class="hljs-keyword">const</span> regionBases = [];</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>query database for users w/ bases within the correct longitude range</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">const</span> slice = firebase.firestore().collection(<span class="hljs-string">'users'</span>).where(<span class="hljs-string">'baseLongitude'</span>, <span class="hljs-string">'&gt;='</span>, left).where(<span class="hljs-string">'baseLongitude'</span>, <span class="hljs-string">'&lt;='</span>, right);
+  slice.get()
+    .then(<span class="hljs-function">(<span class="hljs-params">querySnapshot</span>) =&gt;</span> {
+      querySnapshot.forEach(<span class="hljs-function">(<span class="hljs-params">doc</span>) =&gt;</span> {
+        <span class="hljs-keyword">const</span> docData = doc.data();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>checks for bases within the correct latitude range</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (docData.baseLatitude &lt;= top &amp;&amp; docData.baseLatitude &gt;= bottom) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>if both lat &amp; long within region, push it to regionBases to be rendered</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          regionBases.push(docData);
+        }
+      });
+      dispatch({ <span class="hljs-attr">type</span>: UPDATE_BASE_LOCATIONS, <span class="hljs-attr">payload</span>: regionBases });
+    })
+    .catch(<span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> dispatch({ <span class="hljs-attr">type</span>: QUERY_BASES_ERROR, <span class="hljs-attr">payload</span>: e }));
+};
+
+<span class="hljs-keyword">const</span> setBaseLocation = <span class="hljs-function">(<span class="hljs-params">dispatch</span>) =&gt;</span> <span class="hljs-keyword">async</span> (latitude, longitude, uid) =&gt; {
+  firebase.firestore().collection(<span class="hljs-string">'users'</span>).doc(uid).update({
+    <span class="hljs-attr">baseLatitude</span>: latitude,
+    <span class="hljs-attr">baseLongitude</span>: longitude,
+  })
+    .then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> dispatch({ <span class="hljs-attr">type</span>: SET_USER_BASE, <span class="hljs-attr">payload</span>: { latitude, longitude } }))
+    .catch(<span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> dispatch({ <span class="hljs-attr">type</span>: SET_BASE_ERROR, <span class="hljs-attr">payload</span>: e }));
+};
+
+<span class="hljs-keyword">const</span> setCoords = <span class="hljs-function">(<span class="hljs-params">dispatch</span>) =&gt;</span> <span class="hljs-function">(<span class="hljs-params">{ coords }</span>) =&gt;</span> {
+  dispatch({ <span class="hljs-attr">type</span>: SET_COORDS, <span class="hljs-attr">payload</span>: coords });
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>called when a user launches a new fling</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> launchFling = <span class="hljs-function">(<span class="hljs-params">dispatch</span>) =&gt;</span> <span class="hljs-function">(<span class="hljs-params">{ coords }, uid</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> landingDelta = <span class="hljs-number">5</span>;
+  <span class="hljs-keyword">const</span> userRef = firebase.firestore().collection(<span class="hljs-string">'users'</span>).doc(uid);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>create new outgoing fling</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  firebase.firestore().collection(<span class="hljs-string">'flings'</span>).add({
+    <span class="hljs-attr">landingLocation</span>: coords,
+    <span class="hljs-attr">sender</span>: userRef,
+  })
+    .then(<span class="hljs-function">(<span class="hljs-params">flingRef</span>) =&gt;</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>Add new fling to outgoing flings of current user</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      userRef.update({ <span class="hljs-attr">outgoingFlings</span>: firebase.firestore.FieldValue.arrayUnion(flingRef) });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>query for bases around the landing location</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">const</span> slice = firebase.firestore().collection(<span class="hljs-string">'users'</span>)
+        .where(<span class="hljs-string">'baseLongitude'</span>, <span class="hljs-string">'&gt;='</span>, coords.latitude - landingDelta).where(<span class="hljs-string">'baseLongitude'</span>, <span class="hljs-string">'&lt;='</span>, coords.latitude + landingDelta);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>get all the users from around that longitude </p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      slice.get()
+        .then(<span class="hljs-function">(<span class="hljs-params">querySnapshot</span>) =&gt;</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>update everyone within the range</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          querySnapshot.forEach(<span class="hljs-keyword">async</span> (userDoc) =&gt; {
+            <span class="hljs-keyword">await</span> firebase.firestore().collection(<span class="hljs-string">'users'</span>).doc(userDoc.id).update({
+              <span class="hljs-attr">incomingFlings</span>: firebase.firestore.FieldValue.arrayUnion(flingRef)
+            });
+          });
+        })
+        .catch(<span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> dispatch({ <span class="hljs-attr">type</span>: FIRE_ERROR, <span class="hljs-attr">payload</span>: e.message }));
+    })
+    .catch(<span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> dispatch({ <span class="hljs-attr">type</span>: FIRE_ERROR, <span class="hljs-attr">payload</span>: e.message }));
+};
+
+<span class="hljs-keyword">const</span> uploadJSONblob = <span class="hljs-function">(<span class="hljs-params">dispatch</span>) =&gt;</span> <span class="hljs-function">(<span class="hljs-params">JSONblob, uid</span>) =&gt;</span> {
+  firebase.firestore().collection(<span class="hljs-string">'users'</span>).doc(uid).update({
+    <span class="hljs-attr">baseJsonBlob</span>: JSONblob,
+  })
+    .then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> dispatch({ <span class="hljs-attr">type</span>: STORE_JSON_BLOB, <span class="hljs-attr">payload</span>: JSONblob }))
+    .catch(<span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> dispatch({ <span class="hljs-attr">type</span>: UPLOAD_ERROR, <span class="hljs-attr">payload</span>: e.message }));
+};
+
+<span class="hljs-keyword">const</span> wipeContext = <span class="hljs-function">(<span class="hljs-params">dispatch</span>) =&gt;</span> <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  dispatch({ <span class="hljs-attr">type</span>: WIPE_CONTEXT });
+};
+
+<span class="hljs-keyword">const</span> goBackHome = <span class="hljs-function">(<span class="hljs-params">dispatch</span>) =&gt;</span> <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  dispatch({ <span class="hljs-attr">type</span>: GO_BACK_HOME });
+};
+
+<span class="hljs-keyword">const</span> setARscreen = <span class="hljs-function">(<span class="hljs-params">dispatch</span>) =&gt;</span> <span class="hljs-function">(<span class="hljs-params">newScreen</span>) =&gt;</span> {
+  dispatch({ <span class="hljs-attr">type</span>: SET_AR_SCREEN, <span class="hljs-attr">payload</span>: newScreen });
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>export the newly created context</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> { Context, Provider } = createDataContext(
+  reducer,
+  {
+    emailPasswordLogin,
+    emailPasswordCreateAccount,
+    queryNewBaseLocations,
+    setBaseLocation,
+    wipeContext,
+    setCoords,
+    launchFling,
+    uploadJSONblob,
+    goBackHome,
+    setARscreen,
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <p>actions (functions to be used to update global state)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+  INITIAL_STATE,
+);</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

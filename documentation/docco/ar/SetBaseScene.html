@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>SetBaseScene.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>SetBaseScene.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>Author: Reed Schimmel</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Description: Set the user base </p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-keyword">import</span> React, { Component } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> { Alert } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-native'</span>;
+<span class="hljs-keyword">import</span> {
+  ViroARScene,
+  ViroConstants,
+  ViroBox,
+  ViroARPlaneSelector,
+  ViroQuad,
+  ViroAmbientLight,
+  ViroMaterials,
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-viro'</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SetBaseScene</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+
+  <span class="hljs-keyword">constructor</span>(props) {
+    <span class="hljs-keyword">super</span>(props);
+
+    <span class="hljs-keyword">this</span>.state = {
+      <span class="hljs-attr">tracking</span>: <span class="hljs-literal">undefined</span>,
+      <span class="hljs-attr">intensity</span>: <span class="hljs-number">10</span>,
+      <span class="hljs-attr">color</span>: <span class="hljs-string">'#FFFFFF'</span>,
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>bind ‘this’ to functions</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>._onInitialized = <span class="hljs-keyword">this</span>._onInitialized.bind(<span class="hljs-keyword">this</span>);
+    <span class="hljs-keyword">this</span>._onFloorCollide = <span class="hljs-keyword">this</span>._onFloorCollide.bind(<span class="hljs-keyword">this</span>);
+  }
+
+  render() {
+    <span class="hljs-keyword">return</span> (
+      <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ViroARScene</span>
+        <span class="hljs-attr">onTrackingUpdated</span>=<span class="hljs-string">{this._onInitialized}</span>
+        <span class="hljs-attr">physicsWorld</span>=<span class="hljs-string">{{</span> <span class="hljs-attr">gravity:</span> [<span class="hljs-attr">0</span>, <span class="hljs-attr">-9.81</span>, <span class="hljs-attr">0</span>] }} <span class="hljs-attr">ref</span>=<span class="hljs-string">{(component)</span> =&gt;</span> { this.sceneRef = component; }}
+        onAmbientLightUpdate={lighting =&gt; this.setState({ ...lighting })}
+      &gt;
+        <span class="hljs-tag">&lt;<span class="hljs-name">ViroAmbientLight</span> <span class="hljs-attr">color</span>=<span class="hljs-string">{this.state.color}</span> <span class="hljs-attr">intensity</span>=<span class="hljs-string">{this.state.intensity}</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">ViroARPlaneSelector</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">{(component)</span> =&gt;</span> { this.planeSelector = component; }}
+          maxPlanes={5}
+          dragType='FixedToWorld'
+        &gt;
+          <span class="hljs-tag">&lt;<span class="hljs-name">ViroBox</span>
+            <span class="hljs-attr">position</span>=<span class="hljs-string">{[0,</span> <span class="hljs-attr">1</span>, <span class="hljs-attr">0</span>]} <span class="hljs-attr">scale</span>=<span class="hljs-string">{[.5,</span> <span class="hljs-attr">.5</span>, <span class="hljs-attr">.5</span>]}
+            <span class="hljs-attr">physicsBody</span>=<span class="hljs-string">{{</span> <span class="hljs-attr">type:</span> '<span class="hljs-attr">Dynamic</span>', <span class="hljs-attr">mass:</span> <span class="hljs-attr">25</span>, <span class="hljs-attr">enabled:</span> <span class="hljs-attr">true</span>, <span class="hljs-attr">useGravity:</span> <span class="hljs-attr">true</span>, <span class="hljs-attr">restitution:</span> <span class="hljs-attr">0.35</span>, <span class="hljs-attr">friction:</span> <span class="hljs-attr">0.75</span> }}
+            <span class="hljs-attr">ref</span>=<span class="hljs-string">{(component)</span> =&gt;</span> { this.box = component; }}
+          /&gt;
+          <span class="hljs-tag">&lt;<span class="hljs-name">ViroQuad</span> <span class="hljs-attr">position</span>=<span class="hljs-string">{[0,</span> <span class="hljs-attr">0</span>, <span class="hljs-attr">0</span>]} <span class="hljs-attr">scale</span>=<span class="hljs-string">{[1,</span> <span class="hljs-attr">1</span>, <span class="hljs-attr">1</span>]} <span class="hljs-attr">rotation</span>=<span class="hljs-string">{[-90,</span> <span class="hljs-attr">0</span>, <span class="hljs-attr">0</span>]} <span class="hljs-attr">physicsBody</span>=<span class="hljs-string">{{</span> <span class="hljs-attr">type:</span> '<span class="hljs-attr">Static</span>', <span class="hljs-attr">restitution:</span> <span class="hljs-attr">0.75</span> }}
+            <span class="hljs-attr">arShadowReceiver</span>=<span class="hljs-string">{true}</span>
+            <span class="hljs-attr">ref</span>=<span class="hljs-string">{(component)</span> =&gt;</span> { this.floorSurface = component; }} onCollision={this._onFloorCollide} materials={'ground'}
+          /&gt;
+        <span class="hljs-tag">&lt;/<span class="hljs-name">ViroARPlaneSelector</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">ViroARScene</span>&gt;</span></span>
+    );
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>User base saved</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">async</span> _onFloorCollide() {
+    <span class="hljs-keyword">let</span> data = <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.box.getTransformAsync();
+    <span class="hljs-keyword">this</span>.props.saveBase(<span class="hljs-built_in">JSON</span>.stringify(data.position));
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>@pre: user attempts to set base</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>@post: The state of tracking the user is passed in and set </p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  _onInitialized(state) {
+    <span class="hljs-keyword">if</span> (state == ViroConstants.TRACKING_NORMAL) {
+      <span class="hljs-keyword">this</span>.setState({ <span class="hljs-attr">tracking</span>: state });
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (state == ViroConstants.TRACKING_NONE) {
+      Alert.alert(<span class="hljs-string">'Lost tracking!'</span>);
+      <span class="hljs-keyword">this</span>.setState({ <span class="hljs-attr">tracking</span>: state });
+    }
+  }
+}
+
+ViroMaterials.createMaterials({
+  <span class="hljs-attr">hud_text_bg</span>: {
+    <span class="hljs-attr">diffuseColor</span>: <span class="hljs-string">'#00ffff'</span>
+  },
+  <span class="hljs-attr">ground</span>: {
+    <span class="hljs-attr">diffuseColor</span>: <span class="hljs-string">'#007CB6E6'</span>
+  },
+  <span class="hljs-attr">ground_hit</span>: {
+    <span class="hljs-attr">diffuseColor</span>: <span class="hljs-string">'#008141E6'</span>
+  },
+  <span class="hljs-attr">cube_color</span>: {
+    <span class="hljs-attr">diffuseColor</span>: <span class="hljs-string">'#0021cbE6'</span>
+  }
+});
+
+<span class="hljs-built_in">module</span>.exports = SetBaseScene;</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
