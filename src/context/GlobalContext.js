@@ -27,6 +27,9 @@ const QUERY_BASES_ERROR      = 'query_bases_error';
 const WIPE_CONTEXT           = 'wipe_context';
 const SET_COORDS             = 'set_coords';
 const LOAD_USER_DATA         = 'load_user_data';
+const FIRE_ERROR             = 'fire_error';
+const STORE_JSON_BLOB        = 'store_json_blob';
+const UPLOAD_ERROR           = 'upload_error';
 
 // default user document fields when a new user is generated
 const DEFAULT_USER_DOC = {
@@ -47,7 +50,6 @@ const reducer = (state, action) => {
     };
 
   case LOAD_USER_DATA:
-    console.log('loading user data...', action.payload);
     return {
       ...state,
       userData: action.payload,
@@ -95,6 +97,28 @@ const reducer = (state, action) => {
       ...state,
       coords: action.payload,
     };
+
+  case FIRE_ERROR:
+    return {
+      ...state,
+      launchFlingError: action.payload,
+    };
+
+  case UPLOAD_ERROR:
+    return {
+      ...state,
+      uploadError: action.payload,
+    };
+
+  case STORE_JSON_BLOB:
+    return {
+      ...state,
+      userData: {
+        ...state.userData,
+        baseJsonData: action.payload,
+      }
+    };
+
   default:
     return state;
   }
@@ -172,6 +196,46 @@ const setCoords = (dispatch) => ({ coords }) => {
   dispatch({ type: SET_COORDS, payload: coords });
 };
 
+// called when a user launches a new fling
+const launchFling = (dispatch) => ({ coords }, uid) => {
+  const landingDelta = 5;
+  const userRef = firebase.firestore().collection('users').doc(uid);
+  // create new outgoing fling
+  firebase.firestore().collection('flings').add({
+    landingLocation: coords,
+    sender: userRef,
+  })
+    .then((flingRef) => {
+      // Add new fling to outgoing flings of current user
+      userRef.update({ outgoingFlings: firebase.firestore.FieldValue.arrayUnion(flingRef) });
+
+      // query for bases around the landing location
+      const slice = firebase.firestore().collection('users')
+        .where('baseLongitude', '>=', coords.latitude - landingDelta).where('baseLongitude', '<=', coords.latitude + landingDelta);
+
+      // get all the users from around that longitude 
+      slice.get()
+        .then((querySnapshot) => {
+          // update everyone within the range
+          querySnapshot.forEach(async (userDoc) => {
+            await firebase.firestore().collection('users').doc(userDoc.id).update({
+              incomingFlings: firebase.firestore.FieldValue.arrayUnion(flingRef)
+            });
+          });
+        })
+        .catch((e) => dispatch({ type: FIRE_ERROR, payload: e.message }));
+    })
+    .catch((e) => dispatch({ type: FIRE_ERROR, payload: e.message }));
+};
+
+const uploadJSONblob = (dispatch) => (JSONblob, uid) => {
+  firebase.firestore().collection('users').doc(uid).update({
+    baseJsonBlob: JSONblob,
+  })
+    .then(() => dispatch({ type: STORE_JSON_BLOB, payload: JSONblob }))
+    .catch((e) => dispatch({ type: UPLOAD_ERROR, payload: e.message }));
+};
+
 const wipeContext = (dispatch) => () => {
   dispatch({ type: WIPE_CONTEXT });
 };
@@ -186,6 +250,8 @@ export const { Context, Provider } = createDataContext(
     setBaseLocation,
     wipeContext,
     setCoords,
+    launchFling,
+    uploadJSONblob,
   }, // actions (functions to be used to update global state)
   INITIAL_STATE, // initial state
 );
