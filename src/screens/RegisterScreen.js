@@ -118,7 +118,6 @@ const styles = StyleSheet.create({
   },
   textinput: {
     width: 300,
-    color: 'white',
     borderRadius: 25,
     paddingHorizontal: 16,
     fontSize: 16,
