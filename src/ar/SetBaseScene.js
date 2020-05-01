@@ -3,16 +3,12 @@ import React, { Component } from 'react';
 import { Alert, AsyncStorage } from 'react-native';
 import {
   ViroARScene,
-  // ViroText,
   ViroConstants,
-  // ViroNode,
-  // ViroARPlane,
   ViroBox,
   ViroARPlaneSelector,
   ViroQuad,
   ViroAmbientLight,
-  // ViroProps,
-  // ViroMaterials
+  ViroMaterials,
 } from 'react-viro';
 
 export default class SetBaseScene extends Component {
@@ -21,41 +17,26 @@ export default class SetBaseScene extends Component {
     super(props);
 
     this.state = {
-      text: 'Initializing AR...',
-      foundPlane: false,
-      heading: 0.0,
+      tracking: undefined,
+      intensity: 10,
+      color: '#FFFFFF',
     };
 
     // bind 'this' to functions
     this._onInitialized = this._onInitialized.bind(this);
+    this._onFloorCollide = this._onFloorCollide.bind(this);
   }
 
   render() {
     return (
       <ViroARScene
         onTrackingUpdated={this._onInitialized}
-        // anchorDetectionTypes='PlanesHorizontal'
         physicsWorld={{ gravity: [0, -9.81, 0] }} ref={(component) => { this.sceneRef = component; }}
-      // rotation={this.state.heading} https://github.com/viromedia/viro/issues/118#issuecomment-352500764
+        onAmbientLightUpdate={lighting => this.setState({ ...lighting })}
       >
-        <ViroAmbientLight color={'#FFFFFF'} intensity={10} castsShadow={true} />
-
-        <ViroARPlaneSelector ref={(component) => { this.plane = component; }}
-          maxPlanes={1}
-          onPlaneSelected={(plane) => {
-            // get plane info,
-            // get camera info
-            // call func
-            // func: find geo and heading, translate
-
-
-
-            AsyncStorage.setItem('base', JSON.stringify(plane)).then(() => console.log('set', plane));
-            // AsyncStorage.setItem('base', JSON.stringify(this.plane.props)).then(() => console.log('set'));
-            // show button to set base
-            // this.setState({ foundPlane: true });
-          }}
-          // onAnchorFound={anc => console.log(anc)}
+        <ViroAmbientLight color={this.state.color} intensity={this.state.intensity} />
+        <ViroARPlaneSelector ref={(component) => { this.planeSelector = component; }}
+          maxPlanes={5}
           dragType='FixedToWorld'
         >
           <ViroBox
@@ -66,22 +47,42 @@ export default class SetBaseScene extends Component {
           <ViroQuad position={[0, 0, 0]} scale={[1, 1, 1]} rotation={[-90, 0, 0]} physicsBody={{ type: 'Static', restitution: 0.75 }}
             arShadowReceiver={true}
             // onClickState={this.state.controllerConfig == CONTROLLER_PULL ? this.onItemPullForce('Surface') : undefined}
-            ref={(component) => { this.floorSurface = component; }} /*onCollision={this._onFloorCollide}*/ materials={'ground'}
+            ref={(component) => { this.floorSurface = component; }} onCollision={this._onFloorCollide} materials={'ground'}
           />
         </ViroARPlaneSelector>
       </ViroARScene>
     );
   }
 
+  async _onFloorCollide() {
+    let data = await this.box.getTransformAsync();
+    AsyncStorage.setItem('base', JSON.stringify(data.position));
+    // TODO: set position
+  }
+
   _onInitialized(state) {
     if (state == ViroConstants.TRACKING_NORMAL) {
-      this.setState({
-        text: 'Hello World!'
-      });
+      this.setState({ tracking: state });
     } else if (state == ViroConstants.TRACKING_NONE) {
       Alert.alert('Lost tracking!');
+      this.setState({ tracking: state });
     }
   }
 }
+
+ViroMaterials.createMaterials({
+  hud_text_bg: {
+    diffuseColor: '#00ffff'
+  },
+  ground: {
+    diffuseColor: '#007CB6E6'
+  },
+  ground_hit: {
+    diffuseColor: '#008141E6'
+  },
+  cube_color: {
+    diffuseColor: '#0021cbE6'
+  }
+});
 
 module.exports = SetBaseScene;
