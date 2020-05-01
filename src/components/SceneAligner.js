@@ -15,7 +15,7 @@ export default ({ setInPosition, alignHeading = 0, alignCoords }) => {
   const [heading, setHeading] = useState(null);
 
   useEffect(() => {
-    CompassHeading.start(3, heading => {
+    CompassHeading.start(1, heading => {
       setHeading(heading);
     });
     return () => CompassHeading.stop();
@@ -23,7 +23,7 @@ export default ({ setInPosition, alignHeading = 0, alignCoords }) => {
 
   const verifyHeading = () => {
     const diff = Math.abs(alignHeading - heading);
-    return (diff < 2 || diff > 368); // +- 2 degree margin of error
+    return (diff < 5 || diff > 355); // +- 3 degree margin of error
   };
   const verifyCoords = () => {
     const { longitude, latitude, accuracy } = coords;
@@ -50,8 +50,8 @@ export default ({ setInPosition, alignHeading = 0, alignCoords }) => {
       </>)}
 
       {verifyHeading() && (
-        <TouchableOpacity onPress={() => setInPosition(true)}>
-          <Text>Go to AR</Text>
+        <TouchableOpacity onPress={() => setInPosition(true)} style={styles.button}>
+          <Text style={{ textAlign: 'center', fontSize: 20 }}>Go to AR</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -60,4 +60,13 @@ export default ({ setInPosition, alignHeading = 0, alignCoords }) => {
 
 const styles = StyleSheet.create({
   text: { fontSize: 32, textAlign: 'center' },
+  button: {
+    width: 200,
+    marginVertical: 10,
+    paddingVertical: 12,
+    // backgroundColor: '#1c313a',
+    alignSelf: 'center',
+    borderWidth: 2,
+    borderRadius: 20,
+  },
 });
