@@ -106,7 +106,7 @@ const HomeScreen = () => {
       <Text>{fireError + uploadError + loginError + setBaseError}</Text>
       
       {showAuthModal ? null : <FloatingButton title={[state.userData.baseLatitude === 0 ? 'Set Base' : 'Fire']} //[base.isPin == true ? 'Fire' : 'Set Base']
-        onPress={state.userData.baseLatitude ? () => setARscreen('launch') : setBase} />}
+        onPress={state.userData.baseLatitude === 0 ? setBase : (() => setARscreen('launch'))} />}
 
       <Modal
         animationType="fade"
