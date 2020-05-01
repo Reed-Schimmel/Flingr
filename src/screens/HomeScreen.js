@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { StyleSheet, Modal, Alert, Platform, PermissionsAndroid } from 'react-native'; //Animate
-import MapScreen from './MapScreen';
+import { StyleSheet, Modal, Alert, Platform, PermissionsAndroid, Text } from 'react-native'; //Animate
+// import MapScreen from './MapScreen';
 import FloatingButton from '../components/FloatingButton';
 import AuthenticationModal from '../components/AuthenticationModal';
 // import AREntry from '../ar/AREntery';
@@ -31,7 +31,7 @@ const requestLocationPermission = async () => {
 const HomeScreen = () => {
   const [base, setBases] = useState({ isPin: false });
   const { wipeContext, setBaseLocation, state, setCoords } = useContext(Context);
-  const { /*setBaseError,*/ userAuth, coords } = state;
+  const { /*setBaseError,*/ userAuth, coords, uploadError, fireError } = state;
 
   let accuracy = 5; // meters of gps accuracy
 
@@ -58,7 +58,7 @@ const HomeScreen = () => {
       }
     }, gpsOptions);
     return () => navigator.geolocation.stopObserving(); // eslint-disable-line no-undef
-  }, []);
+  }, [userAuth]);
 
   const setBase = () => {
     if (state.userData.homeLatitude === 0) {
@@ -89,10 +89,11 @@ const HomeScreen = () => {
   return (
     //login popup, ar button, map screen, mini map style
     <>
-      {showAuthModal ? null : <FloatingButton title="Log Out" onPress={logout} style={styles.FloatingButton} />}
-
-      <MapScreen userBaseLocation={base.isPin} />
-
+      {showAuthModal ? null : <FloatingButton title="Log Out" onPress={logout} style = {styles.FloatingButton}/>}
+          
+      {/* <MapScreen userBaseLocation = {base.isPin}/> */}
+      <Text>{fireError + uploadError}</Text>
+      
       {showAuthModal ? null : <FloatingButton title={[state.userData.homeLatitude === 0 ? 'Set Base' : 'Fire']} //[base.isPin == true ? 'Fire' : 'Set Base']
         onPress={setBase} />}
 

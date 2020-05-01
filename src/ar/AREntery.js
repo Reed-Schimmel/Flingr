@@ -29,8 +29,11 @@ import ViewBaseScene from './ViewBaseScene';
 // 4. record & upload launch
 
 const AREntry = () => {
-  // const { state, actions } = useContext(Context);
-  // const { userData, coords } = state;
+  // REED: UNCOMMENT THIS TO USE THE NEW ACTION FUNCTIONS
+  // const { state, launchFling, uploadJSONblob } = useContext(Context);
+  // const { userData } = state;
+  
+  // REED: state.userData.baseJsonBlob is where your json blob is stored in state
 
   const [base, setBase] = useState(undefined);
   const [inPosition, setInPosition] = useState(false);
