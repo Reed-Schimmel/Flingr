@@ -3,7 +3,7 @@ import { View, Text, AsyncStorage } from 'react-native';
 import { ViroARSceneNavigator } from 'react-viro';
 import CompassHeading from 'react-native-compass-heading';
 
-// import { Context } from '../context/GlobalContext';
+import { Context } from '../context/GlobalContext';
 
 // import GeopositionScene from './GeopositionScene';
 // import InitialARScene from './HelloWorldSceneAR';
@@ -37,6 +37,8 @@ import ViewBaseScene from './ViewBaseScene';
 const AREntry = () => {
   const { state, launchFling, uploadJSONblob } = useContext(Context);
   // const { userData } = state;
+  
+  // REED: state.userData.baseJsonBlob is where your json blob is stored in state
 
   // const [scene, setScene] = useState(SET_BASE);
   const [base, setBase] = useState(undefined);
