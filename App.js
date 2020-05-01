@@ -2,7 +2,6 @@ import React from 'react';
 import {
   StyleSheet,
   SafeAreaView,
-  StatusBar,
 } from 'react-native';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
@@ -13,15 +12,11 @@ import firebaseConfig from './firebaseConfig.json';
 
 firebase.initializeApp(firebaseConfig);
 
-
 const Flingr = () => {
   return (
     <GlobalProvider>
       <SafeAreaView style={styles.container}>
-        {/* <AREntery /> */}
         <HomeScreen />
-        {/* <LoginScreen /> */}
-        {/* <RegisterScreen /> */}
       </SafeAreaView>
     </GlobalProvider>
   );
@@ -30,8 +25,7 @@ const Flingr = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: StatusBar.currentHeight, // for Android. If this looks weird in iOS tell Reed.
-    backgroundColor: '#FFF'
+    backgroundColor: '#FFF',
   },
 });
 
