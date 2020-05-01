@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { StyleSheet, Modal, Alert, Platform, PermissionsAndroid, Text } from 'react-native'; //Animate
+import { StyleSheet, Modal, Alert, Platform, PermissionsAndroid, Text } from 'react-native';
 import MapScreen from './MapScreen';
 import FloatingButton from '../components/FloatingButton';
 import AuthenticationModal from '../components/AuthenticationModal';
@@ -78,9 +78,6 @@ const HomeScreen = () => {
     else if (base.isPin === false && state.userData.baseLatitude === 0) {
       setBases({ isPin: true });
     }
-    else {
-      //<AREntery/>
-    }
   };
 
   const logout = () => {
@@ -96,7 +93,7 @@ const HomeScreen = () => {
         viewBase={ARscreen === 'viewBase'}
       />);
   }
-  console.log(state);
+
   return (
     //login popup, ar button, map screen, mini map style
     <>
@@ -105,7 +102,7 @@ const HomeScreen = () => {
       <MapScreen userBaseLocation = {base.isPin}/>
       <Text>{fireError + uploadError + loginError + setBaseError}</Text>
       
-      {showAuthModal ? null : <FloatingButton title={[state.userData.baseLatitude === 0 ? 'Set Base' : 'Fire']} //[base.isPin == true ? 'Fire' : 'Set Base']
+      {showAuthModal ? null : <FloatingButton title={[state.userData.baseLatitude === 0 ? 'Set Base' : 'Fire']}
         onPress={state.userData.baseLatitude === 0 ? setBase : (() => setARscreen('launch'))} />}
 
       {(!showAuthModal && state.userData.baseLatitude !== 0) ? (

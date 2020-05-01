@@ -59,11 +59,7 @@ export default class FireProjectileScene extends Component {
             physicsBody={ballPhysics}
             onLoadEnd={() => this.ball.setNativeProps({ 'position': [0, 0, -1] })}
             viroTag="BallTag"
-          // highAccuracyEvents={true}
-          // onClick={this.state.controllerConfig == CONTROLLER_PUSH ? this.onItemPushImpulse("BallTag") : undefined}
-          // onClick={() => this.ball.applyImpulse([0,0,-1],[0,0,-1])}
-          // onClick={this.launchBall}
-          // onDrag={this.state.controllerConfig == CONTROLLER_GRIP ? () => { } : undefined}
+            onClick={this.launchBall}
           />
         </ViroCamera>
       </ViroARScene>
