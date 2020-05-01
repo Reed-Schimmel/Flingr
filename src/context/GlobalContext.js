@@ -32,6 +32,7 @@ const FIRE_ERROR             = 'fire_error';
 const STORE_JSON_BLOB        = 'store_json_blob';
 const UPLOAD_ERROR           = 'upload_error';
 const GO_BACK_HOME           = 'go_back_home';
+const SET_AR_SCREEN          = 'set_ar_screen';
 
 // default user document fields when a new user is generated
 const DEFAULT_USER_DOC = {
@@ -119,6 +120,12 @@ const reducer = (state, action) => {
         ...state.userData,
         baseJsonData: action.payload,
       }
+    };
+
+  case SET_AR_SCREEN:
+    return {
+      ...state,
+      ARscreen: action.payload,
     };
 
   case GO_BACK_HOME:
@@ -252,6 +259,10 @@ const goBackHome = (dispatch) => () => {
   dispatch({ type: GO_BACK_HOME });
 };
 
+const setARscreen = (dispatch) => (newScreen) => {
+  dispatch({ type: SET_AR_SCREEN, payload: newScreen });
+};
+
 // export the newly created context
 export const { Context, Provider } = createDataContext(
   reducer,
@@ -265,6 +276,7 @@ export const { Context, Provider } = createDataContext(
     launchFling,
     uploadJSONblob,
     goBackHome,
+    setARscreen,
   }, // actions (functions to be used to update global state)
   INITIAL_STATE, // initial state
 );
