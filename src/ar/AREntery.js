@@ -54,7 +54,7 @@ const AREntry = ({ setBase = false, viewBase = false, launch = false }) => {
   );
   else if (launch) return (
     <ViroARSceneNavigator
-      initialScene={{ scene: ViewBaseScene, passProps: { saveLaunch: (coords) => launchFling({ coords }, uid) } }}
+      initialScene={{ scene: ViewBaseScene, passProps: { saveLaunch: (coords) => launchFling({ coords }, uid) } }} // TODO: set scene to launch scene
     />
   );
 };
