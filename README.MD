@@ -36,7 +36,20 @@ npm install -g react-native-cli
 npm install -g react-viro-cli
 ```
 
-4. Download the Viro Media app. You can get the free app from the app store on your device:
+4. Install maps by running the following command in your terminal:
+```
+npm install react-native-maps --save-exact
+```
+
+or
+
+```
+yarn add react-native-maps -E
+```
+Refer to [How to Install Maps](https://github.com/react-native-community/react-native-maps/blob/master/docs/installation.md)
+for additional installation details.
+
+5. Download the Viro Media app. You can get the free app from the app store on your device:
 
 For iOS:
 [Viro Media](https://apps.apple.com/us/app/viro-media/id1163100576)
@@ -44,7 +57,7 @@ For iOS:
 For Android:
 [Viro Media](https://play.google.com/store/apps/details?id=com.viromedia.viromedia)
 
-5. For more information, click on the link below:
+6. For more information, click on the link below:
 [How to Use ViroMedia](https://docs.viromedia.com/docs/quick-start)
 
 ### Launching
@@ -70,9 +83,13 @@ npm start
 [How to Use ViroMedia](https://docs.viromedia.com/docs/quick-start)
 
 
-### Documentation *(could create a link once documentation branch is merged)*
+### Documentation 
 
-Refer to the documentation folder to take a look at the code documentation of this project.
+[Documentation](https://github.com/Reed-Schimmel/Flingr/tree/master/documentation)
+
+
+### Compatible Devices
+Devices with GPS, and ARKit support
 
 ### Built With
 
@@ -125,61 +142,21 @@ The contributors of this project are:
 
 ### Scrum Artifacts
 
-* To take a look at the product backlogs, navigate to ProductBacklog.md in the documentation folder.
-* To take a look at the sprint backlogs, navigate to SprintBacklog.md in the documentation folder.
-* To take a look at the meeting logs, navigate to MeetingLog.md in the documentation folder.
+* [Product Backlogs](https://github.com/Reed-Schimmel/Flingr/blob/master/documentation/ProductBacklog.md)
+* [Sprint Backlogs](https://github.com/Reed-Schimmel/Flingr/blob/master/documentation/SprintBacklog.md)
+* [Meeting Logs](https://github.com/Reed-Schimmel/Flingr/blob/master/documentation/MeetingLog.md)
 
 ### Timeline
 
-* To take a look at the timeline of the project, navigate to Timeline.md in the documentation folder.
+* [Timeline](https://github.com/Reed-Schimmel/Flingr/blob/master/documentation/Timeline.md)
 
 
 ### References
 
-* To take a look at the references used in this project, navigate to Reference.md in the documentation folder.
-
-### Requirements:
-- watchman (optional)
-- node
-- react-native-cli
-- react-viro-cli
-- Xcode (for iOS standalone)
-- Android SDK (for Android standalone)
-- [ARcore app](https://play.google.com/store/apps/details?id=com.google.ar.unity.ddelements&hl=en_US) (for Android)
-- Viro Media app: [Android](https://play.google.com/store/apps/details?id=com.viromedia.viromedia), [iOS](https://apps.apple.com/us/app/viro-media/id1163100576)
-
-####
-## Setup
-1. Step 1-3 from [Mac/Linux](https://docs.viromedia.com/docs/quick-start) or [Windows](https://docs.viromedia.com/docs/quick-start-windows)
-2. Make sure you have [ARcore app](https://play.google.com/store/apps/details?id=com.google.ar.unity.ddelements&hl=en_US) (for Android) and Viro Media app: ([Android](https://play.google.com/store/apps/details?id=com.viromedia.viromedia), [iOS](https://apps.apple.com/us/app/viro-media/id1163100576)) installed on your phone.
-
-## Running the app
-1. Machine and phone must be on the same network
-2. run `npm start`
-3. open Viro Media app
-4. open side panel and press on "Enter Testbed"
-4. enter the code given in your terminal (or the ip of your machine if the code doesn't work)
-5. select AR
-
-## Viro getting starting guides:
-- [Mac/Linux](https://docs.viromedia.com/docs/quick-start)
-- [Windows](https://docs.viromedia.com/docs/quick-start-windows)
-- Github repo: https://github.com/viromedia/viro
-- [2D UI controls](https://docs.viromedia.com/docs/flexbox-ui-layouts)
+* [References](https://github.com/Reed-Schimmel/Flingr/blob/master/documentation/Reference.md)
 
 
-## Compatible Devices
-Devices with GPS, and ARKit support
 
----
-# vvvv WORK IN PROGRESS vvvvv
-## Build stand alone
-### Android
-`react-native run-android --variant=gvrDebug`
-### iOS
 
-## Project Structure (I want this to describe what folders are used for what)
-src/
 
-Repo - https://github.com/Reed-Schimmel/Flingr
 
