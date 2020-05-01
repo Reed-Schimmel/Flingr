@@ -84,7 +84,7 @@ Refer to the documentation folder to take a look at the code documentation of th
 
 ### About Firebase
 
-How to use Firebase for this JavaScript Project:
+How to setup Firebase for this JavaScript Project:
 1. To create a Firebase project, click [Create Firebase](https://console.firebase.google.com/?pli=1).
 2. After you have created a Firebase project, under "Get started by adding Firebase to your app", click the Web option
 3. Enter a nickname and click "Register App" (keep Firebase Hosting unchecked)
