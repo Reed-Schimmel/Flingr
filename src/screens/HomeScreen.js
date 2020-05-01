@@ -112,7 +112,7 @@ const HomeScreen = () => {
         <FloatingButton
           title="View Base"
           onPress={() => setARscreen('viewBase')}
-          style={{ left: 10, right: undefined }}
+          style={{ left: 30, right: undefined }}
         />) : null}
 
       <Modal
