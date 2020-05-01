@@ -1,6 +1,6 @@
 'use strict';
 import React, { Component } from 'react';
-import { Alert, AsyncStorage } from 'react-native';
+import { Alert, /*AsyncStorage*/ } from 'react-native';
 import {
   ViroARScene,
   ViroConstants,
@@ -56,8 +56,8 @@ export default class SetBaseScene extends Component {
 
   async _onFloorCollide() {
     let data = await this.box.getTransformAsync();
-    AsyncStorage.setItem('base', JSON.stringify(data.position));
-    // TODO: set position
+    // AsyncStorage.setItem('base', JSON.stringify(data.position));
+    this.props.saveBase(JSON.stringify(data.position));
   }
 
   _onInitialized(state) {
