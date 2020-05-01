@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>BasicPhysicsSample.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>BasicPhysicsSample.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>Description: The housing of all the physics used for the projectile</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Author: Reed Schimmel</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+
+<span class="hljs-comment">/*eslint-disable*/</span>
+<span class="hljs-meta">'use strict'</span>;
+
+<span class="hljs-keyword">import</span> React, { Component } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> {StyleSheet} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-native'</span>;
+
+<span class="hljs-keyword">import</span> {
+  ViroARScene,
+  ViroText,
+  Viro360Image,
+  ViroMaterials,
+  ViroBox,
+  ViroQuad,
+  Viro3DObject,
+  ViroOmniLight,
+  ViroController,
+  ViroNode,
+  ViroARPlane,
+  ViroFlexView,
+  ViroAmbientLight,
+  ViroLightingEnvironment
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-viro'</span>;
+
+<span class="hljs-keyword">var</span> createReactClass = <span class="hljs-built_in">require</span>(<span class="hljs-string">'create-react-class'</span>);
+<span class="hljs-keyword">var</span> CONTROLLER_PUSH = <span class="hljs-number">1</span>;
+<span class="hljs-keyword">var</span> CONTROLLER_GRIP = <span class="hljs-number">2</span>;
+<span class="hljs-keyword">var</span> CONTROLLER_PULL = <span class="hljs-number">3</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Basic Physics example demonstrating how to apply constant forces, and
+as well how to apply an impulse force, inreference to a ViroController
+in response to user actions.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre> 
+<span class="hljs-keyword">var</span> BasicARPhysicsSample = createReactClass({
+  <span class="hljs-keyword">get</span><span class="hljs-title">InitialState</span>() {
+    <span class="hljs-keyword">return</span> {
+      <span class="hljs-attr">controllerConfig</span>:CONTROLLER_GRIP,
+      <span class="hljs-attr">showCollisionBox</span>:<span class="hljs-literal">false</span>,
+      <span class="hljs-attr">foundPlane</span>:<span class="hljs-literal">false</span>,
+      <span class="hljs-attr">planePosition</span>:[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>],
+      <span class="hljs-attr">planeRotation</span>:[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>],
+      <span class="hljs-attr">totalCubes</span>:<span class="hljs-number">0</span>
+    };
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>ViroARPlaneSelector to detect for placing our “floor” plane and physics scene. </p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Create our physics group node example, at the location of user-selected plane </p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  render: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">return</span> (
+     <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ViroARScene</span> <span class="hljs-attr">physicsWorld</span>=<span class="hljs-string">{{</span> <span class="hljs-attr">gravity:</span>[<span class="hljs-attr">0</span>,<span class="hljs-attr">-9.81</span>,<span class="hljs-attr">0</span>], <span class="hljs-attr">drawBounds:this.state.showCollisionBox</span> }} <span class="hljs-attr">ref</span>=<span class="hljs-string">{(component)</span>=&gt;</span>{this.sceneRef = component}}&gt;
+      <span class="hljs-tag">&lt;<span class="hljs-name">ViroAmbientLight</span> <span class="hljs-attr">color</span>=<span class="hljs-string">{</span>"#<span class="hljs-attr">FFFFFF</span>"} <span class="hljs-attr">intensity</span>=<span class="hljs-string">{10}/</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">ViroLightingEnvironment</span> <span class="hljs-attr">source</span>=<span class="hljs-string">{require(</span>'<span class="hljs-attr">.</span>/<span class="hljs-attr">res</span>/<span class="hljs-attr">ibl_envr.hdr</span>')}/&gt;</span>
+
+  
+      <span class="hljs-tag">&lt;<span class="hljs-name">ViroARPlane</span>
+        <span class="hljs-attr">key</span>=<span class="hljs-string">{</span>"<span class="hljs-attr">firstPlane</span>"}
+        <span class="hljs-attr">ref</span>=<span class="hljs-string">{(component)</span>=&gt;</span>{this.arPlaneRef = component}}
+        onAnchorFound={this._onAnchorFound}&gt;
+
+      
+        {this._getPhysicsGroup()}
+
+      <span class="hljs-tag">&lt;/<span class="hljs-name">ViroARPlane</span>&gt;</span>
+     <span class="hljs-tag">&lt;/<span class="hljs-name">ViroARScene</span>&gt;</span></span>
+    );
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>When the anchor plane is found, set our physics example at the location of the plane.
+And then freeze the plane at that location to prevent it from re-adjusting to updates.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  _onAnchorFound(anchorMap){
+    <span class="hljs-keyword">if</span> (anchorMap.type != <span class="hljs-string">"plane"</span>){
+      <span class="hljs-keyword">return</span>;
+    }
+
+    <span class="hljs-keyword">var</span> worldCenterPosition = [anchorMap.position[<span class="hljs-number">0</span>] + anchorMap.center[<span class="hljs-number">0</span>],
+                               anchorMap.position[<span class="hljs-number">1</span>] + anchorMap.center[<span class="hljs-number">1</span>],
+                               anchorMap.position[<span class="hljs-number">2</span>] + anchorMap.center[<span class="hljs-number">2</span>]];
+    <span class="hljs-keyword">this</span>.arPlaneRef.setNativeProps({<span class="hljs-string">"pauseUpdates"</span>:<span class="hljs-literal">true</span>});
+    <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">foundPlane</span>:<span class="hljs-literal">true</span>, <span class="hljs-attr">planePosition</span>:worldCenterPosition, <span class="hljs-attr">planeRotation</span>:anchorMap.rotation});
+  },
+
+  _<span class="hljs-keyword">get</span><span class="hljs-title">PhysicsGroup</span>(){
+    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.state.foundPlane){
+      <span class="hljs-keyword">return</span>;
+    }
+
+    <span class="hljs-keyword">this</span>.ballProperties = {<span class="hljs-attr">friction</span>:<span class="hljs-number">0.6</span>, <span class="hljs-attr">type</span>:<span class="hljs-string">'Dynamic'</span>, <span class="hljs-attr">mass</span>:<span class="hljs-number">4</span>, <span class="hljs-attr">enabled</span>:<span class="hljs-literal">true</span>, <span class="hljs-attr">useGravity</span>:<span class="hljs-literal">true</span>, <span class="hljs-attr">shape</span>:{<span class="hljs-attr">type</span>:<span class="hljs-string">'Sphere'</span>, <span class="hljs-attr">params</span>:[<span class="hljs-number">0.14</span>]}, <span class="hljs-attr">restitution</span>:<span class="hljs-number">0.65</span>};
+    <span class="hljs-keyword">return</span> (
+      <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ViroNode</span> <span class="hljs-attr">position</span>=<span class="hljs-string">{this.state.planePosition}</span>&gt;</span>
+
+        {/* Create 2 UI buttons for controlling interaction with the basketballs */}
+        {this._getHUDControl()}
+
+        {/* Bind controls for interacting with the scene.*/}
+        <span class="hljs-tag">&lt;<span class="hljs-name">ViroController</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">{(component)</span>=&gt;</span>{this.controllerRef = component}} /&gt;
+
+        {/* A Single Ball we have spawned in our scene */}
+        <span class="hljs-tag">&lt;<span class="hljs-name">Viro3DObject</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">{(obj)</span>=&gt;</span>{this.ball = obj}}
+                      source={require('./res/object_basketball_pbr.vrx')}
+                      scale={[0.5, 0.5, 0.5]}
+                      position={[0, 0, 1.0]}
+                      rotation={[0, 0, 0]}
+                      resources={[require('./res/blinn1_Base_Color.png'),
+                                  require('./res/blinn1_Metallic.png'),
+                                  require('./res/blinn1_Roughness.png'),
+                                  require('./res/blinn1_Normal_OpenGL.png')]}
+                      type="VRX"
+                      physicsBody={this.ballProperties}
+                      viroTag="BallTag"
+                      onClick={this.state.controllerConfig == CONTROLLER_PUSH ? this.onItemPushImpulse("BallTag") : undefined}
+                      onDrag={this.state.controllerConfig == CONTROLLER_GRIP ? ()=&gt;{} : undefined}/&gt;
+
+        {/* Render cube object in the scene, if any.*/}
+        {this._renderCubes()}
+
+        {/* Quad representing the ground. */}
+        <span class="hljs-tag">&lt;<span class="hljs-name">ViroQuad</span> <span class="hljs-attr">position</span>=<span class="hljs-string">{[0,0,0]}</span> <span class="hljs-attr">scale</span>=<span class="hljs-string">{[6.0,</span> <span class="hljs-attr">8.0</span>, <span class="hljs-attr">1.0</span>]} <span class="hljs-attr">rotation</span>=<span class="hljs-string">{[-90,</span> <span class="hljs-attr">0</span>, <span class="hljs-attr">0</span>]} <span class="hljs-attr">physicsBody</span>=<span class="hljs-string">{{</span> <span class="hljs-attr">type:</span>'<span class="hljs-attr">Static</span>', <span class="hljs-attr">restitution:0.75</span> }}
+          <span class="hljs-attr">onClickState</span>=<span class="hljs-string">{this.state.controllerConfig</span> == <span class="hljs-string">CONTROLLER_PULL</span> ? <span class="hljs-attr">this.onItemPullForce</span>("<span class="hljs-attr">Surface</span>") <span class="hljs-attr">:</span> <span class="hljs-attr">undefined</span>}
+          <span class="hljs-attr">ref</span>=<span class="hljs-string">{(component)</span>=&gt;</span>{this.floorSurface = component}} onCollision={this._onFloorCollide} materials={'ground'}/&gt;
+      <span class="hljs-tag">&lt;/<span class="hljs-name">ViroNode</span>&gt;</span></span>
+    );
+  },
+
+  _<span class="hljs-keyword">get</span><span class="hljs-title">HUDControl</span>(){
+    <span class="hljs-keyword">return</span> (
+      <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ViroNode</span> <span class="hljs-attr">position</span>=<span class="hljs-string">{[0,</span> <span class="hljs-attr">1.5</span>, <span class="hljs-attr">-7.75</span>]} <span class="hljs-attr">transformBehaviors</span>=<span class="hljs-string">{[</span>"<span class="hljs-attr">billboardX</span>", "<span class="hljs-attr">billboardY</span>"]}&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">ViroFlexView</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{{flexDirection:</span> '<span class="hljs-attr">column</span>'}} <span class="hljs-attr">width</span>=<span class="hljs-string">{1}</span> <span class="hljs-attr">height</span>=<span class="hljs-string">{0.8}</span> <span class="hljs-attr">materials</span>=<span class="hljs-string">"hud_text_bg"</span> <span class="hljs-attr">position</span>=<span class="hljs-string">{[-1.5,0,0]}</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this._resetScene}</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">ViroText</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.hud_text}</span>  <span class="hljs-attr">text</span>=<span class="hljs-string">{</span> "<span class="hljs-attr">Reset</span> <span class="hljs-attr">Scene</span>"} /&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">ViroFlexView</span>&gt;</span>
+
+        <span class="hljs-tag">&lt;<span class="hljs-name">ViroFlexView</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{{flexDirection:</span> '<span class="hljs-attr">column</span>'}} <span class="hljs-attr">width</span>=<span class="hljs-string">{1}</span> <span class="hljs-attr">height</span>=<span class="hljs-string">{0.8}</span> <span class="hljs-attr">materials</span>=<span class="hljs-string">"hud_text_bg"</span> <span class="hljs-attr">position</span>=<span class="hljs-string">{[0,0,0]}</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this._toggleControllerInteraction}</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">ViroText</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.hud_text}</span>  <span class="hljs-attr">text</span>=<span class="hljs-string">{this._getControllerTextMode()}</span> /&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">ViroFlexView</span>&gt;</span>
+
+        <span class="hljs-tag">&lt;<span class="hljs-name">ViroFlexView</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{{flexDirection:</span> '<span class="hljs-attr">column</span>'}} <span class="hljs-attr">width</span>=<span class="hljs-string">{1}</span> <span class="hljs-attr">height</span>=<span class="hljs-string">{0.8}</span> <span class="hljs-attr">materials</span>=<span class="hljs-string">"hud_text_bg"</span> <span class="hljs-attr">position</span>=<span class="hljs-string">{[1.5,0,0]}</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this._toggleCollisionBox}</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">ViroText</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.hud_text}</span>  <span class="hljs-attr">text</span>=<span class="hljs-string">{</span>"<span class="hljs-attr">Toggle</span> <span class="hljs-attr">Phyz</span> <span class="hljs-attr">boxes</span>"} /&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">ViroFlexView</span>&gt;</span>
+
+        <span class="hljs-tag">&lt;<span class="hljs-name">ViroFlexView</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{{flexDirection:</span> '<span class="hljs-attr">column</span>'}} <span class="hljs-attr">width</span>=<span class="hljs-string">{1}</span> <span class="hljs-attr">height</span>=<span class="hljs-string">{0.8}</span> <span class="hljs-attr">materials</span>=<span class="hljs-string">"hud_text_bg"</span> <span class="hljs-attr">position</span>=<span class="hljs-string">{[3,0,0]}</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this._addCube}</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">ViroText</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.hud_text}</span>  <span class="hljs-attr">text</span>=<span class="hljs-string">{</span>"<span class="hljs-attr">Add</span> <span class="hljs-attr">Cube</span>"} /&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">ViroFlexView</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">ViroNode</span>&gt;</span></span>
+    )
+  },
+
+  _<span class="hljs-keyword">get</span><span class="hljs-title">ControllerTextMode</span>(){
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.controllerConfig == <span class="hljs-number">1</span>){
+      <span class="hljs-keyword">return</span> <span class="hljs-string">"Controller Push Mode"</span>;
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.controllerConfig == <span class="hljs-number">2</span>){
+      <span class="hljs-keyword">return</span> <span class="hljs-string">"Controller Drag Mode"</span>;
+    } <span class="hljs-keyword">else</span> {
+      <span class="hljs-keyword">return</span> <span class="hljs-string">"Controller Pull Mode"</span>;
+    }
+  },
+
+  _re<span class="hljs-keyword">set</span><span class="hljs-title">Scene</span>() {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Reset the ball to it’s default position.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">set</span><span class="hljs-title">Timeout</span>(<span class="hljs-params">(</span>) =&gt; {
+        <span class="hljs-keyword">this</span>.ball.setNativeProps({<span class="hljs-string">"physicsBody"</span>:<span class="hljs-literal">null</span>});
+        <span class="hljs-keyword">this</span>.ball.setNativeProps({<span class="hljs-string">"position"</span>:[<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">-0.3</span>]});
+        <span class="hljs-keyword">this</span>.floorSurface.setNativeProps({<span class="hljs-attr">materials</span>:[<span class="hljs-string">"ground"</span>]});
+
+        <span class="hljs-keyword">set</span><span class="hljs-title">Timeout</span>(<span class="hljs-params">(</span>) =&gt; {
+            <span class="hljs-keyword">this</span>.ball.setNativeProps({<span class="hljs-string">"physicsBody"</span>:<span class="hljs-keyword">this</span>.ballProperties});
+        }, <span class="hljs-number">500</span>);
+    }, <span class="hljs-number">500</span>);
+  },
+
+  _toggleCollisionBox(){
+    <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">showCollisionBox</span>:!<span class="hljs-keyword">this</span>.state.showCollisionBox});
+  },
+
+  _toggleControllerInteraction(){
+    <span class="hljs-keyword">var</span> endConfig = <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.controllerConfig == <span class="hljs-number">1</span>){
+      endConfig = <span class="hljs-number">2</span>;
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.controllerConfig == <span class="hljs-number">2</span>){
+      endConfig = <span class="hljs-number">3</span>;
+    }
+    <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">controllerConfig</span>:endConfig});
+  },
+
+  <span class="hljs-comment">/*
+   Push against the ball with an impulse force, at the onClicked location, and
+   with a force direction originating from the controller (controller forward).
+   */</span>
+  onItemPushImpulse(itemTag){
+    <span class="hljs-keyword">return</span> <span class="hljs-function">(<span class="hljs-params">clickedPos, source</span>) =&gt;</span>{
+      <span class="hljs-keyword">this</span>.controllerRef.getControllerForwardAsync().then(<span class="hljs-function">(<span class="hljs-params">forward</span>)=&gt;</span>{
+        <span class="hljs-keyword">var</span> pushStrength = <span class="hljs-number">3</span>;
+        <span class="hljs-keyword">var</span> pushImpulse = [forward[<span class="hljs-number">0</span>]*pushStrength, forward[<span class="hljs-number">1</span>]*pushStrength, forward[<span class="hljs-number">2</span>]*pushStrength];
+        <span class="hljs-keyword">this</span>.ball.getTransformAsync().then(<span class="hljs-function">(<span class="hljs-params">transform</span>) =&gt;</span> {
+          <span class="hljs-keyword">var</span> pos = transform.position;
+          <span class="hljs-keyword">var</span> pushPosition = [clickedPos[<span class="hljs-number">0</span>] - pos[<span class="hljs-number">0</span>], clickedPos[<span class="hljs-number">1</span>] - pos[<span class="hljs-number">1</span>], clickedPos[<span class="hljs-number">2</span>] - pos[<span class="hljs-number">2</span>]];
+          <span class="hljs-keyword">this</span>.ball.applyImpulse(pushImpulse, pushPosition);
+        });
+      });
+    }
+  },
+
+  <span class="hljs-comment">/*
+   Pull the ball with a constant force towards the camera.
+   */</span>
+  onItemPullForce(itemTag){
+    <span class="hljs-keyword">return</span> <span class="hljs-function">(<span class="hljs-params">state, position, source</span>) =&gt;</span> {
+      <span class="hljs-keyword">this</span>.sceneRef.getCameraOrientationAsync().then(<span class="hljs-function">(<span class="hljs-params">camTransform</span>)=&gt;</span>{
+        <span class="hljs-keyword">this</span>.ball.getTransformAsync().then(<span class="hljs-function">(<span class="hljs-params">ballTransform</span>)=&gt;</span>{
+          <span class="hljs-keyword">var</span> ballPos = ballTransform.position;
+          <span class="hljs-keyword">var</span> camPos = camTransform.position;
+          <span class="hljs-keyword">var</span> pullVec = [camPos[<span class="hljs-number">0</span>] - ballPos[<span class="hljs-number">0</span>], camPos[<span class="hljs-number">1</span>] - ballPos[<span class="hljs-number">1</span>], camPos[<span class="hljs-number">2</span>] - ballPos[<span class="hljs-number">2</span>]];
+
+          <span class="hljs-keyword">var</span> pullStrength = <span class="hljs-number">5</span>; <span class="hljs-comment">// Force multiplier.</span>
+          <span class="hljs-keyword">var</span> pullStrengthVec = [pullVec[<span class="hljs-number">0</span>]*pullStrength, pullVec[<span class="hljs-number">1</span>]*pullStrength, pullVec[<span class="hljs-number">2</span>]*pullStrength];  <span class="hljs-comment">// Force in newtons</span>
+          <span class="hljs-keyword">if</span> (state == <span class="hljs-number">1</span>) {
+            <span class="hljs-keyword">var</span> phyzProps = {<span class="hljs-attr">force</span>:{<span class="hljs-attr">value</span>:pullStrengthVec}, <span class="hljs-attr">type</span>:<span class="hljs-string">'Dynamic'</span>, <span class="hljs-attr">mass</span>:<span class="hljs-number">4</span>, <span class="hljs-attr">enabled</span>:<span class="hljs-literal">true</span>, <span class="hljs-attr">useGravity</span>:<span class="hljs-literal">true</span>, <span class="hljs-attr">shape</span>:{<span class="hljs-attr">type</span>:<span class="hljs-string">'Sphere'</span>, <span class="hljs-attr">params</span>:[<span class="hljs-number">0.14</span>]}, <span class="hljs-attr">restitution</span>:<span class="hljs-number">0.65</span>};
+          } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">var</span> phyzProps = {<span class="hljs-attr">type</span>:<span class="hljs-string">'Dynamic'</span>, <span class="hljs-attr">mass</span>:<span class="hljs-number">4</span>, <span class="hljs-attr">enabled</span>:<span class="hljs-literal">true</span>, <span class="hljs-attr">useGravity</span>:<span class="hljs-literal">true</span>, <span class="hljs-attr">shape</span>:{<span class="hljs-attr">type</span>:<span class="hljs-string">'Sphere'</span>, <span class="hljs-attr">params</span>:[<span class="hljs-number">0.14</span>]}, <span class="hljs-attr">restitution</span>:<span class="hljs-number">0.65</span>};
+          }
+          <span class="hljs-keyword">this</span>.ball.setNativeProps({<span class="hljs-string">"physicsBody"</span>:phyzProps});
+        });
+      });
+    }
+  },
+
+ _onFloorCollide(collidedTag, collidedPoint, collidedNormal){
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Viro box has collided on the "</span> + collidedTag);
+    <span class="hljs-keyword">if</span> (collidedTag == <span class="hljs-string">"BallTag"</span>){
+      <span class="hljs-keyword">this</span>.floorSurface.setNativeProps({<span class="hljs-attr">materials</span>:[<span class="hljs-string">"ground_hit"</span>]});
+    }
+  },
+
+  _renderCubes(){
+    <span class="hljs-keyword">var</span> views = [];
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-keyword">this</span>.state.totalCubes; i ++){
+      <span class="hljs-keyword">var</span> cubeKey = <span class="hljs-string">"CubeTag_"</span> + i;
+      views.push((<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ViroBox</span> <span class="hljs-attr">scale</span>=<span class="hljs-string">{[0.2,</span> <span class="hljs-attr">0.2</span>, <span class="hljs-attr">0.2</span>]}
+                        <span class="hljs-attr">position</span>=<span class="hljs-string">{[-0.5,</span> <span class="hljs-attr">1</span>, <span class="hljs-attr">-1.3</span>]}
+                        <span class="hljs-attr">rotation</span>=<span class="hljs-string">{[0,</span> <span class="hljs-attr">0</span>, <span class="hljs-attr">0</span>]}
+                        <span class="hljs-attr">physicsBody</span>=<span class="hljs-string">{{type:</span>'<span class="hljs-attr">Dynamic</span>', <span class="hljs-attr">mass:25</span>, <span class="hljs-attr">enabled:true</span>, <span class="hljs-attr">useGravity:true</span>, <span class="hljs-attr">restitution:0.35</span>, <span class="hljs-attr">friction:0.75</span>}}
+                        <span class="hljs-attr">materials</span>=<span class="hljs-string">"cube_color"</span>
+                        <span class="hljs-attr">key</span>=<span class="hljs-string">{cubeKey}</span>
+                        <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.state.controllerConfig</span> == <span class="hljs-string">CONTROLLER_PUSH</span> ? <span class="hljs-attr">this.onItemPushImpulse</span>(<span class="hljs-attr">cubeKey</span>) <span class="hljs-attr">:</span> <span class="hljs-attr">undefined</span>}
+                        <span class="hljs-attr">onDrag</span>=<span class="hljs-string">{this.state.controllerConfig</span> == <span class="hljs-string">CONTROLLER_GRIP</span> ? ()=&gt;</span>{} : undefined}
+                        /&gt;</span>));
+    }
+    <span class="hljs-keyword">return</span> views;
+  },
+
+  _addCube(){
+    <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">totalCubes</span>:<span class="hljs-keyword">this</span>.state.totalCubes + <span class="hljs-number">1</span>});
+  },
+});
+
+<span class="hljs-keyword">var</span> styles = StyleSheet.create({
+  <span class="hljs-attr">hud_text</span>: {
+       <span class="hljs-attr">fontSize</span>: <span class="hljs-number">18</span>,
+       <span class="hljs-attr">fontFamily</span>: <span class="hljs-string">'Arial'</span>,
+       <span class="hljs-attr">color</span>: <span class="hljs-string">'#0000ff'</span>,
+       <span class="hljs-attr">flex</span>: <span class="hljs-number">1</span>,
+  },
+});
+
+ViroMaterials.createMaterials({
+  <span class="hljs-attr">hud_text_bg</span>: {
+    <span class="hljs-attr">diffuseColor</span>: <span class="hljs-string">"#00ffff"</span>
+  },
+  <span class="hljs-attr">ground</span>:{
+    <span class="hljs-attr">diffuseColor</span>: <span class="hljs-string">"#007CB6E6"</span>
+  },
+  <span class="hljs-attr">ground_hit</span>:{
+    <span class="hljs-attr">diffuseColor</span>: <span class="hljs-string">"#008141E6"</span>
+  },
+  <span class="hljs-attr">cube_color</span>:{
+    <span class="hljs-attr">diffuseColor</span>: <span class="hljs-string">"#0021cbE6"</span>
+  }
+ });
+
+<span class="hljs-built_in">module</span>.exports = BasicARPhysicsSample;</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

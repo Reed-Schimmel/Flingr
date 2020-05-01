@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>MapScreen.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>MapScreen.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>Description: This file is responsible for the map and marker of the app.</br></br>
+
+Author: Amir Shami</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-keyword">import</span> React, { useState, useEffect, useContext } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> { View, StyleSheet, Dimensions } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-native'</span>;
+<span class="hljs-keyword">import</span> MapView, { Marker } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-native-maps'</span>;
+<span class="hljs-keyword">import</span> { Context } <span class="hljs-keyword">from</span> <span class="hljs-string">'../context/GlobalContext'</span>;
+<span class="hljs-keyword">import</span> FloatingButton <span class="hljs-keyword">from</span> <span class="hljs-string">'../components/FloatingButton'</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>These constants help dictate how for zoomed in the map is on load.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> screen = Dimensions.get(<span class="hljs-string">'window'</span>);
+<span class="hljs-keyword">const</span> ASPECT_RATIO = screen.width / screen.height;
+<span class="hljs-keyword">const</span> LATITUDE_DELTA = <span class="hljs-number">0.0922</span>;
+<span class="hljs-keyword">const</span> LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+
+<span class="hljs-keyword">const</span> MapScreen = <span class="hljs-function">(<span class="hljs-params">props</span>) =&gt;</span> { 
+  <span class="hljs-keyword">const</span> { state } = useContext(Context);
+  <span class="hljs-keyword">const</span> { coords } = state;
+  
+  <span class="hljs-keyword">const</span> [region, setRegion] = useState({
+    <span class="hljs-attr">latitude</span>: coords.latitude || <span class="hljs-number">39</span>,
+    <span class="hljs-attr">longitude</span>: coords.longitude || <span class="hljs-number">-98</span>,
+    <span class="hljs-attr">latitudeDelta</span>: LATITUDE_DELTA,
+    <span class="hljs-attr">longitudeDelta</span>: LONGITUDE_DELTA,
+  });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>@ pre: know user coordinates</br>
+@post: update region state every time the global context has new coords</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  useEffect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">set</span><span class="hljs-title">Region</span>(<span class="hljs-params">{
+      latitude: coords.latitude || region.latitude,
+      longitude: coords.longitude || region.longitude,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA
+    }</span>);
+  }, [<span class="hljs-title">coords</span>.<span class="hljs-title">latitude</span> === <span class="hljs-title">null</span>]);
+
+  <span class="hljs-title">return</span> (<span class="hljs-params">
+    &lt;MapView style={[styles.map, props.style]} region={region} 
+      showsUserLocation={props.userBaseLocation === true ? false : true}&gt;
+      {
+        props.userBaseLocation === true 
+          ? &lt;Marker coordinate={region} title = {state.userData.username}&gt;
+            &lt;FloatingButton style = {styles.marker}/&gt;
+            &lt;View style = {styles.stick}<span class="hljs-regexp">/&gt;&lt;/</span>Marker&gt; 
+          : null
+      }
+    &lt;/MapView&gt;
+  </span>);
+};
+
+<span class="hljs-title">const</span> <span class="hljs-title">styles</span> = <span class="hljs-title">StyleSheet</span>.<span class="hljs-title">create</span>(<span class="hljs-params">{
+  container: {
+    flex: <span class="hljs-number">1</span>,
+    backgroundColor: <span class="hljs-string">'#FFF'</span>,
+  },
+</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Style for the map to make sure the entire screen is covered.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  map: {
+    ...StyleSheet.absoluteFillObject,
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>The style of the marker.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  marker: {
+    <span class="hljs-attr">position</span>: <span class="hljs-string">'relative'</span>,
+    <span class="hljs-attr">right</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">bottom</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">height</span>: <span class="hljs-number">50</span>,
+    <span class="hljs-attr">width</span>: <span class="hljs-number">100</span>,
+    <span class="hljs-attr">top</span>: <span class="hljs-number">-25</span>,
+    <span class="hljs-attr">borderRadius</span>: <span class="hljs-number">50</span>,
+    <span class="hljs-attr">zIndex</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">backgroundColor</span>: <span class="hljs-string">'lightblue'</span>,
+    <span class="hljs-attr">justifyContent</span>: <span class="hljs-string">'center'</span>,
+    <span class="hljs-attr">alignItems</span>: <span class="hljs-string">'center'</span>,
+    <span class="hljs-attr">textAlign</span>: <span class="hljs-string">'center'</span>,
+    <span class="hljs-attr">shadowColor</span>: <span class="hljs-string">'#000'</span>,
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>The style of the marker.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  stick: {
+    <span class="hljs-attr">position</span>: <span class="hljs-string">'relative'</span>,
+    <span class="hljs-attr">top</span>: <span class="hljs-number">-35</span>,
+    <span class="hljs-attr">left</span>: <span class="hljs-number">45</span>,
+    <span class="hljs-attr">backgroundColor</span>: <span class="hljs-string">'lightblue'</span>,
+    <span class="hljs-attr">width</span>: <span class="hljs-number">5</span>,
+    <span class="hljs-attr">height</span>: <span class="hljs-number">50</span>,
+  },
+});
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> MapScreen;</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>AREntery.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>AREntery.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>Description: This file calls this various ar scenes</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Author: Reed Schimmel </p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+
+<span class="hljs-keyword">import</span> React, { useState, useContext, <span class="hljs-comment">/*useEffect*/</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> { ViroARSceneNavigator } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-viro'</span>;
+<span class="hljs-keyword">import</span> SceneAligner <span class="hljs-keyword">from</span> <span class="hljs-string">'../components/SceneAligner'</span>;
+<span class="hljs-keyword">import</span> { Context } <span class="hljs-keyword">from</span> <span class="hljs-string">'../context/GlobalContext'</span>;
+
+<span class="hljs-keyword">import</span> SetBaseScene <span class="hljs-keyword">from</span> <span class="hljs-string">'./SetBaseScene'</span>;
+<span class="hljs-keyword">import</span> ViewBaseScene <span class="hljs-keyword">from</span> <span class="hljs-string">'./ViewBaseScene'</span>;
+<span class="hljs-keyword">import</span> FireProjectileScene <span class="hljs-keyword">from</span> <span class="hljs-string">'./FireProjectileScene'</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Set base flow</p>
+<ol>
+<li>confirm world location via gps</li>
+<li>confirm compass</li>
+<li>find world anchor</li>
+<li>place base relative to anchor</li>
+</ol>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Fire projectile flow</p>
+<ol>
+<li>find world location and orientation (gps &amp; compass)</li>
+</ol>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <ol start="2">
+<li>display projectile and UI AR</li>
+</ol>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>  a. 3 DoF display (debug)
+  b. KE units input
+  c. show projectile
+  d. fire button
+  e. minimap
+3. launching animation</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <ol start="4">
+<li>record &amp; upload launch</li>
+</ol>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-keyword">const</span> AREntry = <span class="hljs-function">(<span class="hljs-params">{ setBase = <span class="hljs-literal">false</span>, viewBase = <span class="hljs-literal">false</span>, launch = <span class="hljs-literal">false</span> }</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> { state, launchFling, uploadJSONblob, goBackHome } = useContext(Context);
+  <span class="hljs-keyword">const</span> { userData, <span class="hljs-attr">userAuth</span>: { uid } } = state;
+  <span class="hljs-keyword">const</span> { baseLatitude, baseLongitude, baseJsonBlob } = userData;
+
+  <span class="hljs-keyword">const</span> [inPosition, setInPosition] = useState(<span class="hljs-literal">false</span>);
+
+  <span class="hljs-keyword">const</span> baseCoords = (baseLatitude === <span class="hljs-number">0</span> &amp;&amp; baseLongitude === <span class="hljs-number">0</span>)
+    ? <span class="hljs-literal">undefined</span> : { <span class="hljs-attr">latitude</span>: baseLatitude, <span class="hljs-attr">longitude</span>: baseLongitude };
+
+  <span class="hljs-keyword">if</span> (!inPosition) <span class="hljs-keyword">return</span> (
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">SceneAligner</span> <span class="hljs-attr">setInPosition</span>=<span class="hljs-string">{setInPosition}</span> <span class="hljs-attr">alignHeading</span>=<span class="hljs-string">{0}</span> <span class="hljs-attr">alignCoords</span>=<span class="hljs-string">{baseCoords}</span> /&gt;</span></span>
+  );
+
+  <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (setBase) <span class="hljs-keyword">return</span> (
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ViroARSceneNavigator</span>
+      <span class="hljs-attr">initialScene</span>=<span class="hljs-string">{{</span> <span class="hljs-attr">scene:</span> <span class="hljs-attr">SetBaseScene</span>, <span class="hljs-attr">passProps:</span> { <span class="hljs-attr">saveBase:</span> (<span class="hljs-attr">jsonStr</span>) =&gt;</span> uploadJSONblob(jsonStr, uid) }, goBackHome }}
+    /&gt;</span>
+  );
+  <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (viewBase) <span class="hljs-keyword">return</span> (
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ViroARSceneNavigator</span>
+      <span class="hljs-attr">initialScene</span>=<span class="hljs-string">{{</span> <span class="hljs-attr">scene:</span> <span class="hljs-attr">ViewBaseScene</span>, <span class="hljs-attr">passProps:</span> { <span class="hljs-attr">base:</span> <span class="hljs-attr">JSON.parse</span>(<span class="hljs-attr">baseJsonBlob</span>) }, <span class="hljs-attr">goBackHome</span> }}
+    /&gt;</span></span>
+  );
+  <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (launch) <span class="hljs-keyword">return</span> (
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ViroARSceneNavigator</span>
+      <span class="hljs-attr">initialScene</span>=<span class="hljs-string">{{</span> <span class="hljs-attr">scene:</span> <span class="hljs-attr">FireProjectileScene</span>, <span class="hljs-attr">passProps:</span> { <span class="hljs-attr">saveLaunch:</span> (<span class="hljs-attr">coords</span>) =&gt;</span> launchFling({ coords }, uid) }, goBackHome }} // TODO: set scene to launch scene
+    /&gt;</span>
+  );
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> AREntry;
+<span class="hljs-built_in">module</span>.exports = AREntry;</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>RegisterScreen.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>RegisterScreen.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>Description: Registration screen for app</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Authors: Jamima Abdul Hakkeem &amp; Kameron Bielawski</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-keyword">import</span> React, { useContext, useState } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> { StyleSheet, TextInput, View, Text, TouchableOpacity, Alert } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-native'</span>;
+<span class="hljs-keyword">import</span> { Context <span class="hljs-keyword">as</span> GlobalContext } <span class="hljs-keyword">from</span> <span class="hljs-string">'../context/GlobalContext'</span>;
+
+<span class="hljs-keyword">const</span> RegisterScreen = <span class="hljs-function">(<span class="hljs-params">props</span>) =&gt;</span> {
+
+  <span class="hljs-keyword">const</span> [textFields, setTextFields] = useState({
+    <span class="hljs-attr">email</span>: <span class="hljs-string">''</span>,
+    <span class="hljs-attr">username</span>: <span class="hljs-string">''</span>,
+    <span class="hljs-attr">password</span>: <span class="hljs-string">''</span>,
+  });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Function that sets email, username and password</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">const</span> { emailPasswordCreateAccount, <span class="hljs-attr">state</span>: { loginError } } = useContext(GlobalContext);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>@pre: User presses register buttons</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>@post: Checks validity when register button is pressed</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">const</span> onRegisterPress = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">if</span> (textFields.email.length === <span class="hljs-number">0</span> &amp;&amp; textFields.username.length === <span class="hljs-number">0</span> &amp;&amp; textFields.password.length === <span class="hljs-number">0</span>) {
+      Alert.alert(<span class="hljs-string">'Please enter the text fields to continue!'</span>);
+    }
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (textFields.email.length === <span class="hljs-number">0</span>) {
+      Alert.alert(<span class="hljs-string">'Please enter an email to continue!'</span>);
+    }
+
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (textFields.username.length === <span class="hljs-number">0</span>) {
+      Alert.alert(<span class="hljs-string">'Please enter a username to continue!'</span>);
+    }
+
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (textFields.password.length === <span class="hljs-number">0</span>) {
+      Alert.alert(<span class="hljs-string">'Please enter a password to continue!'</span>);
+    }
+
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (textFields.email.length &gt; <span class="hljs-number">0</span> &amp;&amp; textFields.username.length &gt; <span class="hljs-number">0</span> &amp;&amp; textFields.password.length &gt; <span class="hljs-number">0</span>) {
+      emailPasswordCreateAccount(textFields.email, textFields.password, textFields.username);
+    }
+  };
+
+  <span class="hljs-keyword">return</span> (
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">View</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.container}</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">Text</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.mainheader}</span>&gt;</span>Flingr<span class="hljs-tag">&lt;/<span class="hljs-name">Text</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">Text</span>&gt;</span>{loginError}<span class="hljs-tag">&lt;/<span class="hljs-name">Text</span>&gt;</span>
+
+      <span class="hljs-tag">&lt;<span class="hljs-name">View</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.inputView}</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">TextInput</span>
+          <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.textinput}</span>
+          <span class="hljs-attr">underlineColorAndroid</span>=<span class="hljs-string">'transparent'</span>
+          <span class="hljs-attr">placeholder</span>=<span class="hljs-string">'Email'</span>
+          <span class="hljs-attr">placeholderTextColor</span>= <span class="hljs-string">'#ffffff'</span>
+          <span class="hljs-attr">value</span>=<span class="hljs-string">{textFields.email}</span>
+          <span class="hljs-attr">onChangeText</span>=<span class="hljs-string">{(email)</span> =&gt;</span> setTextFields({ ...textFields, email })}
+        /&gt;
+      <span class="hljs-tag">&lt;/<span class="hljs-name">View</span>&gt;</span>
+
+      <span class="hljs-tag">&lt;<span class="hljs-name">View</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.inputView}</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">TextInput</span>
+          <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.textinput}</span>
+          <span class="hljs-attr">underlineColorAndroid</span>=<span class="hljs-string">'transparent'</span>
+          <span class="hljs-attr">placeholder</span>=<span class="hljs-string">'Username'</span>
+          <span class="hljs-attr">placeholderTextColor</span>= <span class="hljs-string">'#ffffff'</span>
+          <span class="hljs-attr">value</span>=<span class="hljs-string">{textFields.username}</span>
+          <span class="hljs-attr">onChangeText</span>=<span class="hljs-string">{(username)</span> =&gt;</span> setTextFields({ ...textFields, username })}
+        /&gt;
+      <span class="hljs-tag">&lt;/<span class="hljs-name">View</span>&gt;</span>
+
+
+      <span class="hljs-tag">&lt;<span class="hljs-name">View</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.inputView}</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">TextInput</span>
+          <span class="hljs-attr">secureTextEntry</span>
+          <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.textinput}</span>
+          <span class="hljs-attr">underlineColorAndroid</span>=<span class="hljs-string">'transparent'</span>
+          <span class="hljs-attr">placeholder</span>=<span class="hljs-string">'Password'</span>
+          <span class="hljs-attr">placeholderTextColor</span>= <span class="hljs-string">'#ffffff'</span>
+          <span class="hljs-attr">value</span>=<span class="hljs-string">{textFields.password}</span>
+          <span class="hljs-attr">onChangeText</span>=<span class="hljs-string">{(password)</span> =&gt;</span> setTextFields({ ...textFields, password })}
+        /&gt;
+      <span class="hljs-tag">&lt;/<span class="hljs-name">View</span>&gt;</span>
+
+      <span class="hljs-tag">&lt;<span class="hljs-name">TouchableOpacity</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.button}</span> <span class="hljs-attr">onPress</span>=<span class="hljs-string">{onRegisterPress}</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Text</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.buttontext}</span>&gt;</span>Register<span class="hljs-tag">&lt;/<span class="hljs-name">Text</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">TouchableOpacity</span>&gt;</span>
+
+      <span class="hljs-tag">&lt;<span class="hljs-name">TouchableOpacity</span> <span class="hljs-attr">onPress</span>=<span class="hljs-string">{()</span> =&gt;</span> props.navigateLogin()} style={styles.button}&gt;
+        <span class="hljs-tag">&lt;<span class="hljs-name">Text</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.buttontext}</span>&gt;</span>Already have an account? Login here!<span class="hljs-tag">&lt;/<span class="hljs-name">Text</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">TouchableOpacity</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;/<span class="hljs-name">View</span>&gt;</span></span>
+  );
+};
+
+<span class="hljs-keyword">const</span> styles = StyleSheet.create({
+  <span class="hljs-attr">container</span>: {
+    <span class="hljs-attr">flex</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">backgroundColor</span>: <span class="hljs-string">'rgba(47,79,79,0.4)'</span>,
+    <span class="hljs-attr">alignItems</span>: <span class="hljs-string">'center'</span>,
+    <span class="hljs-attr">justifyContent</span>: <span class="hljs-string">'center'</span>,
+    <span class="hljs-attr">margin</span>: <span class="hljs-number">20</span>,
+    <span class="hljs-attr">borderRadius</span>: <span class="hljs-number">10</span>,
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Text box style</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  inputView: {
+    <span class="hljs-attr">width</span>: <span class="hljs-string">'80%'</span>,
+    <span class="hljs-attr">backgroundColor</span>: <span class="hljs-string">'#2f4f4f'</span>,
+    <span class="hljs-attr">marginTop</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">marginRight</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">marginLeft</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">borderBottomColor</span>: <span class="hljs-string">'#ffffff'</span>,
+    <span class="hljs-attr">height</span>: <span class="hljs-number">50</span>,
+    <span class="hljs-attr">marginBottom</span>: <span class="hljs-number">20</span>,
+    <span class="hljs-attr">justifyContent</span>: <span class="hljs-string">'center'</span>,
+    <span class="hljs-attr">padding</span>: <span class="hljs-number">20</span>
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Style for text field input</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  textinput: {
+    <span class="hljs-attr">width</span>: <span class="hljs-number">300</span>,
+    <span class="hljs-attr">borderRadius</span>: <span class="hljs-number">25</span>,
+    <span class="hljs-attr">paddingHorizontal</span>: <span class="hljs-number">16</span>,
+    <span class="hljs-attr">fontSize</span>: <span class="hljs-number">16</span>,
+    <span class="hljs-attr">color</span>: <span class="hljs-string">'#ffffff'</span>,
+    <span class="hljs-attr">marginVertical</span>: <span class="hljs-number">10</span>,
+    <span class="hljs-attr">height</span>: <span class="hljs-number">40</span>,
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Header style</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  mainheader: {
+    <span class="hljs-attr">fontFamily</span>: <span class="hljs-string">'System'</span>,
+    <span class="hljs-attr">fontWeight</span>: <span class="hljs-string">'bold'</span>,
+    <span class="hljs-attr">color</span>: <span class="hljs-string">'#f5f5f5'</span>,
+    <span class="hljs-attr">fontSize</span>: <span class="hljs-number">50</span>,
+    <span class="hljs-attr">marginBottom</span>: <span class="hljs-number">40</span>
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Button styles</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  button: {
+    <span class="hljs-attr">width</span>: <span class="hljs-number">300</span>,
+    <span class="hljs-attr">marginVertical</span>: <span class="hljs-number">10</span>,
+    <span class="hljs-attr">paddingVertical</span>: <span class="hljs-number">12</span>,
+    <span class="hljs-attr">backgroundColor</span>: <span class="hljs-string">'#1c313a'</span>
+  },
+
+  <span class="hljs-attr">buttontext</span>: {
+    <span class="hljs-attr">fontSize</span>: <span class="hljs-number">16</span>,
+    <span class="hljs-attr">color</span>: <span class="hljs-string">'#ffffff'</span>,
+    <span class="hljs-attr">textAlign</span>: <span class="hljs-string">'center'</span>,
+
+  }
+});
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> RegisterScreen;</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

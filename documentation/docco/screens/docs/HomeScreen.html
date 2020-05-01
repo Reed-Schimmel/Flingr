@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>HomeScreen.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>HomeScreen.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>Description: Home screen for the app</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Authors: Amir Shami, Reed Schimmel, &amp; Kameron Bielawski</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-keyword">import</span> React, { useState, useEffect, useContext } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> { StyleSheet, Modal, Alert, Platform, PermissionsAndroid, Text } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-native'</span>;
+<span class="hljs-keyword">import</span> MapScreen <span class="hljs-keyword">from</span> <span class="hljs-string">'./MapScreen'</span>;
+<span class="hljs-keyword">import</span> FloatingButton <span class="hljs-keyword">from</span> <span class="hljs-string">'../components/FloatingButton'</span>;
+<span class="hljs-keyword">import</span> AuthenticationModal <span class="hljs-keyword">from</span> <span class="hljs-string">'../components/AuthenticationModal'</span>;
+<span class="hljs-keyword">import</span> AREntry <span class="hljs-keyword">from</span> <span class="hljs-string">'../ar/AREntery'</span>;
+<span class="hljs-keyword">import</span> { Context } <span class="hljs-keyword">from</span> <span class="hljs-string">'../context/GlobalContext'</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>@pre: The app is opened</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>@post: The users location is either received or denied</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-keyword">const</span> requestLocationPermission = <span class="hljs-keyword">async</span> () =&gt; {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Reference: <a href="https://stackoverflow.com/questions/54305731/no-location-provider-available-permission-denied-in-react-native">https://stackoverflow.com/questions/54305731/no-location-provider-available-permission-denied-in-react-native</a></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (Platform.OS !== <span class="hljs-string">'android'</span> || Platform.Version &lt; <span class="hljs-number">23</span>) <span class="hljs-keyword">return</span>;
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">const</span> granted = <span class="hljs-keyword">await</span> PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      {
+        <span class="hljs-string">'title'</span>: <span class="hljs-string">'Location Permission'</span>,
+        <span class="hljs-string">'message'</span>: <span class="hljs-string">'This App needs access to your location '</span> +
+          <span class="hljs-string">'so we can know where you are.'</span>
+      }
+    );
+    <span class="hljs-keyword">if</span> (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'You can use locations '</span>);
+    } <span class="hljs-keyword">else</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Location permission denied'</span>);
+    }
+  } <span class="hljs-keyword">catch</span> (err) {
+    <span class="hljs-built_in">console</span>.warn(err);
+  }
+};
+
+<span class="hljs-keyword">const</span> HomeScreen = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-keyword">const</span> [base, setBases] = useState({ <span class="hljs-attr">isPin</span>: <span class="hljs-literal">false</span> });
+  <span class="hljs-keyword">const</span> { wipeContext, setBaseLocation, state, setCoords, setARscreen } = useContext(Context);
+  <span class="hljs-keyword">const</span> { setBaseError, userAuth, coords, uploadError, fireError, loginError, ARscreen } = state;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>meters of gps accuracy</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">let</span> accuracy = <span class="hljs-number">5</span>; 
+
+  useEffect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Watch to GPS changes and keep the global content updated</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Set GPS watching and update context <a href="https://reactnative.dev/docs/geolocation.html#watchposition">https://reactnative.dev/docs/geolocation.html#watchposition</a></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+    <span class="hljs-keyword">const</span> watchGPS = <span class="hljs-function">(<span class="hljs-params">position</span>) =&gt;</span> {
+      accuracy = position.coords.accuracy;
+      <span class="hljs-keyword">set</span><span class="hljs-title">Coords</span>(<span class="hljs-params">position</span>);
+    };
+
+    <span class="hljs-title">const</span> <span class="hljs-title">gpsOptions</span> = {
+      <span class="hljs-attr">enableHighAccuracy</span>: <span class="hljs-literal">true</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>distanceFilter - should be higher than accuracy</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      distanceFilter: <span class="hljs-number">1.2</span> * accuracy,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>maximumAge - ms</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      maximumAge: <span class="hljs-number">1000</span>, 
+      <span class="hljs-attr">timeout</span>: <span class="hljs-number">200000</span>,
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>eslint-disabled is called to ignore eslint errors</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    navigator.geolocation.watchPosition(watchGPS, <span class="hljs-keyword">async</span> (e) =&gt; { <span class="hljs-comment">// eslint-disable-line no-undef</span>
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'GPS error'</span>, e);
+      <span class="hljs-keyword">if</span> (e.PERMISSION_DENIED) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Get permission and try again.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">await</span> requestLocationPermission(); 
+        navigator.geolocation.getCurrentPosition(watchGPS, <span class="hljs-literal">undefined</span>, gpsOptions); <span class="hljs-comment">// eslint-disable-line no-undef</span>
+      }
+    }, gpsOptions);
+    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> navigator.geolocation.stopObserving(); <span class="hljs-comment">// eslint-disable-line no-undef</span>
+  }, []);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>@pre: The set base or fire button is pressed</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>@post: The users base is placed on the map and location saved or if already set the user is taken to the fire screen</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  
+  <span class="hljs-keyword">const</span> setBase = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">if</span> (state.userData.baseLatitude === <span class="hljs-number">0</span>) {
+
+      state.userData.baseLatitude = coords.latitude;
+      <span class="hljs-keyword">set</span><span class="hljs-title">BaseLocation</span>(<span class="hljs-params">coords.latitude, coords.longitude, state.userAuth.uid</span>);
+
+      <span class="hljs-title">Alert</span>.<span class="hljs-title">alert</span>(<span class="hljs-params"><span class="hljs-string">'Important'</span>, <span class="hljs-string">'Are you sure you would like to set your base at your current location?'</span>,
+        [
+          { text: <span class="hljs-string">'Yes'</span>, onPress: (</span>) =&gt; {
+            <span class="hljs-keyword">set</span><span class="hljs-title">Bases</span>(<span class="hljs-params">{ isPin: true }</span>);
+            <span class="hljs-title">setARscreen</span>(<span class="hljs-params"><span class="hljs-string">'setBase'</span></span>);
+          }, <span class="hljs-title">style</span>: '<span class="hljs-title">OK</span>' },
+          { text: <span class="hljs-string">'No'</span>, <span class="hljs-attr">onPress</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> { <span class="hljs-keyword">set</span><span class="hljs-title">Bases</span>(<span class="hljs-params">{ isPin: false }</span>); }, <span class="hljs-title">style</span>: '<span class="hljs-title">cancel</span>' }
+        ]);
+    }
+    <span class="hljs-title">else</span> <span class="hljs-title">if</span> (<span class="hljs-params">base.isPin === false &amp;&amp; state.userData.baseLatitude === <span class="hljs-number">0</span></span>) {
+      <span class="hljs-keyword">set</span><span class="hljs-title">Bases</span>(<span class="hljs-params">{ isPin: true }</span>);
+    }
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>@pre: The log out button is pressed</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>@post: The screen is sent back to the authentication modal</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">const</span> logout = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    wipeContext();
+  };
+
+  <span class="hljs-keyword">const</span> showAuthModal = !userAuth;
+  <span class="hljs-keyword">if</span> (ARscreen) {
+    <span class="hljs-keyword">return</span> (
+      <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">AREntry</span>
+        <span class="hljs-attr">setBase</span>=<span class="hljs-string">{ARscreen</span> === <span class="hljs-string">'setBase'</span>}
+        <span class="hljs-attr">launch</span>=<span class="hljs-string">{ARscreen</span> === <span class="hljs-string">'launch'</span>}
+        <span class="hljs-attr">viewBase</span>=<span class="hljs-string">{ARscreen</span> === <span class="hljs-string">'viewBase'</span>}
+      /&gt;</span></span>);
+  }
+
+  <span class="hljs-keyword">return</span> (
+    <span class="xml"><span class="hljs-tag">&lt;&gt;</span>
+      {showAuthModal ? null : <span class="hljs-tag">&lt;<span class="hljs-name">FloatingButton</span> <span class="hljs-attr">title</span>=<span class="hljs-string">"Log Out"</span> <span class="hljs-attr">onPress</span>=<span class="hljs-string">{logout}</span> <span class="hljs-attr">style</span> = <span class="hljs-string">{styles.FloatingButton}/</span>&gt;</span>}
+          
+      <span class="hljs-tag">&lt;<span class="hljs-name">MapScreen</span> <span class="hljs-attr">userBaseLocation</span> = <span class="hljs-string">{base.isPin}/</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">Text</span>&gt;</span>{fireError + uploadError + loginError + setBaseError}<span class="hljs-tag">&lt;/<span class="hljs-name">Text</span>&gt;</span>
+      
+      {showAuthModal ? null : <span class="hljs-tag">&lt;<span class="hljs-name">FloatingButton</span> <span class="hljs-attr">title</span>=<span class="hljs-string">{[state.userData.baseLatitude</span> === <span class="hljs-string">0</span> ? '<span class="hljs-attr">Set</span> <span class="hljs-attr">Base</span>' <span class="hljs-attr">:</span> '<span class="hljs-attr">Fire</span>']}
+        <span class="hljs-attr">onPress</span>=<span class="hljs-string">{state.userData.baseLatitude</span> === <span class="hljs-string">0</span> ? <span class="hljs-attr">setBase</span> <span class="hljs-attr">:</span> (() =&gt;</span> setARscreen('launch'))} /&gt;}
+
+      {(!showAuthModal &amp;&amp; state.userData.baseLatitude !== 0) ? (
+        <span class="hljs-tag">&lt;<span class="hljs-name">FloatingButton</span>
+          <span class="hljs-attr">title</span>=<span class="hljs-string">"View Base"</span>
+          <span class="hljs-attr">onPress</span>=<span class="hljs-string">{()</span> =&gt;</span> setARscreen('viewBase')}
+          style={{ left: 30, right: undefined }}
+        /&gt;) : null}
+
+      <span class="hljs-tag">&lt;<span class="hljs-name">Modal</span>
+        <span class="hljs-attr">animationType</span>=<span class="hljs-string">"fade"</span>
+        <span class="hljs-attr">transparent</span>=<span class="hljs-string">{true}</span>
+        <span class="hljs-attr">visible</span>=<span class="hljs-string">{showAuthModal}</span>
+      &gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">AuthenticationModal</span> /&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">Modal</span>&gt;</span>
+    <span class="hljs-tag">&lt;/&gt;</span></span>
+  );
+};
+
+<span class="hljs-keyword">const</span> styles = StyleSheet.create({
+  <span class="hljs-attr">container</span>: {
+    <span class="hljs-attr">flex</span>: <span class="hljs-number">1</span>,
+  },
+  <span class="hljs-attr">map</span>: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  <span class="hljs-attr">minimap</span>: {
+    <span class="hljs-attr">height</span>: <span class="hljs-number">100</span>,
+    <span class="hljs-attr">width</span>: <span class="hljs-number">100</span>,
+    <span class="hljs-attr">flex</span>: <span class="hljs-number">1</span>
+  },
+  <span class="hljs-attr">modal</span>: {
+    <span class="hljs-attr">backgroundColor</span>: <span class="hljs-string">'red'</span>
+  },
+  <span class="hljs-attr">FloatingButton</span>: {
+    <span class="hljs-attr">borderRadius</span>: <span class="hljs-number">25</span>,
+    <span class="hljs-attr">backgroundColor</span>: <span class="hljs-string">'transparent'</span>,
+    <span class="hljs-attr">borderWidth</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">position</span>: <span class="hljs-string">'relative'</span>,
+    <span class="hljs-attr">bottom</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">left</span>: <span class="hljs-number">10</span>,
+    <span class="hljs-attr">height</span>: <span class="hljs-number">50</span>,
+    <span class="hljs-attr">width</span>: <span class="hljs-number">75</span>,
+  },
+});
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> HomeScreen;</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
