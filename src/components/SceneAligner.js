@@ -18,7 +18,7 @@ export default ({ setInPosition, alignHeading = 0, alignCoords }) => {
     CompassHeading.start(1, heading => {
       setHeading(heading);
     });
-    return () => CompassHeading.stop();
+    return () => {console.log('stoping heading watcher'); CompassHeading.stop(); };
   }, []);
 
   const verifyHeading = () => {
@@ -26,6 +26,7 @@ export default ({ setInPosition, alignHeading = 0, alignCoords }) => {
     return (diff < 5 || diff > 355); // +- 3 degree margin of error
   };
   const verifyCoords = () => {
+    if (alignCoords === undefined) return true;
     const { longitude, latitude, accuracy } = coords;
     const lonDiff = Math.abs(longitude - alignCoords.longitude);
     const latDiff = Math.abs(latitude - alignCoords.latitude);
@@ -49,7 +50,7 @@ export default ({ setInPosition, alignHeading = 0, alignCoords }) => {
         </Text>
       </>)}
 
-      {verifyHeading() && (
+      {verifyHeading() && verifyCoords() && (
         <TouchableOpacity onPress={() => setInPosition(true)} style={styles.button}>
           <Text style={{ textAlign: 'center', fontSize: 20 }}>Go to AR</Text>
         </TouchableOpacity>
