@@ -96,6 +96,13 @@ const reducer = (state, action) => {
       ...state,
       coords: action.payload,
     };
+
+  case FIRE_ERROR:
+    return {
+      ...state,
+      launchFlingError: action.payload,
+    };
+
   default:
     return state;
   }
