@@ -1,8 +1,8 @@
-import React, { useState, /*useContext,*/ useEffect } from 'react';
-import { View, Text, AsyncStorage } from 'react-native';
+import React, { useState, useContext, /*useEffect*/ } from 'react';
+// import { View, Text, AsyncStorage, Alert } from 'react-native';
 import { ViroARSceneNavigator } from 'react-viro';
 import SceneAligner from '../components/SceneAligner';
-// import { Context } from '../context/GlobalContext';
+import { Context } from '../context/GlobalContext';
 
 // import GeopositionScene from './GeopositionScene';
 // import InitialARScene from './HelloWorldSceneAR';
@@ -29,36 +29,44 @@ import ViewBaseScene from './ViewBaseScene';
 // 4. record & upload launch
 
 const AREntry = () => {
-  // REED: UNCOMMENT THIS TO USE THE NEW ACTION FUNCTIONS
-  // const { state, launchFling, uploadJSONblob } = useContext(Context);
-  // const { userData } = state;
-  
-  // REED: state.userData.baseJsonBlob is where your json blob is stored in state
+  const { state, launchFling, uploadJSONblob } = useContext(Context);
+  const { userData, userAuth: { uid } } = state;
+  const { homeLatitude, homeLongitude, baseJsonBlob } = userData;
 
-  const [base, setBase] = useState(undefined);
+  // const [base, setBase] = useState(undefined);
   const [inPosition, setInPosition] = useState(false);
 
-  useEffect(() => {
-    AsyncStorage.getItem('base').then(data => {
-      setBase(JSON.parse(data));
-    }).catch(e => console.log(e));
-  }, []);
+  // useEffect(() => {
+  //   AsyncStorage.getItem('base').then(data => {
+  //     setBase(JSON.parse(data));
+  //     Alert.alert(data);
+  //   }).catch(e => console.log(e));
+  // }, []);
 
   // return <ViroARSceneNavigator {...sharedProps} initialScene={{ scene: GeopositionScene }} />;
 
+  const baseCoords = (homeLatitude === 0 && homeLongitude === 0)
+    ? undefined : { latitude: homeLatitude, longitude: homeLongitude };
+
   if (!inPosition) return (
-    <SceneAligner setInPosition={setInPosition} alignHeading={0} alignCoords={{ latitude: 38.942431, longitude: -94.63794 }} />
+    <SceneAligner setInPosition={setInPosition} alignHeading={0} alignCoords={baseCoords} />
+    // <SceneAligner setInPosition={setInPosition} alignHeading={0} alignCoords={{ latitude: 38.942431, longitude: -94.63794 }} />
   );
 
-  if (base === undefined) return <View style={{ flex: 1, justifyContent: 'center' }}><Text>Loading</Text></View>;
-  else if (base === null) return (
+  // if (base === undefined) return <View style={{ flex: 1, justifyContent: 'center' }}><Text>Loading</Text></View>; // TODO remove or change when loading from firebase
+  else if (baseCoords === undefined) return (
     <ViroARSceneNavigator
-      initialScene={{ scene: SetBaseScene, passProps: { base } }}
+      initialScene={{ scene: SetBaseScene, passProps: { saveBase: (jsonStr) => uploadJSONblob(jsonStr, uid) } }}
     />
   );
-  else return (
+  else if (baseCoords !== undefined) return (
     <ViroARSceneNavigator
-      initialScene={{ scene: ViewBaseScene/*, passProps: { base }*/ }}
+      initialScene={{ scene: ViewBaseScene, passProps: { base: JSON.parse(baseJsonBlob) } }}
+    />
+  );
+  else if (/*FIRE!*/ false) return ( //eslint-disable-line
+    <ViroARSceneNavigator
+      initialScene={{ scene: ViewBaseScene, passProps: { saveLaunch: (coords) => launchFling({ coords }, uid) } }}
     />
   );
 };

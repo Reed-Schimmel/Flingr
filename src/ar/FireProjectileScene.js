@@ -6,7 +6,8 @@ import {
   ViroARScene,
   Viro3DObject,
   ViroLightingEnvironment,
-  ViroConstants
+  ViroConstants,
+  ViroMaterials,
 } from 'react-viro';
 
 export default class FireProjectileScene extends Component {
@@ -24,6 +25,7 @@ export default class FireProjectileScene extends Component {
 
     this._onInitialized = this._onInitialized.bind(this);
   }
+  // TODO: use this.props.saveLaunch({ coords }) to send shizz to firebase
 
   componentDidMount() {
     // AsyncStorage.getItem('base').then(base => this.setState({ base: JSON.parse(base) }))
@@ -73,5 +75,19 @@ export default class FireProjectileScene extends Component {
   }
 }
 
+ViroMaterials.createMaterials({
+  hud_text_bg: {
+    diffuseColor: '#00ffff'
+  },
+  ground: {
+    diffuseColor: '#007CB6E6'
+  },
+  ground_hit: {
+    diffuseColor: '#008141E6'
+  },
+  cube_color: {
+    diffuseColor: '#0021cbE6'
+  }
+});
 
 module.exports = FireProjectileScene;
