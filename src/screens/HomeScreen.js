@@ -8,7 +8,7 @@ import AuthenticationModal from '../components/AuthenticationModal';
 
 const HomeScreen = () => {
   const [base, setBases] = useState({isPin: false});
-  const { wipeContext, setBaseLocation, state, setCoords, launchFling, uploadJSONblob } = useContext(Context);
+  const { wipeContext, setBaseLocation, state, setCoords } = useContext(Context);
   const { /*setBaseError,*/ userAuth, coords, uploadError, fireError } = state;
 
   let accuracy = 5; // meters of gps accuracy

@@ -35,7 +35,8 @@ import ViewBaseScene from './ViewBaseScene';
 // const VIEW_BASE = 'view_base';
 
 const AREntry = () => {
-  const { state, launchFling, uploadJSONblob } = useContext(Context);
+  // REED: UNCOMMENT THIS TO USE THE NEW ACTION FUNCTIONS
+  // const { state, launchFling, uploadJSONblob } = useContext(Context);
   // const { userData } = state;
   
   // REED: state.userData.baseJsonBlob is where your json blob is stored in state
@@ -59,14 +60,17 @@ const AREntry = () => {
     return () => CompassHeading.stop();
   }, []);
 
+  // REED: CALL THIS FUNCTION WHEN YOU LAUNCH A NEW PROJECTILE 
 
-  const fireProjectile = (coordinateData) => {
-    launchFling(coordinateData, state.userAuth.uid);
-  };
+  // const fireProjectile = (coordinateData) => {
+  //   launchFling(coordinateData, state.userAuth.uid);
+  // };
 
-  const uploadJSON = (JSONblob) => {
-    uploadJSONblob(JSONblob, state.userAuth.uid);
-  };
+  // REED: CALL THIS ONE WHEN YOU WANT TO STORE THE JSON BLOB STUFF
+
+  // const uploadJSON = (JSONblob) => {
+  //   uploadJSONblob(JSONblob, state.userAuth.uid);
+  // };
 
 
   // return <ViroARSceneNavigator {...sharedProps} initialScene={{ scene: GeopositionScene }} />;
