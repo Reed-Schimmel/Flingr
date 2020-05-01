@@ -28,6 +28,8 @@ const WIPE_CONTEXT           = 'wipe_context';
 const SET_COORDS             = 'set_coords';
 const LOAD_USER_DATA         = 'load_user_data';
 const FIRE_ERROR             = 'fire_error';
+const STORE_JSON_BLOB        = 'store_json_blob';
+const UPLOAD_ERROR           = 'upload_error';
 
 // default user document fields when a new user is generated
 const DEFAULT_USER_DOC = {
@@ -48,7 +50,6 @@ const reducer = (state, action) => {
     };
 
   case LOAD_USER_DATA:
-    console.log('loading user data...', action.payload);
     return {
       ...state,
       userData: action.payload,
@@ -101,6 +102,21 @@ const reducer = (state, action) => {
     return {
       ...state,
       launchFlingError: action.payload,
+    };
+
+  case UPLOAD_ERROR:
+    return {
+      ...state,
+      uploadError: action.payload,
+    };
+
+  case STORE_JSON_BLOB:
+    return {
+      ...state,
+      userData: {
+        ...state.userData,
+        baseJsonData: action.payload,
+      }
     };
 
   default:
@@ -212,6 +228,14 @@ const launchFling = (dispatch) => ({ coords }, uid) => {
     .catch((e) => dispatch({ type: FIRE_ERROR, payload: e.message }));
 };
 
+const uploadJSONblob = (dispatch) => (JSONblob, uid) => {
+  firebase.firestore().collection('users').doc(uid).update({
+    baseJsonBlob: JSONblob,
+  })
+    .then(() => dispatch({ type: STORE_JSON_BLOB, payload: JSONblob }))
+    .catch((e) => dispatch({ type: UPLOAD_ERROR, payload: e.message }));
+};
+
 const wipeContext = (dispatch) => () => {
   dispatch({ type: WIPE_CONTEXT });
 };
@@ -227,6 +251,7 @@ export const { Context, Provider } = createDataContext(
     wipeContext,
     setCoords,
     launchFling,
+    uploadJSONblob,
   }, // actions (functions to be used to update global state)
   INITIAL_STATE, // initial state
 );
