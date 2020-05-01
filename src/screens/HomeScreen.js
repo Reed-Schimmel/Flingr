@@ -3,7 +3,7 @@ import { StyleSheet, Modal, Alert, Platform, PermissionsAndroid } from 'react-na
 import MapScreen from './MapScreen';
 import FloatingButton from '../components/FloatingButton';
 import AuthenticationModal from '../components/AuthenticationModal';
-import AREntry from '../ar/AREntery';
+// import AREntry from '../ar/AREntery';
 import { Context } from '../context/GlobalContext';
 
 const requestLocationPermission = async () => {
@@ -85,7 +85,7 @@ const HomeScreen = () => {
   };
 
   const showAuthModal = !userAuth;
-  
+  // return <AREntry />;
   return (
     //login popup, ar button, map screen, mini map style
     <>

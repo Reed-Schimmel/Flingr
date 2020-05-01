@@ -28,11 +28,6 @@ import ViewBaseScene from './ViewBaseScene';
 // 3. launching animation
 // 4. record & upload launch
 
-
-
-// const SET_BASE = 'set_base';
-// const VIEW_BASE = 'view_base';
-
 const AREntry = () => {
   // const { state, actions } = useContext(Context);
   // const { userData, coords } = state;
@@ -49,7 +44,7 @@ const AREntry = () => {
   // return <ViroARSceneNavigator {...sharedProps} initialScene={{ scene: GeopositionScene }} />;
 
   if (!inPosition) return (
-    <SceneAligner setInPosition={setInPosition} alignHeading={0} alignCoords={undefined} />
+    <SceneAligner setInPosition={setInPosition} alignHeading={0} alignCoords={{ latitude: 38.942431, longitude: -94.63794 }} />
   );
 
   if (base === undefined) return <View style={{ flex: 1, justifyContent: 'center' }}><Text>Loading</Text></View>;
