@@ -175,6 +175,7 @@ const setCoords = (dispatch) => ({ coords }) => {
 
 // called when a user launches a new fling
 const launchFling = (dispatch) => ({ coords }, uid) => {
+  const landingDelta = 5;
   const userRef = firebase.firestore().collection('users').doc(uid);
   // create new outgoing fling
   firebase.firestore().collection('flings').add({
@@ -184,6 +185,22 @@ const launchFling = (dispatch) => ({ coords }, uid) => {
     .then((flingRef) => {
       // Add new fling to outgoing flings of current user
       userRef.update({ outgoingFlings: firebase.firestore.FieldValue.arrayUnion(flingRef) });
+
+      // query for bases around the landing location
+      const slice = firebase.firestore().collection('users')
+        .where('baseLongitude', '>=', coords.latitude - landingDelta).where('baseLongitude', '<=', coords.latitude + landingDelta);
+
+      // get all the users from around that longitude 
+      slice.get()
+        .then((querySnapshot) => {
+          // update everyone within the range
+          querySnapshot.forEach(async (userDoc) => {
+            await firebase.firestore().collection('users').doc(userDoc.id).update({
+              incomingFlings: firebase.firestore.FieldValue.arrayUnion(flingRef)
+            });
+          });
+        })
+        .catch((e) => dispatch({ type: FIRE_ERROR, payload: e.message }));
     })
     .catch((e) => dispatch({ type: FIRE_ERROR, payload: e.message }));
 };
@@ -202,6 +219,7 @@ export const { Context, Provider } = createDataContext(
     setBaseLocation,
     wipeContext,
     setCoords,
+    launchFling,
   }, // actions (functions to be used to update global state)
   INITIAL_STATE, // initial state
 );
