@@ -1,15 +1,11 @@
 import React, { useState, useContext, /*useEffect*/ } from 'react';
-// import { View, Text, AsyncStorage, Alert } from 'react-native';
 import { ViroARSceneNavigator } from 'react-viro';
 import SceneAligner from '../components/SceneAligner';
 import { Context } from '../context/GlobalContext';
 
-// import GeopositionScene from './GeopositionScene';
-// import InitialARScene from './HelloWorldSceneAR';
 import SetBaseScene from './SetBaseScene';
 import ViewBaseScene from './ViewBaseScene';
-// import GeopositionScene from './GeopositionScene2';
-// import BasicARPhysicsSample from './BasicPhysicsSample';
+import FireProjectileScene from './FireProjectileScene';
 
 // Set base flow
 // 1. confirm world location via gps
@@ -54,7 +50,7 @@ const AREntry = ({ setBase = false, viewBase = false, launch = false }) => {
   );
   else if (launch) return (
     <ViroARSceneNavigator
-      initialScene={{ scene: ViewBaseScene, passProps: { saveLaunch: (coords) => launchFling({ coords }, uid) }, goBackHome }} // TODO: set scene to launch scene
+      initialScene={{ scene: FireProjectileScene, passProps: { saveLaunch: (coords) => launchFling({ coords }, uid) }, goBackHome }} // TODO: set scene to launch scene
     />
   );
 };
