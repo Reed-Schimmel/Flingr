@@ -69,6 +69,17 @@ Flingr is a game that allows players to launch projectiles to other players at d
     react-native run-ios --device <iOS device name>
     ``` 
 ---
+## Running Tests
+We built tests for this project using Jest and Enzyme.
+
+To run them, type in the console:
+    ```
+    $ npm run test
+    ```
+Jest documentation: https://jestjs.io/docs/en/getting-started
+Enzyme documentation: https://enzymejs.github.io/enzyme/
+
+---
 
 ## About Firebase
 
