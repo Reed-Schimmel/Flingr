@@ -1,105 +1,76 @@
 # Flingr
 
-Flingr is a game that allows players to launch projectiles to other players on a different location.
+Flingr is a game that allows players to launch projectiles to other players at different locations in the real world.
 
 ## Getting started
 
-Clone the github repository to use it on your local machine.
+1. [Setup development environment](#Prerequisites)
+2. Clone repo
+    ```
+    git clone https://github.com/Reed-Schimmel/Flingr.git
+    ```
+3. Add file `firebaseConfig.json` to the root of this project.
+    - [Setup Firebase project](#About-Firebase)
+4. Place [Google Maps API key](https://developers.google.com/maps/documentation/android-sdk/get-api-key) in `android/app/src/main/res/values/secrets.xml`
+    ```
+    <resources>
+        <string name="google_maps_api_key">YOUR API KEY</string>
+    </resources>
+    ```
+5. Open console in root directory of project:
+    ```
+    npm i
+    ```
 
-### Prerequisites 
+### Prerequisites
+- Node.js
+- react-native-cli [Setting up React Native Environment](https://reactnative.dev/docs/0.59/getting-started)
+- Google Maps API key ([guide]()) (for Android)
+- Android SDK (for Android)
+- Xcode & MacOS (for iOS)
+- Compatible Mobile Device
+  - GPS
+  - ARKit - iOS Device with A9 chip or higher and running iOS 11
+  - ARCore - an [ARCore supported device](https://developers.google.com/ar/discover/#supported_devices) running Android N.
 
-The app uses React Native, ViroMedia and Firebase. To install the dependencies and softwares required, follow the instructions below:
+## Launching
 
-1. Install dependencies.
-  
-  Install Homebrew by running the following command in your terminal:
-```
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-```
-   Install Node by running the following command in your terminal:
-```
-brew install node
-```
+#### Android
+1. Connect device to PC via USB.
+    - you can check if your PC sees your device with 
+      ```
+      adb devices
+      ```
+2. From the root of your project, run the commands:
+    ```
+    $ adb reverse tcp:8081 tcp:8081 
+    $ react-native run-android
+    ```
 
-   Install Watchman by running the following command in your terminal:
-```
-brew install watchman
-```
+#### iOS
+- See detailed instruction [here](https://reactnative.dev/docs/0.59/running-on-device#1-plug-in-your-device-via-usb)
+1. Connect device to PC via USB.
+2. Open this project's ios folder with Xcode.
+3. In Xcode project navigator (left-side bar, folder icon) click on  `Flingr'
+4. Click on 'Flingr' under **TARGETS** in the side bar of the center view of Xcode
+5. click 'Signing & Capabilities'
+6. From the 'Team' dropdown menu, select your developer team (you might have to make a developer account)
+    - You might have to change the Bundle Identifier.
+7. Click the Play button in the upper-left
+    - Make sure the device selected in the button right of the play button is your connected device.
+    - The build might fail, click the red icon. AirMaps will compain about `#import <React/RCTImageLoaderProtocol.h>`
+    - Remove the word "Protocal" -> `<React/RCTImageLoaderProtocol.h>`
+    - Click play again, a similar error should occur, do the same fix. Then press play (and it should work!).
 
-2. Install React Native by running the following command in your terminal:
-```
-npm install -g react-native-cli
-```
+>After this has been done once, you might be able to run via cli with the commands below:
+>1. Find your iOS device name with this command `instruments -s devices`
+>2. From the root of your project, run the command:
+    ```
+    react-native run-ios --device <iOS device name>
+    ``` 
+---
 
-3. Install ViroReact CLI by running the following command in your terminal:
-```
-npm install -g react-viro-cli
-```
-
-4. Install maps by running the following command in your terminal:
-```
-npm install react-native-maps --save-exact
-```
-
-or
-
-```
-yarn add react-native-maps -E
-```
-Refer to [How to Install Maps](https://github.com/react-native-community/react-native-maps/blob/master/docs/installation.md)
-for additional installation details.
-
-5. Download the Viro Media app. You can get the free app from the app store on your device:
-
-For iOS:
-[Viro Media](https://apps.apple.com/us/app/viro-media/id1163100576)
-
-For Android:
-[Viro Media](https://play.google.com/store/apps/details?id=com.viromedia.viromedia)
-
-6. For more information, click on the link below:
-[How to Use ViroMedia](https://docs.viromedia.com/docs/quick-start)
-
-### Launching
-
-1. From the root of your project, run the command: 
-```
-npm install 
-```
-2. Then, run the command:
-```
-npm start 
-```
-3. Open the Viro Media App on your iOS or Android device.
-
-
-4. Tap on the menu icon in the top left and tap on "Enter Testbed".
-
-
-5. Find your ngrok url (https://xxxxxx.ngrok.io) which is printed at the top of the terminal window where you ran npm start. Enter that into the empty text field on the Testbed screen (xxxxxx.ngrok.io) and press "Go".
-
-
-6. For more information, click on the link below:
-[How to Use ViroMedia](https://docs.viromedia.com/docs/quick-start)
-
-
-### Documentation 
-
-[Documentation](https://github.com/Reed-Schimmel/Flingr/tree/master/documentation)
-
-
-### Compatible Devices
-Devices with GPS, and ARKit support
-
-### Built With
-
-* [React Native](http://reactnative.dev)
-
-* [Firebase](https://firebase.google.com/?gclid=CjwKCAiAhc7yBRAdEiwAplGxXw6TOo7dJe7mFlcYa1WkfYSbXVgUXSHxNDO5I0A71d8rHa9ZK5sMdBoCRHMQAvD_BwE)
-
-* [ViroMedia](https://viromedia.com)
-
-### About Firebase
+## About Firebase
 
 How to setup Firebase for this JavaScript Project:
 1. To create a Firebase project, click [Create Firebase](https://console.firebase.google.com/?pli=1).
@@ -126,14 +97,29 @@ How to setup Firebase for this JavaScript Project:
 
 }
 
-6. Add firebaseConfig.json to your .gitignore because it contains private key information
+6. Make sure firebaseConfig.json to your .gitignore because it contains private key information
 7. Make sure firebaseConfig.json is in the root of the directory. 
-
 
 Additional information about the Firebase setup can be found at: [Firebase Setup](https://firebase.google.com/docs/web/setup)
 
-### Authors
+---
 
+### [Documentation](https://github.com/Reed-Schimmel/Flingr/tree/master/documentation)
+
+### Guides
+- Setup React Native - https://reactnative.dev/docs/0.59/getting-started (React Native CLI Quickstart)
+- Get Google Maps API key - https://developers.google.com/maps/documentation/android-sdk/get-api-key
+
+### Troubleshooting
+- React Native Map errors https://github.com/react-native-community/react-native-maps/blob/master/docs/installation.md#troubleshooting
+
+### Built With
+* [React Native](http://reactnative.dev)
+* [ViroMedia](https://viromedia.com)
+* [Firebase](https://firebase.google.com/?gclid=CjwKCAiAhc7yBRAdEiwAplGxXw6TOo7dJe7mFlcYa1WkfYSbXVgUXSHxNDO5I0A71d8rHa9ZK5sMdBoCRHMQAvD_BwE)
+
+---
+### Authors
 The contributors of this project are:
 * Reed Schimmel
 * Kam Bielawski
@@ -141,22 +127,12 @@ The contributors of this project are:
 * Jamima Abdul Hakkeem
 
 ### Scrum Artifacts
-
 * [Product Backlogs](https://github.com/Reed-Schimmel/Flingr/blob/master/documentation/ProductBacklog.md)
 * [Sprint Backlogs](https://github.com/Reed-Schimmel/Flingr/blob/master/documentation/SprintBacklog.md)
 * [Meeting Logs](https://github.com/Reed-Schimmel/Flingr/blob/master/documentation/MeetingLog.md)
 
 ### Timeline
-
 * [Timeline](https://github.com/Reed-Schimmel/Flingr/blob/master/documentation/Timeline.md)
 
-
 ### References
-
 * [References](https://github.com/Reed-Schimmel/Flingr/blob/master/documentation/Reference.md)
-
-
-
-
-
-
