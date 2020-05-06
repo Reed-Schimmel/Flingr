@@ -73,7 +73,6 @@ Flingr is a game that allows players to launch projectiles to other players at d
 We built tests for this project using Jest and Enzyme.
 
 To run them, type in the console:
-
     ```
     $ npm run test
     ```
