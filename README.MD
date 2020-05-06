@@ -11,7 +11,7 @@ Flingr is a game that allows players to launch projectiles to other players at d
     ```
 3. Add file `firebaseConfig.json` to the root of this project.
     - [Setup Firebase project](#About-Firebase)
-4. Place [Google Maps API key](https://developers.google.com/maps/documentation/android-sdk/get-api-key) in `android/app/src/main/res/values/secrets.xml`
+4. (Android only) Place [Google Maps API key](https://developers.google.com/maps/documentation/android-sdk/get-api-key) in `android/app/src/main/res/values/secrets.xml`
     ```
     <resources>
         <string name="google_maps_api_key">YOUR API KEY</string>
