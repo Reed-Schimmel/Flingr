@@ -52,6 +52,7 @@ Flingr is a game that allows players to launch projectiles to other players at d
 6. From the 'Team' dropdown menu, select your developer team (you might have to make a developer account)
     - You might have to change the Bundle Identifier.
 7. Click the Play button in the upper-left
+    - Make sure the device selected in the button right of the play button is your connected device.
     - The build might fail, click the red icon. AirMaps will compain about `#import <React/RCTImageLoaderProtocol.h>`
     - Remove the word "Protocal" -> `<React/RCTImageLoaderProtocol.h>`
     - Click play again, a similar error should occur, do the same fix. Then press play (and it should work!).
