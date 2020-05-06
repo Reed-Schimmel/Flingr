@@ -6,6 +6,13 @@ import { mount } from 'enzyme';
 import { Provider } from '../../../src/context/GlobalContext';
 import LoginScreen from '../../../src/screens/LoginScreen';
 
+// TESTING RESOURCES USED:
+// Testing with Jest and Enzyme
+// https://medium.com/codeclan/testing-react-with-jest-and-enzyme-20505fec4675
+// https://www.robinwieruch.de/react-testing-jest-enzyme
+// Testing React Context
+// https://testing-library.com/docs/example-react-context
+
 Alert.alert = jest.fn();
 
 describe('<RegisterScreen />', () => {

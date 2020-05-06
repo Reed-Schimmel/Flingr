@@ -5,6 +5,13 @@ import { mount } from 'enzyme';
 import { Provider } from '../../../src/context/GlobalContext';
 import AuthenticationModal from '../../../src/components/AuthenticationModal';
 
+// TESTING RESOURCES USED:
+// Testing with Jest and Enzyme
+// https://medium.com/codeclan/testing-react-with-jest-and-enzyme-20505fec4675
+// https://www.robinwieruch.de/react-testing-jest-enzyme
+// Testing React Context
+// https://testing-library.com/docs/example-react-context
+
 // mocks the useState hook
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
