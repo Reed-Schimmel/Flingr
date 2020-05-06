@@ -21,13 +21,15 @@ Flingr is a game that allows players to launch projectiles to other players at d
     ```
     npm i
     ```
+    - (iOS only) console in ios directory of project
+        > pod install
 
 ### Prerequisites
 - Node.js
 - react-native-cli [Setting up React Native Environment](https://reactnative.dev/docs/0.59/getting-started)
 - Google Maps API key ([guide]()) (for Android)
 - Android SDK (for Android)
-- Xcode & MacOS (for iOS)
+- Xcode, [CocoaPods](https://guides.cocoapods.org/using/getting-started.html#installation) & MacOS (for iOS)
 - Compatible Mobile Device
   - GPS
   - ARKit - iOS Device with A9 chip or higher and running iOS 11
@@ -122,6 +124,8 @@ Additional information about the Firebase setup can be found at: [Firebase Setup
 ### Guides
 - Setup React Native - https://reactnative.dev/docs/0.59/getting-started (React Native CLI Quickstart)
 - Get Google Maps API key - https://developers.google.com/maps/documentation/android-sdk/get-api-key
+- Install CocoaPods - https://guides.cocoapods.org/using/getting-started.html#installation
+- Setting up Xcode with Viro - https://docs.viromedia.com/docs/starting-a-new-viro-project-1
 
 ### Troubleshooting
 - React Native Map errors https://github.com/react-native-community/react-native-maps/blob/master/docs/installation.md#troubleshooting
