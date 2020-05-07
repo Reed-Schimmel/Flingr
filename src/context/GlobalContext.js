@@ -150,8 +150,9 @@ const emailPasswordLogin = (dispatch) => (email, password) => {
   firebase.auth().signInWithEmailAndPassword(email, password)
     .then(async ({ user }) => {
       dispatch({ type: LOGIN_SUCCESS, payload: user });
-      await AsyncStorage.getItem(user.uid)
-        .then(() => dispatch({ type: LOAD_USER_DATA, payload: userSnapshot.data() }))
+      await AsyncStorage.getItem(`${user.uid}`, (err, result) => {
+        dispatch({ type: LOAD_USER_DATA, payload: JSON.parse(result) });
+      })
         .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e }));
     })
     .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e.message }));
@@ -187,7 +188,8 @@ const queryNewBaseLocations = (dispatch) => async (region) => {
       await AsyncStorage.getItem(key, (err, result) => {
         let userData = JSON.parse(result);
         if (userData.baseLatitude) {
-          if (userData.baseLatitude >= left && userData.baseLongitude <= right && userData.baseLatitude <= top && userData.baseLongitude >= bottom) {
+          const { baseLatitude, baseLongitude } = userData;
+          if (baseLatitude >= left && baseLongitude <= right && baseLatitude <= top && baseLongitude >= bottom) {
             regionBases.push(userData);
           }
         }
@@ -239,14 +241,14 @@ const launchFling = (dispatch) => async ({ coords }, uid) => {
     sender: uid,
   };
 
-  await AsyncStorage.getItem(`${uid}`, (err, result) => {
+  await AsyncStorage.getItem(`${uid}`, async (err, result) => {
     let newUserData = JSON.parse(result);
     newUserData.outgoingFlings.push(fling);
+    await AsyncStorage.setItem(`${uid}`, newUserData, (e) => dispatch({ type: FIRE_ERROR, payload: e }));
   })
     .catch((e) => dispatch({ type: FIRE_ERROR, payload: e }));
 
-  await AsyncStorage.setItem(`${fling.flingId}`, fling)
-    .catch((e) => dispatch({ type: FIRE_ERROR, payload: e }));
+  await AsyncStorage.setItem(`${fling.flingId}`, fling, (e) => dispatch({ type: FIRE_ERROR, payload: e }));
 
   // // create new outgoing fling
   // firebase.firestore().collection('flings').add({
@@ -277,9 +279,8 @@ const launchFling = (dispatch) => async ({ coords }, uid) => {
 };
 
 const uploadJSONblob = (dispatch) => (JSONblob, uid) => {
-  AsyncStorage.mergeItem(`${uid}`, JSON.stringify({ baseJsonBlob: JSONblob }))
-    .then(() => dispatch({ type: STORE_JSON_BLOB, payload: JSONblob }))
-    .catch((e) => dispatch({ type: UPLOAD_ERROR, payload: e.message }));
+  AsyncStorage.mergeItem(`${uid}`, JSON.stringify({ baseJsonBlob: JSONblob }), (e) => dispatch({ type: UPLOAD_ERROR, payload: e.message }))
+    .then(() => dispatch({ type: STORE_JSON_BLOB, payload: JSONblob }));
 };
 
 const wipeContext = (dispatch) => () => {
