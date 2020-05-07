@@ -31,7 +31,7 @@ const requestLocationPermission = async () => {
 const HomeScreen = () => {
   const [base, setBases] = useState({ isPin: false });
   const { wipeContext, setBaseLocation, state, setCoords, setARscreen } = useContext(Context);
-  const { setBaseError, userAuth, coords, uploadError, fireError, loginError, ARscreen } = state;
+  const { /*setBaseError*/ userAuth, coords, /*uploadError, fireError, loginError,*/ ARscreen } = state;
 
   let accuracy = 5; // meters of gps accuracy
 
