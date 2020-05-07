@@ -63,8 +63,6 @@ const HomeScreen = () => {
   const setBase = () => {
     if (state.userData.baseLatitude === 0 && state.userData.baseLongitude === 0) {
 
-      // state.userData.baseLatitude = coords.latitude;
-      // state.userData.baseLongitude = coords.longitude;
       setBaseLocation(coords.latitude, coords.longitude, state.userAuth.uid);
 
       Alert.alert('Important', 'Are you sure you would like to set your base at your current location?',
@@ -89,6 +87,7 @@ const HomeScreen = () => {
   if (ARscreen) {
     return (
       <AREntry
+      // key={ARscreen}
         setBase={ARscreen === 'setBase'}
         launch={ARscreen === 'launch'}
         viewBase={ARscreen === 'viewBase'}
