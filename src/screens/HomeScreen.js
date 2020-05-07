@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { StyleSheet, Modal, Alert, Platform, PermissionsAndroid, Text } from 'react-native';
+import { StyleSheet, Modal, Alert, Platform, PermissionsAndroid } from 'react-native';
 import MapScreen from './MapScreen';
 import FloatingButton from '../components/FloatingButton';
 import AuthenticationModal from '../components/AuthenticationModal';
@@ -31,7 +31,7 @@ const requestLocationPermission = async () => {
 const HomeScreen = () => {
   const [base, setBases] = useState({ isPin: false });
   const { wipeContext, setBaseLocation, state, setCoords, setARscreen } = useContext(Context);
-  const { setBaseError, userAuth, coords, uploadError, fireError, loginError, ARscreen } = state;
+  const { /*setBaseError*/ userAuth, coords, /*uploadError, fireError, loginError,*/ ARscreen } = state;
 
   let accuracy = 5; // meters of gps accuracy
 
@@ -61,9 +61,8 @@ const HomeScreen = () => {
   }, []);
 
   const setBase = () => {
-    if (state.userData.baseLatitude === 0) {
+    if (state.userData.baseLatitude === 0 && state.userData.baseLongitude === 0) {
 
-      state.userData.baseLatitude = coords.latitude;
       setBaseLocation(coords.latitude, coords.longitude, state.userAuth.uid);
 
       Alert.alert('Important', 'Are you sure you would like to set your base at your current location?',
@@ -88,6 +87,7 @@ const HomeScreen = () => {
   if (ARscreen) {
     return (
       <AREntry
+      // key={ARscreen}
         setBase={ARscreen === 'setBase'}
         launch={ARscreen === 'launch'}
         viewBase={ARscreen === 'viewBase'}
@@ -100,7 +100,6 @@ const HomeScreen = () => {
       {showAuthModal ? null : <FloatingButton title="Log Out" onPress={logout} style = {styles.FloatingButton}/>}
           
       <MapScreen userBaseLocation = {base.isPin}/>
-      <Text>{fireError + uploadError + loginError + setBaseError}</Text>
       
       {showAuthModal ? null : <FloatingButton title={[state.userData.baseLatitude === 0 ? 'Set Base' : 'Fire']}
         onPress={state.userData.baseLatitude === 0 ? setBase : (() => setARscreen('launch'))} />}

@@ -40,17 +40,19 @@ const AREntry = ({ setBase = false, viewBase = false, launch = false }) => {
 
   else if (setBase) return (
     <ViroARSceneNavigator
-      initialScene={{ scene: SetBaseScene, passProps: { saveBase: (jsonStr) => uploadJSONblob(jsonStr, uid) }, goBackHome }}
+      initialScene={{ scene: SetBaseScene, passProps: { saveBase: (jsonStr) => uploadJSONblob(jsonStr, uid), goBackHome } }}
     />
   );
   else if (viewBase) return (
     <ViroARSceneNavigator
-      initialScene={{ scene: ViewBaseScene, passProps: { base: JSON.parse(baseJsonBlob) }, goBackHome }}
+      // initialScene={{ scene: ViewBaseScene, passProps: { goBackHome } }}
+      initialScene={{ scene: ViewBaseScene, passProps: { base: JSON.parse(baseJsonBlob), goBackHome } }}
+      // viroAppProps={{ base: JSON.parse(baseJsonBlob) }}
     />
   );
   else if (launch) return (
     <ViroARSceneNavigator
-      initialScene={{ scene: FireProjectileScene, passProps: { saveLaunch: (coords) => launchFling({ coords }, uid) }, goBackHome }} // TODO: set scene to launch scene
+      initialScene={{ scene: FireProjectileScene, passProps: { saveLaunch: (coords) => launchFling({ coords }, uid), goBackHome } }} // TODO: set scene to launch scene
     />
   );
 };

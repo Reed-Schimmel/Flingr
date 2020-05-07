@@ -32,6 +32,7 @@ export default class ViewBaseScene extends Component {
         <ViroAmbientLight color={this.state.color} intensity={this.state.intensity} />
         <ViroBox
           position={this.props.base} scale={[.5, .5, .5]}
+          // position={this.props.arSceneNavigator.viroAppProps.base} scale={[.5, .5, .5]}
           // physicsBody={{ type: 'Dynamic', mass: 25, enabled: true, useGravity: true, restitution: 0.35, friction: 0.75 }}
           ref={(component) => { this.box = component; }}
         />

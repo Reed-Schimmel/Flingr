@@ -10,6 +10,8 @@ import HomeScreen from './src/screens/HomeScreen';
 import { Provider as GlobalProvider } from './src/context/GlobalContext';
 import firebaseConfig from './firebaseConfig.json';
 
+// console.disableYellowBox = true;
+
 firebase.initializeApp(firebaseConfig);
 
 const Flingr = () => {
