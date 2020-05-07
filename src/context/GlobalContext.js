@@ -1,3 +1,4 @@
+import { AsyncStorage } from 'react-native';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 import createDataContext from './createDataContext';
@@ -121,7 +122,7 @@ const reducer = (state, action) => {
         baseJsonData: action.payload,
       }
     };
-
+  
   case SET_AR_SCREEN:
     return {
       ...state,
@@ -147,11 +148,11 @@ const reducer = (state, action) => {
 
 const emailPasswordLogin = (dispatch) => (email, password) => {
   firebase.auth().signInWithEmailAndPassword(email, password)
-    .then(({ user }) => {
+    .then(async ({ user }) => {
       dispatch({ type: LOGIN_SUCCESS, payload: user });
-      const userDoc = firebase.firestore().collection('users').doc(user.uid);
-      userDoc.get()
-        .then((userSnapshot) => dispatch({ type: LOAD_USER_DATA, payload: userSnapshot.data() }));
+      await AsyncStorage.getItem(user.uid)
+        .then(() => dispatch({ type: LOAD_USER_DATA, payload: userSnapshot.data() }))
+        .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e }));
     })
     .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e.message }));
 };
@@ -166,13 +167,13 @@ const emailPasswordCreateAccount = (dispatch) => (email, password, username) => 
       };
       dispatch({ type: LOGIN_SUCCESS, payload: user });
       dispatch({ type: LOAD_USER_DATA, payload: userData });
-      await firebase.firestore().collection('users').doc(`${user.uid}`).set(userData)
+      await AsyncStorage.setItem(`${user.uid}`, JSON.stringify(userData))
         .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: `error setting data: ${e.message} ${user}` }));
     })
     .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e.message }));
 };
 
-const queryNewBaseLocations = (dispatch) => (region) => {
+const queryNewBaseLocations = (dispatch) => async (region) => {
   const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
   const left = longitude - longitudeDelta;
   const right = longitude + longitudeDelta;
@@ -181,28 +182,44 @@ const queryNewBaseLocations = (dispatch) => (region) => {
 
   const regionBases = [];
 
-  // query database for users w/ bases within the correct longitude range
-  const slice = firebase.firestore().collection('users').where('baseLongitude', '>=', left).where('baseLongitude', '<=', right);
-  slice.get()
-    .then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        const docData = doc.data();
-        // checks for bases within the correct latitude range
-        if (docData.baseLatitude <= top && docData.baseLatitude >= bottom) {
-          // if both lat & long within region, push it to regionBases to be rendered
-          regionBases.push(docData);
+  await AsyncStorage.getAllKeys((err, keys) => {
+    keys.forEach(async (key) => {
+      await AsyncStorage.getItem(key, (err, result) => {
+        let userData = JSON.parse(result);
+        if (userData.baseLatitude) {
+          if (userData.baseLatitude >= left && userData.baseLongitude <= right && userData.baseLatitude <= top && userData.baseLongitude >= bottom) {
+            regionBases.push(userData);
+          }
         }
       });
-      dispatch({ type: UPDATE_BASE_LOCATIONS, payload: regionBases });
     })
-    .catch((e) => dispatch({ type: QUERY_BASES_ERROR, payload: e }));
+      .then(() => dispatch({ type: UPDATE_BASE_LOCATIONS, payload: regionBases }))
+      .catch((e) => dispatch({ type: QUERY_BASES_ERROR, payload: e }));
+  });
+
+  // // query database for users w/ bases within the correct longitude range
+  // const slice = firebase.firestore().collection('users').where('baseLongitude', '>=', left).where('baseLongitude', '<=', right);
+  // slice.get()
+  //   .then((querySnapshot) => {
+  //     querySnapshot.forEach((doc) => {
+  //       const docData = doc.data();
+  //       // checks for bases within the correct latitude range
+  //       if (docData.baseLatitude <= top && docData.baseLatitude >= bottom) {
+  //         // if both lat & long within region, push it to regionBases to be rendered
+  //         regionBases.push(docData);
+  //       }
+  //     });
+  //     dispatch({ type: UPDATE_BASE_LOCATIONS, payload: regionBases });
+  //   })
+  //   .catch((e) => dispatch({ type: QUERY_BASES_ERROR, payload: e }));
 };
 
 const setBaseLocation = (dispatch) => async (latitude, longitude, uid) => {
-  firebase.firestore().collection('users').doc(uid).update({
+  const baseLocation = {
     baseLatitude: latitude,
     baseLongitude: longitude,
-  })
+  };
+  await AsyncStorage.mergeItem(`${uid}`, JSON.stringify(baseLocation))
     .then(() => dispatch({ type: SET_USER_BASE, payload: { latitude, longitude } }))
     .catch((e) => dispatch({ type: SET_BASE_ERROR, payload: e }));
 };
@@ -212,41 +229,55 @@ const setCoords = (dispatch) => ({ coords }) => {
 };
 
 // called when a user launches a new fling
-const launchFling = (dispatch) => ({ coords }, uid) => {
-  const landingDelta = 5;
-  const userRef = firebase.firestore().collection('users').doc(uid);
-  // create new outgoing fling
-  firebase.firestore().collection('flings').add({
+const launchFling = (dispatch) => async ({ coords }, uid) => {
+  // const landingDelta = 5;
+  // const userRef = firebase.firestore().collection('users').doc(uid);
+
+  const fling = {
+    flingId: `${Math.random()}`,
     landingLocation: coords,
-    sender: userRef,
+    sender: uid,
+  };
+
+  await AsyncStorage.getItem(`${uid}`, (err, result) => {
+    let newUserData = JSON.parse(result);
+    newUserData.outgoingFlings.push(fling);
   })
-    .then((flingRef) => {
-      // Add new fling to outgoing flings of current user
-      userRef.update({ outgoingFlings: firebase.firestore.FieldValue.arrayUnion(flingRef) });
+    .catch((e) => dispatch({ type: FIRE_ERROR, payload: e }));
 
-      // query for bases around the landing location
-      const slice = firebase.firestore().collection('users')
-        .where('baseLongitude', '>=', coords.latitude - landingDelta).where('baseLongitude', '<=', coords.latitude + landingDelta);
+  await AsyncStorage.setItem(`${fling.flingId}`, fling)
+    .catch((e) => dispatch({ type: FIRE_ERROR, payload: e }));
 
-      // get all the users from around that longitude 
-      slice.get()
-        .then((querySnapshot) => {
-          // update everyone within the range
-          querySnapshot.forEach(async (userDoc) => {
-            await firebase.firestore().collection('users').doc(userDoc.id).update({
-              incomingFlings: firebase.firestore.FieldValue.arrayUnion(flingRef)
-            });
-          });
-        })
-        .catch((e) => dispatch({ type: FIRE_ERROR, payload: e.message }));
-    })
-    .catch((e) => dispatch({ type: FIRE_ERROR, payload: e.message }));
+  // // create new outgoing fling
+  // firebase.firestore().collection('flings').add({
+  //   landingLocation: coords,
+  //   sender: userRef,
+  // })
+  //   .then((flingRef) => {
+  //     // Add new fling to outgoing flings of current user
+  //     userRef.update({ outgoingFlings: firebase.firestore.FieldValue.arrayUnion(flingRef) });
+
+  //     // query for bases around the landing location
+  //     const slice = firebase.firestore().collection('users')
+  //       .where('baseLongitude', '>=', coords.latitude - landingDelta).where('baseLongitude', '<=', coords.latitude + landingDelta);
+
+  //     // get all the users from around that longitude 
+  //     slice.get()
+  //       .then((querySnapshot) => {
+  //         // update everyone within the range
+  //         querySnapshot.forEach(async (userDoc) => {
+  //           await firebase.firestore().collection('users').doc(userDoc.id).update({
+  //             incomingFlings: firebase.firestore.FieldValue.arrayUnion(flingRef)
+  //           });
+  //         });
+  //       })
+  //       .catch((e) => dispatch({ type: FIRE_ERROR, payload: e.message }));
+  //   })
+  //   .catch((e) => dispatch({ type: FIRE_ERROR, payload: e.message }));
 };
 
 const uploadJSONblob = (dispatch) => (JSONblob, uid) => {
-  firebase.firestore().collection('users').doc(uid).update({
-    baseJsonBlob: JSONblob,
-  })
+  AsyncStorage.mergeItem(`${uid}`, JSON.stringify({ baseJsonBlob: JSONblob }))
     .then(() => dispatch({ type: STORE_JSON_BLOB, payload: JSONblob }))
     .catch((e) => dispatch({ type: UPLOAD_ERROR, payload: e.message }));
 };
