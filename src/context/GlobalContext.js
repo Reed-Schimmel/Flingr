@@ -155,7 +155,7 @@ const emailPasswordLogin = (dispatch) => (email, password) => {
       })
         .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e }));
     })
-    .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e.message }));
+    .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e }));
 };
 
 const emailPasswordCreateAccount = (dispatch) => (email, password, username) => {
@@ -169,9 +169,9 @@ const emailPasswordCreateAccount = (dispatch) => (email, password, username) => 
       dispatch({ type: LOGIN_SUCCESS, payload: user });
       dispatch({ type: LOAD_USER_DATA, payload: userData });
       await AsyncStorage.setItem(`${user.uid}`, JSON.stringify(userData))
-        .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: `error setting data: ${e.message} ${user}` }));
+        .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: `error setting data: ${e} ${user}` }));
     })
-    .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e.message }));
+    .catch((e) => dispatch({ type: LOGIN_FAILURE, payload: e }));
 };
 
 const queryNewBaseLocations = (dispatch) => async (region) => {
@@ -273,13 +273,13 @@ const launchFling = (dispatch) => async ({ coords }, uid) => {
   //           });
   //         });
   //       })
-  //       .catch((e) => dispatch({ type: FIRE_ERROR, payload: e.message }));
+  //       .catch((e) => dispatch({ type: FIRE_ERROR, payload: e }));
   //   })
-  //   .catch((e) => dispatch({ type: FIRE_ERROR, payload: e.message }));
+  //   .catch((e) => dispatch({ type: FIRE_ERROR, payload: e }));
 };
 
 const uploadJSONblob = (dispatch) => (JSONblob, uid) => {
-  AsyncStorage.mergeItem(`${uid}`, JSON.stringify({ baseJsonBlob: JSONblob }), (e) => dispatch({ type: UPLOAD_ERROR, payload: e.message }))
+  AsyncStorage.mergeItem(`${uid}`, JSON.stringify({ baseJsonBlob: JSONblob }), (e) => dispatch({ type: UPLOAD_ERROR, payload: e }))
     .then(() => dispatch({ type: STORE_JSON_BLOB, payload: JSONblob }));
 };
 

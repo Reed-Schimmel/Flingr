@@ -46,6 +46,8 @@
   "jest": {
     "preset": "react-native",
     "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": ["<rootDir>tests/setupTests.js"]
+    "setupFilesAfterEnv": [
+      "<rootDir>tests/setupTests.js"
+    ]
   }
 }
